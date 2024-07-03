@@ -1,6 +1,10 @@
 package game
 
-import "github.com/ysoldak/fpvc-lady/internal/csp"
+import (
+	"fmt"
+
+	"github.com/ysoldak/fpvc-lady/internal/csp"
+)
 
 type Game struct {
 	Players []*Player
@@ -15,37 +19,25 @@ func NewGame() Game {
 }
 
 func (g *Game) Hit(event csp.Hit) {
-	var victim *Player = nil
-	for _, p := range g.Players {
-		if p.ID == event.PlayerID {
-			victim = p
-			victim.Lives = event.Lives
-			break
-		}
-	}
+	victim := g.Player(event.PlayerID)
 	if victim == nil {
 		victim = &Player{
 			ID:    event.PlayerID,
-			Name:  "Player " + string(event.PlayerID),
+			Name:  fmt.Sprintf("%X", event.PlayerID),
 			Lives: event.Lives,
 		}
 		g.Players = append(g.Players, victim)
 	}
+	victim.Lives = event.Lives
 	g.Victim = victim
 }
 
 func (g *Game) Claim(event csp.Claim) (victim *Player, ok bool) {
-	var attacker *Player = nil
-	for _, p := range g.Players {
-		if p.ID == event.PlayerID {
-			attacker = p
-			break
-		}
-	}
+	attacker := g.Player(event.PlayerID)
 	if attacker == nil {
 		attacker = &Player{
 			ID:    event.PlayerID,
-			Name:  "Player " + string(event.PlayerID),
+			Name:  fmt.Sprintf("%X", event.PlayerID),
 			Lives: 255,
 		}
 		g.Players = append(g.Players, attacker)
@@ -58,4 +50,22 @@ func (g *Game) Claim(event csp.Claim) (victim *Player, ok bool) {
 		victim.Lives--
 	}
 	return victim, victim != nil
+}
+
+func (g *Game) Player(id byte) *Player {
+	for _, p := range g.Players {
+		if p.ID == id {
+			return p
+		}
+	}
+	return nil
+}
+
+func (g *Game) Table() []string {
+	table := []string{}
+	table = append(table, " ID | Name       | Kills | Deaths | Lives ")
+	for _, p := range g.Players {
+		table = append(table, fmt.Sprintf(" %X | %-10s | %5d | %6d | %5d ", p.ID, p.Name, p.Kills, p.Deaths, p.Lives))
+	}
+	return table
 }

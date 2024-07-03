@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"time"
 
 	"github.com/urfave/cli/v2"
 	"github.com/ysoldak/fpvc-lady/internal/csp"
@@ -38,22 +39,44 @@ func commentAction(cc *cli.Context) (err error) {
 	// Game
 	g := game.NewGame()
 
+	// Temporary for testing
+	if port == "none" {
+		go func() {
+			for {
+				time.Sleep(5 * time.Second)
+				eventsChan <- csp.Hit{
+					PlayerID: 0xA1,
+					Lives:    10,
+				}
+				time.Sleep(100 * time.Millisecond)
+				eventsChan <- csp.Claim{
+					PlayerID: 0xB1,
+					Power:    3,
+				}
+			}
+		}()
+	}
+
 	// Main loop
-	speakerChan <- "Lady is ready."
+	speakerChan <- "The lady is ready."
 	for {
 		event := <-eventsChan
 		switch event := event.(type) {
 		case csp.Hit:
 			g.Hit(event)
-			println("Hit: ", event.PlayerID, event.Lives)
+			// println("Hit: ", event.PlayerID, event.Lives)
 		case csp.Claim:
 			victim, ok := g.Claim(event)
 			if !ok {
 				continue
 			}
-			attacker := g.Players[event.PlayerID]
+			attacker := g.Player(event.PlayerID)
 			speakerChan <- fmt.Sprintf("%s was hit by %s. %d lives left.", victim.Name, attacker.Name, victim.Lives)
-			println("Claim: ", event.PlayerID, event.Power)
+			// println("Claim: ", event.PlayerID, event.Power)
+			for _, line := range g.Table() {
+				println(line)
+			}
+			println()
 		}
 	}
 }
