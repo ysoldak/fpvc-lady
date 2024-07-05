@@ -62,6 +62,12 @@ func commentAction(cc *cli.Context) (err error) {
 	for {
 		event := <-eventsChan
 		switch event := event.(type) {
+		case csp.Beacon:
+			player, new := g.Beacon(event)
+			if new {
+				speakerChan <- fmt.Sprintf("%s registered", player.Name)
+			}
+			// fmt.Printf("%v Beacon: %X %s %s\n", time.Now(), event.PlayerID, event.Name, event.Description)
 		case csp.Hit:
 			g.Hit(event)
 			// println("Hit: ", event.PlayerID, event.Lives)
@@ -70,13 +76,15 @@ func commentAction(cc *cli.Context) (err error) {
 			if !ok {
 				continue
 			}
-			attacker := g.Player(event.PlayerID)
+			attacker, _ := g.Player(event.PlayerID)
 			speakerChan <- fmt.Sprintf("%s was hit by %s. %d lives left.", victim.Name, attacker.Name, victim.Lives)
 			// println("Claim: ", event.PlayerID, event.Power)
-			for _, line := range g.Table() {
-				println(line)
-			}
-			println()
+		}
+		println()
+		println()
+		println()
+		for _, line := range g.Table() {
+			println(line)
 		}
 	}
 }

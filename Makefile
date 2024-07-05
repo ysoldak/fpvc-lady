@@ -1,4 +1,4 @@
-VERSION := $(shell git describe --tags)
+# VERSION := $(shell git describe --tags)
 # LD_FLAGS := -ldflags="-X 'main.Version=$(VERSION)'"
 
 SRC := ./cmd/lady
@@ -30,3 +30,6 @@ build-linux-arm64:
 	GOOS=linux GOARCH=arm64 go build $(LD_FLAGS) -o build/fpvc-lady-linux-arm64 $(SRC)
 
 build: clean build-darwin-amd64 build-windows-386 build-windows-amd64 build-linux-386 build-linux-amd64 build-linux-arm build-linux-arm64
+
+run:
+	go run $(SRC)

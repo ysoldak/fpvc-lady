@@ -3,6 +3,8 @@ package csp
 import "io"
 
 const (
+	COMMAND_BEACON byte = 0x71
+
 	COMMAND_HIT   byte = 0x82
 	COMMAND_CLAIM byte = 0x84
 )
@@ -54,6 +56,8 @@ func (csp *CSP) Run() {
 				if b == 'C' {
 					csp.message.header[1] = b
 					csp.state = STATE_LENGTH
+				} else {
+					csp.state = STATE_IDLE
 				}
 			case STATE_LENGTH:
 				csp.message.length = b
@@ -82,6 +86,8 @@ func (csp *CSP) Run() {
 
 func (csp *CSP) emitEvent() {
 	switch csp.message.command {
+	case COMMAND_BEACON:
+		csp.events <- NewBeacon(csp.message.data)
 	case COMMAND_HIT:
 		csp.events <- NewHit(csp.message.data)
 	case COMMAND_CLAIM:
