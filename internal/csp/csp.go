@@ -1,7 +1,10 @@
 package csp
 
-import "io"
+import (
+	"io"
+)
 
+// Commands
 const (
 	COMMAND_BEACON byte = 0x71
 
@@ -9,13 +12,13 @@ const (
 	COMMAND_CLAIM byte = 0x84
 )
 
+// States
 const (
-	// States
 	STATE_IDLE byte = iota
 	STATE_HEADER
 	STATE_LENGTH
 	STATE_COMMAND
-	STATE_DATA
+	STATE_PAYLOAD
 	STATE_CHECKSUM
 )
 
@@ -49,33 +52,46 @@ func (csp *CSP) Run() {
 			switch csp.state {
 			case STATE_IDLE:
 				if b == '$' {
-					csp.message.header[0] = b
+					csp.message.Header[0] = b
 					csp.state = STATE_HEADER
 				}
 			case STATE_HEADER:
 				if b == 'C' {
-					csp.message.header[1] = b
+					csp.message.Header[1] = b
 					csp.state = STATE_LENGTH
 				} else {
+					csp.message = Message{}
 					csp.state = STATE_IDLE
 				}
 			case STATE_LENGTH:
-				csp.message.length = b
-				csp.message.checksum = b
+				if b > MAX_PAYLOAD {
+					csp.message = Message{}
+					csp.state = STATE_IDLE
+					break
+				}
+				csp.message.Length = b
+				csp.message.Checksum = b
 				csp.state = STATE_COMMAND
 			case STATE_COMMAND:
-				csp.message.command = b
-				csp.message.checksum ^= b
-				csp.state = STATE_DATA
-			case STATE_DATA:
-				csp.message.data = append(csp.message.data, b)
-				csp.message.checksum ^= b
-				if len(csp.message.data) == int(csp.message.length) {
+				csp.message.Command = b
+				csp.message.Checksum ^= b
+				csp.state = STATE_PAYLOAD
+			case STATE_PAYLOAD:
+				csp.message.Payload = append(csp.message.Payload, b)
+				csp.message.Checksum ^= b
+				if len(csp.message.Payload) == int(csp.message.Length) {
 					csp.state = STATE_CHECKSUM
 				}
 			case STATE_CHECKSUM:
-				if csp.message.checksum == b {
+				// fmt.Printf("%s ", time.Now().Format("15:04:05.000"))
+				// for _, b := range csp.message.Bytes() {
+				// 	fmt.Printf("%02X ", b)
+				// }
+				// fmt.Println()
+				if csp.message.Checksum == b {
 					csp.emitEvent()
+					// } else {
+					// 	fmt.Printf("%s %02X %02X checksum error %02X != %02X\n", time.Now().Format("15:04:05.000"), csp.message.Command, csp.message.Length, csp.message.Checksum, b)
 				}
 				csp.message = Message{}
 				csp.state = STATE_IDLE
@@ -85,12 +101,12 @@ func (csp *CSP) Run() {
 }
 
 func (csp *CSP) emitEvent() {
-	switch csp.message.command {
+	switch csp.message.Command {
 	case COMMAND_BEACON:
-		csp.events <- NewBeacon(csp.message.data)
+		csp.events <- NewBeacon(csp.message.Payload)
 	case COMMAND_HIT:
-		csp.events <- NewHit(csp.message.data)
+		csp.events <- NewHit(csp.message.Payload)
 	case COMMAND_CLAIM:
-		csp.events <- NewClaim(csp.message.data)
+		csp.events <- NewClaim(csp.message.Payload)
 	}
 }
