@@ -32,3 +32,7 @@ fpvc-lady-darwin-amd64-x.x.x --speech "say -v samantha"
 ### Windows
 
 Use PowerShell. You may need to tweak permissions.
+
+### Linux
+
+Good luck!
