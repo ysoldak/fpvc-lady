@@ -58,6 +58,11 @@ func commentAction(cc *cli.Context) (err error) {
 	}
 
 	// Main loop
+	fmt.Println()
+	fmt.Println("The lady is ready.")
+	fmt.Println()
+	fmt.Println("Listening to combat events...")
+	fmt.Println()
 	speakerChan <- "The lady is ready."
 	for {
 		event := <-eventsChan

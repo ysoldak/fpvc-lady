@@ -12,6 +12,7 @@ var Version = "0.0.0"
 func main() {
 	app := cli.NewApp()
 	app.Name = "fpvc-lady"
+	app.Usage = "FPV Combat Events Announcer"
 
 	app.Flags = getFlags()
 	app.Action = commentAction

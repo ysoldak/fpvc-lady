@@ -13,10 +13,10 @@ func getFlags() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringFlag{
 			Name:     flagPort,
-			Usage:    "Port name",
+			Usage:    "Port name where HC12 is connected to.",
 			EnvVars:  []string{"PORT"},
 			Required: false,
-			Value:    "",
+			Value:    "auto",
 		},
 		&cli.StringFlag{
 			Name:     flagSpeech,

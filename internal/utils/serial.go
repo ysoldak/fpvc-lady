@@ -43,11 +43,11 @@ func findSerialPort(candidate string) (port string, err error) {
 		return "", errors.New("no serial ports available")
 	}
 
-	if candidate == "" {
+	if candidate == "" || candidate == "auto" {
 		if len(ports) == 1 {
 			return ports[0], nil
 		} else {
-			return "", errors.New("multiple serial ports available - use -port flag, available ports are " + strings.Join(ports, ", "))
+			return "", errors.New("multiple serial ports available - use --port flag, available ports are " + strings.Join(ports, ", "))
 		}
 	}
 
