@@ -16,6 +16,6 @@ require (
 	golang.org/x/sys v0.21.0 // indirect
 )
 
-require github.com/ysoldak/fpvc-serial-protocol v1.0.0
+require github.com/ysoldak/fpvc-serial-protocol v1.1.1
 
 // replace github.com/ysoldak/fpvc-serial-protocol => ../fpvc-serial-protocol
