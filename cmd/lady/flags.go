@@ -5,8 +5,10 @@ import (
 )
 
 const (
-	flagPort   = "port"
-	flagSpeech = "speech"
+	flagPort        = "port"
+	flagSpeak       = "speak"
+	flagSpeakLives  = "speak-lives"
+	flagSpeakCheers = "speak-cheers"
 )
 
 func getFlags() []cli.Flag {
@@ -19,11 +21,25 @@ func getFlags() []cli.Flag {
 			Value:    "auto",
 		},
 		&cli.StringFlag{
-			Name:     flagSpeech,
+			Name:     flagSpeak,
 			Usage:    "Speech command: [system], google, none or any other command to convert text to speech.",
 			EnvVars:  []string{"SPEECH"},
 			Required: false,
 			Value:    "system",
+		},
+		&cli.BoolFlag{
+			Name:     flagSpeakLives,
+			Usage:    "Speak lives.",
+			EnvVars:  []string{"SPEAK_LIVES"},
+			Required: false,
+			Value:    false,
+		},
+		&cli.BoolFlag{
+			Name:     flagSpeakCheers,
+			Usage:    "Speak cheers.",
+			EnvVars:  []string{"SPEAK_CHEERS"},
+			Required: false,
+			Value:    false,
 		},
 	}
 }

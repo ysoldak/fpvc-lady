@@ -15,3 +15,7 @@ require (
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 )
+
+require github.com/ysoldak/fpvc-serial-protocol v1.0.0
+
+// replace github.com/ysoldak/fpvc-serial-protocol => ../fpvc-serial-protocol

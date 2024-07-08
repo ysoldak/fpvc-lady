@@ -4,19 +4,20 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"time"
 
 	"github.com/urfave/cli/v2"
-	"github.com/ysoldak/fpvc-lady/internal/csp"
 	"github.com/ysoldak/fpvc-lady/internal/game"
+	"github.com/ysoldak/fpvc-lady/internal/net"
 	"github.com/ysoldak/fpvc-lady/internal/tts"
 	"github.com/ysoldak/fpvc-lady/internal/utils"
+
+	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
 func commentAction(cc *cli.Context) (err error) {
 
 	// TTS
-	speech := cc.String(flagSpeech)
+	speech := cc.String(flagSpeak)
 	speakerChan := make(chan string, 100)
 	ttsEngine := tts.NewByName(speech, speakerChan)
 	go ttsEngine.Run()
@@ -32,30 +33,12 @@ func commentAction(cc *cli.Context) (err error) {
 	}
 
 	// CSP
-	eventsChan := make(chan interface{}, 100)
-	cspEngine := csp.New(serial, eventsChan)
-	go cspEngine.Run()
+	messageChan := make(chan csp.Message, 10)
+	listener := net.NewListener(serial, messageChan)
+	go listener.Run()
 
 	// Game
 	g := game.NewGame()
-
-	// Temporary for testing
-	if port == "none" {
-		go func() {
-			for {
-				time.Sleep(5 * time.Second)
-				eventsChan <- csp.Hit{
-					PlayerID: 0xA1,
-					Lives:    10,
-				}
-				time.Sleep(100 * time.Millisecond)
-				eventsChan <- csp.Claim{
-					PlayerID: 0xB1,
-					Power:    3,
-				}
-			}
-		}()
-	}
 
 	// Main loop
 	fmt.Println()
@@ -65,25 +48,32 @@ func commentAction(cc *cli.Context) (err error) {
 	fmt.Println()
 	speakerChan <- "The lady is ready."
 	for {
-		event := <-eventsChan
-		switch event := event.(type) {
-		case csp.Beacon:
+		message := <-messageChan
+		switch message.Command {
+		case csp.CommandBeacon:
+			event := csp.NewBeaconFromMessage(&message)
 			player, new := g.Beacon(event)
 			if new {
 				speakerChan <- fmt.Sprintf("%s registered", player.Name)
 			}
-			// fmt.Printf("%v Beacon: %X %s %s\n", time.Now(), event.PlayerID, event.Name, event.Description)
-		case csp.Hit:
-			g.Hit(event)
-			// println("Hit: ", event.PlayerID, event.Lives)
-		case csp.Claim:
-			victim, ok := g.Claim(event)
-			if !ok {
-				continue
+		case csp.CommandHit:
+			if message.IsRequest() {
+				event := csp.NewHitRequestFromMessage(&message)
+				g.HitRequest(event)
 			}
-			attacker, _ := g.Player(event.PlayerID)
-			speakerChan <- fmt.Sprintf("%s was hit by %s. %d lives left.", victim.Name, attacker.Name, victim.Lives)
-			// println("Claim: ", event.PlayerID, event.Power)
+			if message.IsResponse() {
+				event := csp.NewHitResponseFromMessage(&message)
+				victim, ok := g.HitResponse(event)
+				if !ok {
+					continue
+				}
+				attacker, _ := g.Player(event.ID)
+				phrase := fmt.Sprintf("%s was hit by %s.", victim.Name, attacker.Name)
+				if cc.Bool(flagSpeakLives) {
+					phrase += fmt.Sprintf(" %d lives left.", victim.Lives)
+				}
+				speakerChan <- phrase
+			}
 		}
 		println()
 		println()

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ysoldak/fpvc-lady/internal/csp"
+	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
 type Game struct {
@@ -19,26 +19,26 @@ func NewGame() Game {
 	}
 }
 
-func (g *Game) Beacon(event csp.Beacon) (player *Player, new bool) {
-	player, new = g.Player(event.PlayerID)
+func (g *Game) Beacon(event *csp.Beacon) (player *Player, new bool) {
+	player, new = g.Player(event.ID)
 	player.Name = event.Name
 	player.Description = event.Description
 	player.Updated = time.Now()
 	return
 }
 
-func (g *Game) Hit(event csp.Hit) {
-	victim, _ := g.Player(event.PlayerID)
+func (g *Game) HitRequest(event *csp.HitRequest) {
+	victim, _ := g.Player(event.ID)
 	victim.Lives = event.Lives
 	g.Victim = victim
 }
 
-func (g *Game) Claim(event csp.Claim) (victim *Player, ok bool) {
-	attacker, _ := g.Player(event.PlayerID)
+func (g *Game) HitResponse(event *csp.HitResponse) (victim *Player, ok bool) {
+	attacker, _ := g.Player(event.ID)
 	if attacker == nil {
 		attacker = &Player{
-			ID:    event.PlayerID,
-			Name:  fmt.Sprintf("%X", event.PlayerID),
+			ID:    event.ID,
+			Name:  fmt.Sprintf("%X", event.ID),
 			Lives: 255,
 		}
 		g.Players = append(g.Players, attacker)
