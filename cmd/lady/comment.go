@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"math/rand"
+
 	"github.com/urfave/cli/v2"
 	"github.com/ysoldak/fpvc-lady/internal/game"
 	"github.com/ysoldak/fpvc-lady/internal/net"
@@ -76,6 +78,9 @@ func commentAction(cc *cli.Context) (err error) {
 				phrase := fmt.Sprintf("%s was hit.", g.Victim.Name)
 				if cc.Bool(flagSpeakLives) {
 					phrase += fmt.Sprintf(" %d lives left.", g.Victim.Lives)
+				}
+				if cc.Bool(flagSpeakCheers) {
+					phrase += " " + hitCheers[rand.Intn(len(hitCheers))]
 				}
 				speakerChan <- phrase
 			}
