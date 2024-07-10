@@ -17,10 +17,14 @@ COMMANDS:
 
 GLOBAL OPTIONS:
    --port value    Port name where HC12 is connected to. (default: "auto") [$PORT]
-   --speech value  Speech command: [system], google, none or any other command to convert text to speech. (default: "system") [$SPEECH]
+   --speak value   Text-to-speech command: [system], google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
+   --speak-lives   Speak lives. (default: false) [$SPEAK_LIVES]
+   --speak-cheers  Speak cheers. (default: false) [$SPEAK_CHEERS]
    --help, -h      show help
    --version, -v   print the version
 ```
+
+When `--speak=google`, must have `mplayer` or `ffplay` installed.  
 
 ### Mac
 
