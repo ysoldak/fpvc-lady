@@ -66,12 +66,12 @@ func commentAction(cc *cli.Context) (err error) {
 			player, new := g.Beacon(event)
 			if new {
 				speakerChan <- fmt.Sprintf("%s registered", player.Name)
-				traceChan <- fmt.Sprintf("REG %02X %s", player.ID, strings.ReplaceAll(player.Name, " ", "_"))
+				traceChan <- fmt.Sprintf("REGST %02X %s", player.ID, strings.ReplaceAll(player.Name, " ", "_"))
 			}
 		case csp.CommandHit:
 			if message.IsRequest() {
 				event := csp.NewHitRequestFromMessage(&message)
-				traceChan <- fmt.Sprintf("HIT %02X %d", event.ID, event.Lives)
+				traceChan <- fmt.Sprintf("DAMAG %02X %d", event.ID, event.Lives)
 				g.HitRequest(event)
 				phrase := fmt.Sprintf("%s was hit.", g.Victim.Name)
 				if cc.Bool(flagSpeakLives) {
@@ -81,10 +81,11 @@ func commentAction(cc *cli.Context) (err error) {
 			}
 			if message.IsResponse() {
 				event := csp.NewHitResponseFromMessage(&message)
-				traceChan <- fmt.Sprintf("CLM %02X %d", event.ID, event.Power)
+				traceChan <- fmt.Sprintf("CLAIM %02X %d", event.ID, event.Power)
 				if g.HitResponse(event) {
 					attacker, _ := g.Player(event.ID)
 					speakerChan <- fmt.Sprintf("Score to %s.", attacker.Name)
+					traceChan <- fmt.Sprintf("SCORE %02X", event.ID)
 				}
 			}
 		}

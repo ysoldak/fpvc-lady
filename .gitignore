@@ -21,4 +21,4 @@
 go.work
 build
 
-*.csv
+*.log
