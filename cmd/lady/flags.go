@@ -22,8 +22,8 @@ func getFlags() []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:     flagSpeak,
-			Usage:    "Speech command: [system], google, none or any other command to convert text to speech.",
-			EnvVars:  []string{"SPEECH"},
+			Usage:    "Text-to-speech command: [system], google, none or any other command to convert text to speech.",
+			EnvVars:  []string{"SPEAK"},
 			Required: false,
 			Value:    "system",
 		},

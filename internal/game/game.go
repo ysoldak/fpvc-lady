@@ -29,11 +29,12 @@ func (g *Game) Beacon(event *csp.Beacon) (player *Player, new bool) {
 
 func (g *Game) HitRequest(event *csp.HitRequest) {
 	victim, _ := g.Player(event.ID)
-	victim.Lives = event.Lives
+	victim.Lives = event.Lives - 1
+	victim.Deaths++
 	g.Victim = victim
 }
 
-func (g *Game) HitResponse(event *csp.HitResponse) (victim *Player, ok bool) {
+func (g *Game) HitResponse(event *csp.HitResponse) (ok bool) {
 	attacker, _ := g.Player(event.ID)
 	if attacker == nil {
 		attacker = &Player{
@@ -43,14 +44,12 @@ func (g *Game) HitResponse(event *csp.HitResponse) (victim *Player, ok bool) {
 		}
 		g.Players = append(g.Players, attacker)
 	}
-	victim = g.Victim
 	if g.Victim != nil {
-		g.Victim = nil
 		attacker.Kills++
-		victim.Deaths++
-		victim.Lives--
+		g.Victim = nil
+		return true
 	}
-	return victim, victim != nil
+	return false
 }
 
 func (g *Game) Player(id byte) (player *Player, isNew bool) {
