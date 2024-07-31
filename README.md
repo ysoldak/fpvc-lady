@@ -30,7 +30,7 @@ When `--speak=google`, must have `mplayer` or `ffplay` installed.
 
 Macs have male voice by default, use command below to switch to a female voice.
 ```
-fpvc-lady-darwin-amd64-x.x.x --speech "say -v samantha"
+fpvc-lady-darwin-amd64-x.x.x --speak "say -v samantha"
 ```
 
 ### Windows
