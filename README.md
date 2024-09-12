@@ -13,6 +13,7 @@ HARDWARE:
    - USB to UART TTL converter (e.g. CP2102 MICRO USB to UART TTL Convert Module)
    - HC12 Module (e.g. Hailege HC-12 433Mhz SI4438 Wireless Transceiver)
    - optional: separate 433mhz antenna 
+![image](https://github.com/user-attachments/assets/9264b201-9b36-4aaf-a082-b80fef141d8e)
 
 VERSION:
    0.0.0
