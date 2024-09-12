@@ -7,7 +7,12 @@ NAME:
    fpvc-lady - FPV Combat Events Announcer
 
 USAGE:
-   fpvc-lady [global options] command [command options] 
+   fpvc-lady [global options] command [command options]
+
+HARDWARE:
+   - USB to UART TTL converter (e.g. CP2102 MICRO USB to UART TTL Convert Module)
+   - HC12 Module (e.g. Hailege HC-12 433Mhz SI4438 Wireless Transceiver)
+   - optional: separate 433mhz antenna 
 
 VERSION:
    0.0.0
