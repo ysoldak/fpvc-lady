@@ -32,10 +32,10 @@ GLOBAL OPTIONS:
    --version, -v   print the version
 ```
 
-## Administartor panel local web-gui (experimental, under construction)
-When the project is cloned, navigate to the WEB GUI dir first
+## Administartor panel local web GUI (experimental, under construction)
+When the project is cloned, navigate to the web GUI dir first
 ```
-cd \front\fpvcm\
+cd \front\
 ```
 
 Before running the first time, be sure you have [Node.js](https://nodejs.org/en) installed 
@@ -64,6 +64,8 @@ Running main local webserver
 ```
 npm run start
 ```
+
+Navigate to the [localhost at port 3000](http://localhost:3000) address using your web-browser to access the web GUI.
 
 ### Mac
 

@@ -1,0 +1,8 @@
+{
+  "config": {
+    "lang": "de",
+    "accessPin": 1234,
+    "defaultRoundTime": 300,
+    "defaultCountDown": 30
+  }
+}
