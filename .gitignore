@@ -22,5 +22,6 @@ go.work
 build
 
 *.log
-.vscode
-cmd/lady/front
+.vscode/
+front/
+node_modules/
