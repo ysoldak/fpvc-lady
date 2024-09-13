@@ -32,7 +32,38 @@ GLOBAL OPTIONS:
    --version, -v   print the version
 ```
 
-When `--speak=google`, must have `mplayer` or `ffplay` installed.  
+## Administartor panel local web-gui (experimental, under construction)
+When the project is cloned, navigate to the WEB GUI dir first
+```
+cd \front\fpvcm\
+```
+
+Before running the first time, be sure you have [Node.js](https://nodejs.org/en) installed 
+
+And then install the package:
+
+```
+npm install
+```
+
+If there are any troubles running the project, try doing the automate fixing:
+
+```
+npm audit fix
+```
+
+#### RUNNING THE PROJECT
+You need to open two separate consoles:
+
+Running local API mock (needed just in the dev phase)
+```
+npm run json-server
+```
+
+Running main local webserver
+```
+npm run start
+```
 
 ### Mac
 
