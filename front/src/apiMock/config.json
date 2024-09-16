@@ -1,7 +1,7 @@
 {
   "config": {
     "lang": "pl",
-    "accessPin": 1234,
+    "accessPin": null,
     "defaultRoundTime": 300,
     "defaultCountDown": 30,
     "hitPoints": 5,

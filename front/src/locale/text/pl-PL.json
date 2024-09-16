@@ -11,5 +11,14 @@
   "score": "Punkty",
   "currentRoundTime": "Czas bieżącej rundy",
   "remainingRoundTime": "Pozostały czas",
-  "totalHits": "Wszystkich trafień"
+  "totalHits": "Wszystkich trafień",
+  "pinSetupSetNew": "Set up new PIN access",
+  "pinSetupExplanation": "This is the first time you access this manager, please set up new access PIN",
+  "pinSetupEnterPin": "Enter PIN",
+  "pinSetupConfirmPin": "Confirm PIN",
+  "pinSetupSubmitBtn": "Setup new PIN",
+  "pinSetupOK": "New access PIN was configured successfully",
+  "pinSetupError": "Could not setup new access PIN",
+  "pinSetupNotMatch": "Entered PINs are not the same!",
+  "pinEnterInvalid": "Invalid access PIN. Access denied"
 }
