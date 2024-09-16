@@ -13,6 +13,13 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 
 function Main(props) {
   const [tab, setTab] = React.useState(0)
@@ -20,6 +27,23 @@ function Main(props) {
   const switchTab = (event, tab) => {
     setTab(tab);
   };
+
+  function createData(
+    playerName,
+    playerId,
+    hits,
+    damage,
+  ) {
+    const score = ((hits * 5) - (damage * 1))
+    return { playerName, playerId, hits, damage, score };
+  }
+  
+  const rows = [
+    createData('Zborek', 'C4', 10, 5, 45),
+    createData('Bjoern', 'D2', 5, 5, 20),
+    createData('Matteo', 'E1', 20, 5, 95),
+    createData('Yurii', 'F9', 10, 5, 45),
+  ];
 
   console.log(props)
 
@@ -72,15 +96,37 @@ function Main(props) {
                 <Box sx={{ p: 1 }}>
                   <Card variant="outlined" className="fpvcm-card-wrapper">
                     <CardContent className="fpvcm-card fpvcm-disp-stats">
+                      <TableContainer component={Paper} style={{maxWidth: 450}}>
+                        <Table size="small" className="fpvcm-table-bg" >
+                          <TableHead>
+                            <TableRow>
+                              <TableCell className="fpvcm-table-header-cell">Player</TableCell>
+                              <TableCell align="right" className="fpvcm-table-header-cell">Hits</TableCell>
+                              <TableCell align="right" className="fpvcm-table-header-cell">Damage</TableCell>
+                              <TableCell align="right" className="fpvcm-table-header-cell">Score</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {rows.map((row) => (
+                              <TableRow
+                                key={row.playerId}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                style={{color: 'white'}}
+                              >
+                                <TableCell component="th" scope="row" style={{color: 'white'}}>
+                                  {row.playerName}&nbsp;<span className="fpvcm-label">({row.playerId})</span>
+                                </TableCell>
+                                <TableCell align="right" style={{color: 'white'}}>{row.hits}</TableCell>
+                                <TableCell align="right" style={{color: 'white'}}>{row.damage}</TableCell>
+                                <TableCell align="right" style={{color: 'white'}}>{row.score}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
                       <Typography display="block">
                         Game time: 2:30<br />
                         Total hits: 13<br />
-                        -------------------<br />
-                        ZBOREK [C4]: 7 hits, 2 damage<br />
-                        BJOERN [D2]: 5 hits, 3 damage<br />
-                        SOME_GUY [E1]: 1 hit, 5 damage<br />
-                        TARGET [B3]: 0 hits, 3 damage<br />
-                        <br />
                       </Typography>
                     </CardContent>
                   </Card>

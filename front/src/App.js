@@ -8,9 +8,9 @@ import txt from './locale/locale.js'
 
 import configService from './services/config'
 
-import Main from './component/main'
-import Info from './component/info'
-import Loading from './component/loading'
+import Main from './component/Main.js'
+import Info from './component/Info.js'
+import Loading from './component/Loading.js'
 
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
