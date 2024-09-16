@@ -215,6 +215,15 @@
   margin-lefT: 18px !important;
 }
 
+.MuiOutlinedInput-input {
+  color: white !important;
+  border-color: #00b50f !important;
+
+  & label.Mui-focused {
+    color: '#A0AAB4';
+  }
+}
+
 ::-webkit-scrollbar {
   height: 12px;
   width: 12px;
@@ -238,6 +247,16 @@
   margin: 0 auto;
   top: 200px;
   left: CALC(50% - 100px);
+  text-align: center;
+}
+
+.fpvcm-pin-screen {
+  border: solid 0px black;
+  max-width: 450px;
+  position: fixed;
+  margin: 0 auto;
+  top: 200px;
+  left: CALC(50% - 225px);
   text-align: center;
 }
 

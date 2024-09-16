@@ -10,6 +10,7 @@ import configService from './services/config'
 
 import Main from './component/Main.js'
 import Info from './component/Info.js'
+import PinSetup from './component/PinSetup.js'
 import Loading from './component/Loading.js'
 
 import CssBaseline from '@mui/material/CssBaseline'
@@ -132,7 +133,7 @@ function App() {
         {loading
           ? (<Loading lang={config.lang} />)
           : showSetPin
-            ? (<Info info={'Set New PIN'} />)
+            ? (<PinSetup config={config} />)
             : showEnterPin
               ? (<Info info={'Enter PIN to get access'} />)
               : (<Main config={config} countDownMarks={countDownMarks(config.lang)} roundTimeMarks={roundTimeMarks} />)
