@@ -25,7 +25,7 @@ function Main(props) {
   const [tab, setTab] = React.useState(0)
 
   const switchTab = (event, tab) => {
-    setTab(tab);
+    setTab(tab)
   };
 
   function createData(
@@ -35,7 +35,7 @@ function Main(props) {
     damage,
   ) {
     const score = ((hits * 5) - (damage * 1))
-    return { playerName, playerId, hits, damage, score };
+    return { playerName, playerId, hits, damage, score }
   }
   
   const rows = [
@@ -43,9 +43,7 @@ function Main(props) {
     createData('Bjoern', 'D2', 5, 5, 20),
     createData('Matteo', 'E1', 20, 5, 95),
     createData('Yurii', 'F9', 10, 5, 45),
-  ];
-
-  console.log(props)
+  ]
 
   return (
     <Box className="fpvcm-container_box">
@@ -100,10 +98,10 @@ function Main(props) {
                         <Table size="small" className="fpvcm-table-bg" >
                           <TableHead>
                             <TableRow>
-                              <TableCell className="fpvcm-table-header-cell">Player</TableCell>
-                              <TableCell align="right" className="fpvcm-table-header-cell">Hits</TableCell>
-                              <TableCell align="right" className="fpvcm-table-header-cell">Damage</TableCell>
-                              <TableCell align="right" className="fpvcm-table-header-cell">Score</TableCell>
+                              <TableCell className="fpvcm-table-header-cell">{txt('player', props.config.lang)}</TableCell>
+                              <TableCell align="right" className="fpvcm-table-header-cell">{txt('hits', props.config.lang)}</TableCell>
+                              <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.config.lang)}</TableCell>
+                              <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.config.lang)}</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -113,20 +111,21 @@ function Main(props) {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 style={{color: 'white'}}
                               >
-                                <TableCell component="th" scope="row" style={{color: 'white'}}>
+                                <TableCell component="th" scope="row" className="fpvcm-table-cell">
                                   {row.playerName}&nbsp;<span className="fpvcm-label">({row.playerId})</span>
                                 </TableCell>
-                                <TableCell align="right" style={{color: 'white'}}>{row.hits}</TableCell>
-                                <TableCell align="right" style={{color: 'white'}}>{row.damage}</TableCell>
-                                <TableCell align="right" style={{color: 'white'}}>{row.score}</TableCell>
+                                <TableCell align="right" className="fpvcm-table-cell">{row.hits}</TableCell>
+                                <TableCell align="right" className="fpvcm-table-cell">{row.damage}</TableCell>
+                                <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
-                      <Typography display="block">
-                        Game time: 2:30<br />
-                        Total hits: 13<br />
+                      <Typography display="block" style={{fontWeight: 'bold', paddingTop: '12px'}}>
+                        {txt('currentRoundTime', props.config.lang)}: <span className="fpvcm-label">2:42</span><br />
+                        {txt('remainingRoundTime', props.config.lang)}: <span className="fpvcm-label">2:18</span><br />
+                        {txt('totalHits', props.config.lang)}: <span className="fpvcm-label">{rows.reduce((total, row) => total += row.hits, 0)}</span><br />
                       </Typography>
                     </CardContent>
                   </Card>

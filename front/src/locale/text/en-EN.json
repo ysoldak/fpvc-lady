@@ -4,5 +4,12 @@
   "loading": "Loading",
   "startStop": "Start/Stop",
   "sec": "sec",
-  "min": "min"
+  "min": "min",
+  "player": "Player",
+  "hits": "Hits",
+  "damage": "Damage",
+  "score": "Score",
+  "currentRoundTime": "Current round time",
+  "remainingRoundTime": "Remaining time",
+  "totalHits": "Total hits"
 }

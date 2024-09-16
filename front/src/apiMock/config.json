@@ -1,8 +1,10 @@
 {
   "config": {
-    "lang": "de",
+    "lang": "pl",
     "accessPin": 1234,
     "defaultRoundTime": 300,
-    "defaultCountDown": 30
+    "defaultCountDown": 30,
+    "hitPoints": 5,
+    "damagePoints": -1
   }
 }
