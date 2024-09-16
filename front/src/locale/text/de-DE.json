@@ -4,5 +4,12 @@
   "loading": "Laden",
   "startStop": "Start/Stoppen",
   "sec": "sek",
-  "min": "min"
+  "min": "min",
+  "player": "Spieler",
+  "hits": "Treffer",
+  "damage": "Schaden",
+  "score": "Punktzahl",
+  "currentRoundTime": "Aktuell Rundenzeit",
+  "remainingRoundTime": "Verbleibende Rundezeit",
+  "totalHits": "Alle Treffer"
 }

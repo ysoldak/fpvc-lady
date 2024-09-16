@@ -133,6 +133,14 @@
       padding-top: 28px !important;
     }
   }
+
+  .fpvcm-table-header-cell {
+    font-size: 0.6em !important;
+  }
+  
+  .fpvcm-table-cell {
+    font-size: 0.6em !important;
+  }
   
 }
 
@@ -168,6 +176,14 @@
 
 .fpvcm-label {
   color: #00b50f;
+}
+
+.fpvcm-label-warning {
+  color: #dbd512;
+}
+
+.fpvcm-label-danger {
+  color: #e63720;
 }
 
 .MuiSlider-root {
@@ -232,4 +248,8 @@
 .fpvcm-table-header-cell {
   color: #00b50f !important;
   font-weight: bold !important;
+}
+
+.fpvcm-table-cell {
+  color: white !important;
 }

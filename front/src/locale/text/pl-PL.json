@@ -4,5 +4,12 @@
   "loading": "Ładowanie",
   "startStop": "Start/Stop",
   "sec": "sek",
-  "min": "min"
+  "min": "min",
+  "player": "Zawodnik",
+  "hits": "Trafień",
+  "damage": "Uszkodzeń",
+  "score": "Punkty",
+  "currentRoundTime": "Czas bieżącej rundy",
+  "remainingRoundTime": "Pozostały czas",
+  "totalHits": "Wszystkich trafień"
 }
