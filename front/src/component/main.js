@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import '../App.scss'
 
-import txt from '../locale/locale.js'
+import txt from '../locale/locale'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'

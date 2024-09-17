@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useRef, useState, useEffect } from 'react'
 
-import txt from '../locale/locale.js'
+import txt from '../locale/locale'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'

@@ -4,14 +4,15 @@ import { useState, useEffect } from 'react'
 import logo from './img/FPV-Combat-Logo-light-grey.png'
 import './App.scss'
 
-import txt from './locale/locale.js'
+import txt from './locale/locale'
 
 import configService from './services/config'
 
-import Main from './component/Main.js'
-import PinSetup from './component/PinSetup.js'
-import PinEnter from './component/PinEnter.js'
-import Loading from './component/Loading.js'
+import Main from './component/Main'
+import Info from './component/Info'
+import PinSetup from './component/PinSetup'
+import PinEnter from './component/PinEnter'
+import Loading from './component/Loading'
 
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
@@ -63,7 +64,7 @@ async function updateConfig(label, value) {
 function App() {
   const [loading, setLoading] = useState(false)
   const [secured, setSecured] = useState(false)
-  // const [showConfig, setShowConfig] = useState(false)
+  const [showConfig, setShowConfig] = useState(false)
   const [showSetPin, setShowSetPin] = useState(false)
   const [showEnterPin, setShowEnterPin] = useState(false)
   const [config, setConfig] = useState({})
@@ -104,9 +105,9 @@ function App() {
     }).catch((err) => { console.error('Error when saving config: ' + err) })
   }
 
-  /*function toggleSettings() {
+  function toggleSettings() {
     setShowConfig(!showConfig)
-  }*/
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -119,7 +120,7 @@ function App() {
           <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
         </div>
         <div className="fpvcm-settings-icon">
-          <SettingsIcon />
+          <SettingsIcon onClick={toggleSettings} />
         </div>
       </header>
       <Container maxWidth="false" className="fpvcm-container">
@@ -129,7 +130,9 @@ function App() {
             ? (<PinSetup config={config} saveNewConfig={saveNewConfig} />)
             : showEnterPin
               ? (<PinEnter config={config} setSecured={setSecured} />)
-              : (<Main config={config} countDownMarks={countDownMarks(config.lang)} roundTimeMarks={roundTimeMarks} />)
+              : showConfig
+                ? (<Info info="Options panel" />)
+                : (<Main config={config} countDownMarks={countDownMarks(config.lang)} roundTimeMarks={roundTimeMarks} />)
         }
       </Container>
     </div>
