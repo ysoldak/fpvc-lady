@@ -9,8 +9,8 @@ import txt from './locale/locale.js'
 import configService from './services/config'
 
 import Main from './component/Main.js'
-import Info from './component/Info.js'
 import PinSetup from './component/PinSetup.js'
+import PinEnter from './component/PinEnter.js'
 import Loading from './component/Loading.js'
 
 import CssBaseline from '@mui/material/CssBaseline'
@@ -55,22 +55,10 @@ async function getConfig(label) {
   return x.data
 }
 
-/*
-
 async function updateConfig(label, value) {
   var x = await configService.updateConfig(label, value)
   return x.data
 }
-getConfig().then((res) => {
-  console.log(res)
-  updateConfig('lang', 'en').then((res) => {
-    console.log(res)
-    getConfig().then((res) => {
-      console.log(res)
-    }).catch((err) => { console.error('Error when reading config: ' + err)})
-  }).catch((err) => { console.error('Error when saving config: ' + err)})
-}).catch((err) => { console.error('Error when reading config: ' + err) })
-*/
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -81,25 +69,12 @@ function App() {
   const [config, setConfig] = useState({})
 
   useEffect(() => {
-    setLoading(true)
-
-    setTimeout(() => {
-      getConfig().then((res) => {
-        setConfig(res)
-        setLoading(false)
-      }).catch((err) => { console.error('Error when reading config: ' + err) })
-    }, 1500)
-
-    console.log(showSetPin)
-    console.log(showEnterPin)
-
-    setTimeout(() => {setSecured(true)}, 4000)
-
+    readConfig()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    if (config.hasOwnProperty('accessPin') && config.accessPin === null) {
+    if (config.hasOwnProperty('accessPin') && (config.accessPin === null || config.accessPin === "")) {
       setShowSetPin(true)
     }
     else if (!secured && config.hasOwnProperty('accessPin') && config.accessPin) {
@@ -110,6 +85,24 @@ function App() {
       setShowEnterPin(false)
     }
   }, [config, secured])
+
+  function readConfig() {
+    setLoading(true)
+    setShowSetPin(false)
+    setShowEnterPin(false)
+    getConfig().then((res) => {
+      setConfig(res)
+      setLoading(false)
+    }).catch((err) => { console.error('Error when reading config: ' + err) })
+  }
+
+  function saveNewConfig(label, value) {
+    setLoading(true)
+    updateConfig(label, value).then((res) => {
+      setConfig(res)
+      readConfig()
+    }).catch((err) => { console.error('Error when saving config: ' + err) })
+  }
 
   /*function toggleSettings() {
     setShowConfig(!showConfig)
@@ -133,9 +126,9 @@ function App() {
         {loading
           ? (<Loading lang={config.lang} />)
           : showSetPin
-            ? (<PinSetup config={config} />)
+            ? (<PinSetup config={config} saveNewConfig={saveNewConfig} />)
             : showEnterPin
-              ? (<Info info={'Enter PIN to get access'} />)
+              ? (<PinEnter config={config} setSecured={setSecured} />)
               : (<Main config={config} countDownMarks={countDownMarks(config.lang)} roundTimeMarks={roundTimeMarks} />)
         }
       </Container>

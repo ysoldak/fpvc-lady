@@ -218,10 +218,18 @@
 .MuiOutlinedInput-input {
   color: white !important;
   border-color: #00b50f !important;
+  --TextField-brandBorderColor: #E0E3E7;
+  --TextField-brandBorderHoverColor: #B2BAC2;
+  --TextField-brandBorderFocusedColor: #6F7E8C;
 
   & label.Mui-focused {
-    color: '#A0AAB4';
+    color: #00b50f;
   }
+
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #00b50f !important;
 }
 
 ::-webkit-scrollbar {
@@ -252,11 +260,10 @@
 
 .fpvcm-pin-screen {
   border: solid 0px black;
-  max-width: 450px;
+  max-width: 100%;
   position: fixed;
   margin: 0 auto;
   top: 200px;
-  left: CALC(50% - 225px);
   text-align: center;
 }
 
