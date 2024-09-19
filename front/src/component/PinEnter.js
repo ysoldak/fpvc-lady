@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { useRef, useState, useEffect } from 'react'
 
+import { setCookie } from '../utils/cookieHandler'
+
 import txt from '../locale/locale'
 
 import Box from '@mui/material/Box'
@@ -22,6 +24,7 @@ function PinEnter(props) {
   }, [])
 
   function unlockGui() {
+    setCookie('fpvcmMachineSecured', '1', 1)
     props.setSecured(true)
   }
 

@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 
+import { getCookie } from './utils/cookieHandler'
+
 import logo from './img/FPV-Combat-Logo-light-grey.png'
 import './App.scss'
 
@@ -23,6 +25,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'
 const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
 const appRevision = process.env.REACT_APP_REVISION
+
+const machineSecured = getCookie('fpvcmMachineSecured')
 
 const theme = createTheme({
   palette: {
@@ -78,7 +82,7 @@ function App() {
     if (config.hasOwnProperty('accessPin') && (config.accessPin === null || config.accessPin === "")) {
       setShowSetPin(true)
     }
-    else if (!secured && config.hasOwnProperty('accessPin') && config.accessPin) {
+    else if (!secured && config.hasOwnProperty('accessPin') && config.accessPin && machineSecured !== '1') {
       setShowEnterPin(true)
     }
     else {
