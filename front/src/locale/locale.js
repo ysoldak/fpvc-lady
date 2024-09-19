@@ -3,22 +3,24 @@ import txtEn from './text/en-EN.json'
 import txtPL from './text/pl-PL.json'
 
 const langs = {
-  de: txtDe,
-  en: txtEn,
-  pl: txtPL,
+  de: { name: 'Deutsch', text: txtDe },
+  en: { name: 'English', text: txtEn },
+  pl: { name: 'Polski', text: txtPL },
 }
 
 function txt(label, lang) {
-  if (langs.hasOwnProperty(lang) && langs[lang].hasOwnProperty(label)) {
-    return langs[lang][label]
+  if (langs.hasOwnProperty(lang) && langs[lang].text.hasOwnProperty(label)) {
+    return langs[lang].text[label]
   }
-  else if (langs.hasOwnProperty(lang) && !lang[lang].hasOwnProperty(label) && lang.en.hasOwnProperty(label)) {
-    return langs.en[label]
+  else if (langs.hasOwnProperty(lang) && !lang[lang].text.hasOwnProperty(label) && lang.en.text.hasOwnProperty(label)) {
+    return langs.en.text[label]
   }
   else {
     return label
   }
 
 }
+
+export { langs, txt }
 
 export default txt

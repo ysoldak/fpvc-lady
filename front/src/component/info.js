@@ -3,7 +3,7 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 
-function Loading(props) {
+function Info(props) {
 
   return (
     <Box className="fpvcm-container_box">
@@ -16,4 +16,4 @@ function Loading(props) {
   );
 }
 
-export default Loading;
+export default Info;

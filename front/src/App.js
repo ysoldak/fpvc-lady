@@ -11,7 +11,7 @@ import txt from './locale/locale'
 import configService from './services/config'
 
 import Main from './component/Main'
-import Info from './component/Info'
+import Options from './component/Options'
 import PinSetup from './component/PinSetup'
 import PinEnter from './component/PinEnter'
 import Loading from './component/Loading'
@@ -135,8 +135,18 @@ function App() {
             : showEnterPin
               ? (<PinEnter config={config} setSecured={setSecured} />)
               : showConfig
-                ? (<Info info="Options panel" />)
-                : (<Main config={config} countDownMarks={countDownMarks(config.lang)} roundTimeMarks={roundTimeMarks} />)
+                ? (<Options
+                    config={config}
+                    saveNewConfig={saveNewConfig}
+                    roundTimeMarks={roundTimeMarks}
+                    countDownMarks={countDownMarks}
+                    toggleSettings={toggleSettings}
+                  />)
+                : (<Main
+                    config={config}
+                    countDownMarks={countDownMarks(config.lang)}
+                    roundTimeMarks={roundTimeMarks}
+                  />)
         }
       </Container>
     </div>

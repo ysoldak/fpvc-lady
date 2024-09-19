@@ -23,5 +23,12 @@
   "pinEnterPrompt": "Wprowadź PIN aby zalogować.",
   "pinEnterOK": "PIN OK, loguję...",
   "pinEnterInvalid": "PIN nieprawidłowy. Odmowa dostępu!",
-  "pinEnterLoginBtn": "Zaloguj"
+  "pinEnterLoginBtn": "Zaloguj",
+  "optionsLanguage": "Język aplikacji",
+  "optionsDefaultRoundTime": "Domyślny czas rundy [min]",
+  "optionsDefaultCountdown": "Domyślne odliczanie",
+  "optionsHitPoints": "Punkty za trafienie",
+  "optionsDamagePoints": "Punkty za bycie trafionym",
+  "optionsResetPin": "Zresetuj PIN dostępu",
+  "optionsExit": "Wyjście"
 }

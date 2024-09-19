@@ -23,5 +23,12 @@
   "pinEnterPrompt": "Enter your PIN to login.",
   "pinEnterOK": "PIN OK, logging in...",
   "pinEnterInvalid": "Invalid access PIN. Access denied!",
-  "pinEnterLoginBtn": "Login"
+  "pinEnterLoginBtn": "Login",
+  "optionsLanguage": "Applicationsprache",
+  "optionsDefaultRoundTime": "Default rundenzeit [min]",
+  "optionsDefaultCountdown": "Default countdown",
+  "optionsHitPoints": "Treffen punkte",
+  "optionsDamagePoints": "Schaden punkte",
+  "optionsResetPin": "Reset access PIN",
+  "optionsExit": "Verlassen"
 }
