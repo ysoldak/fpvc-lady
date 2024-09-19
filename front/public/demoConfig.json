@@ -1,0 +1,8 @@
+{
+  "lang": "en",
+  "accessPin": "1234",
+  "defaultRoundTime": 240,
+  "defaultCountDown": 30,
+  "hitPoints": 5,
+  "damagePoints": -1
+}
