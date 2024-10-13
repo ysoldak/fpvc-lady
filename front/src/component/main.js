@@ -141,6 +141,7 @@ function Main(props) {
                   <Card variant="outlined" className="fpvcm-card-wrapper">
                     <CardContent className="fpvcm-card fpvcm-disp-log">
                       <Typography display="block" style={{whiteSpace: "nowrap"}}>
+                        {props.msgs.map((msg, i) => {return (<span key={i}>{msg}<br /></span>)})}
                         2024/07/12 13:06:46.432333 DAMAG B2 50<br />
                         2024/07/12 13:06:46.499520 CLAIM D2 4<br />
                         2024/07/12 13:06:46.432333 DAMAG B2 50<br />
