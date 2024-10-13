@@ -22,6 +22,21 @@ import SettingsIcon from '@mui/icons-material/Settings'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 
+
+
+
+
+import useWebSocket, { ReadyState } from "react-use-websocket"
+
+
+
+
+
+
+
+
+
+
 const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
 const appRevision = process.env.REACT_APP_REVISION
@@ -72,6 +87,48 @@ function App() {
   const [showSetPin, setShowSetPin] = useState(false)
   const [showEnterPin, setShowEnterPin] = useState(false)
   const [config, setConfig] = useState({})
+
+
+
+  const [msgs, setMsgs] = useState([])
+
+
+
+  const WS_URL = "ws://127.0.0.1:3003?username=fpvcm_gui"
+  const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
+    WS_URL,
+    {
+      share: false,
+      shouldReconnect: () => true,
+    },
+  )
+
+  // Run when the connection state (readyState) changes
+  useEffect(() => {
+    console.log("Connection state changed")
+    if (readyState === ReadyState.OPEN) {
+      sendJsonMessage({
+        event: "subscribe",
+        data: {
+          channel: "general-chatroom",
+        },
+      })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readyState])
+
+  // Run when a new WebSocket message is received (lastJsonMessage)
+  useEffect(() => {
+    console.log(`Got a new message: `, lastJsonMessage)
+    if (lastJsonMessage && lastJsonMessage['testUUID']?.state?.test_msg?.length > 0) {
+      setMsgs([lastJsonMessage['testUUID'].state.test_msg, ...msgs])
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lastJsonMessage])
+
+
+
+
 
   useEffect(() => {
     readConfig()
@@ -146,6 +203,7 @@ function App() {
                     config={config}
                     countDownMarks={countDownMarks(config.lang)}
                     roundTimeMarks={roundTimeMarks}
+                    msgs={msgs}
                   />)
         }
       </Container>

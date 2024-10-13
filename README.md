@@ -58,14 +58,40 @@ npm audit fix
 ```
 
 #### RUNNING THE PROJECT
-You need to open two separate consoles:
+You need to open three separate consoles:
 
 Running local API mock (needed just in the dev phase)
+
+Make sure that you are located in the `front` dir:
+```
+cd \front\
+```
+
+then run the server:
 ```
 npm run json-server
 ```
 
-Running main local webserver
+Running local WEBSOCKET test server (needed just in the dev phase)
+
+Make sure that you are located in the `wserver` dir:
+```
+cd \wserver\
+```
+
+then run the server:
+```
+node index.js
+```
+
+Running main local react webserver:
+
+Make sure that you are located in the `front` dir:
+```
+cd \front\
+```
+
+then run the server:
 ```
 npm run start
 ```
