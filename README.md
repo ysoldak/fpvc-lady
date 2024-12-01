@@ -43,7 +43,14 @@ fpvc-lady-darwin-amd64-x.x.x --speak "say -v samantha"
 
 ### Windows
 
-Use PowerShell. You may need to tweak permissions.
+1. Create a folder of your choice - we will use "D:\FPV-COMBAT\lady" in this example
+   - place fpvc-lady-windows-amd64-X.X.X.exe in that folder
+2. Create a Shortut on your Desktop
+   - Target: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.3.0.exe --port COM3"
+     - Exchange COM3 with the port that your CP2102 module uses when plugged in
+     - add arguments according to your needs - refer to global options above
+   - Execute in: "D:\FPV-COMBAT\lady\"
+3. Replace the standard Icon with our loveley Combat Lady Icon
 
 ### Linux
 
