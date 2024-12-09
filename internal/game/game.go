@@ -70,12 +70,28 @@ func (g *Game) Player(id byte) (player *Player, isNew bool) {
 
 func (g *Game) Table() []string {
 	table := []string{}
-	table = append(table, " ID | Name       | Description          | Updated      || Kills | Deaths | Lives ")
-	table = append(table, "--- | ---------- | -------------------- | ------------ || ----- | ------ | ------")
+	table = append(table, "#####################################################################################")
+	table = append(table, "#                                                                                   #")
+	table = append(table, "#   ####### ######  #     #        #####  ####### #     # ######     #    #######   #")
+	table = append(table, "#   #       #     # #     #       #     # #     # ##   ## #     #   # #      #      #")
+	table = append(table, "#   #       #     # #     #       #       #     # # # # # #     #  #   #     #      #")
+	table = append(table, "#   #####   ######  #     # ##### #       #     # #  #  # ######  #     #    #      #")
+	table = append(table, "#   #       #        #   #        #       #     # #     # #     # #######    #      #")
+	table = append(table, "#   #       #         # #         #     # #     # #     # #     # #     #    #      #")
+	table = append(table, "#   #       #          #           #####  ####### #     # ######  #     #    #      #")
+	table = append(table, "#                                                                                   #")
+	table = append(table, "#####################################################################################")
+	table = append(table, "                                                                                 ")
+	table = append(table, "#####################################################################################")
+	table = append(table, "#                                                                                   #")
+	table = append(table, "#  ID | Name       | Description          | Updated      || Kills | Deaths | Lives  #")
+	table = append(table, "# --- | ---------- | -------------------- | ------------ || ----- | ------ | ------ #")
 	for _, p := range g.Players {
 		updated := p.Updated.Format("15:04:05.000")
-		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %s || %5d | %6d | %5d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
+		table = append(table, fmt.Sprintf("#  %X | %-10s | %-20s | %s || %5d | %6d | %5d  #", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
 	}
+	table = append(table, "#                                                                                   #")
+	table = append(table, "#####################################################################################")
 	return table
 }
 

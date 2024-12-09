@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -60,6 +63,17 @@ func commentAction(cc *cli.Context) (err error) {
 	speakerChan <- "The lady is ready."
 	traceChan <- "START"
 
+	//var cmd *exec.Cmd
+	//if runtime.GOOS == "windows" {
+	//}
+	//if runtime.GOOS == "linux" {
+	//	cmd = exec.Command("clear") // clearscreen linux
+	//}
+	//if runtime.GOOS == "darwin" {
+	//	cmd = exec.Command("clear") // clearscreen macOS
+	//}
+	//cmd.Stdout = os.Stdout
+
 	for message := range messageChan {
 
 		switch message.Command {
@@ -94,10 +108,11 @@ func commentAction(cc *cli.Context) (err error) {
 				}
 			}
 		}
-
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
+		cmd := exec.Command("cmd", "/c", "cls") // clearscreen windows
+		cmd.Stdout = os.Stdout
+		if err := cmd.Run(); err != nil {
+			log.Fatal(err)
+		}
 		for _, line := range g.Table() {
 			fmt.Println(line)
 		}
@@ -107,8 +122,8 @@ func commentAction(cc *cli.Context) (err error) {
 }
 
 func demo(messageChan chan csp.Message) {
-	a := csp.NewBeacon(0xA1, "ALICE     ", "fake fake fake fake ")
-	b := csp.NewBeacon(0xB1, "BARTOLOMEO", "fake fake fake fake ")
+	a := csp.NewBeacon(0xA1, "Alice     ", "fake fake fake fake ")
+	b := csp.NewBeacon(0xB1, "Bob       ", "fake fake fake fake ")
 	time.Sleep(2 * time.Second)
 
 	messageChan <- *a.Message()
@@ -123,7 +138,7 @@ func demo(messageChan chan csp.Message) {
 
 	time.Sleep(5 * time.Second)
 
-	lives := byte(5)
+	lives := byte(100)
 	for {
 		messageChan <- *csp.NewHitRequest(0xA1, lives).Message()
 		time.Sleep(100 * time.Millisecond)
