@@ -37,67 +37,6 @@ GLOBAL OPTIONS:
    --version, -v        print the version
 ```
 
-## Administartor panel local web GUI (experimental, under construction)
-When the project is cloned, navigate to the web GUI dir first
-```
-cd \front\
-```
-
-Before running the first time, be sure you have [Node.js](https://nodejs.org/en) installed 
-
-And then install the package:
-
-```
-npm install
-```
-
-If there are any troubles running the project, try doing the automate fixing:
-
-```
-npm audit fix
-```
-
-#### RUNNING THE PROJECT
-You need to open three separate consoles:
-
-Running local API mock (needed just in the dev phase)
-
-Make sure that you are located in the `front` dir:
-```
-cd \front\
-```
-
-then run the server:
-```
-npm run json-server
-```
-
-Running local WEBSOCKET test server (needed just in the dev phase)
-
-Make sure that you are located in the `wserver` dir:
-```
-cd \wserver\
-```
-
-then run the server:
-```
-node index.js
-```
-
-Running main local react webserver:
-
-Make sure that you are located in the `front` dir:
-```
-cd \front\
-```
-
-then run the server:
-```
-npm run start
-```
-
-Navigate to the [localhost at port 3000](http://localhost:3000) address using your web-browser to access the web GUI.
-
 ### Mac
 
 Macs have male voice by default, use command below to switch to a female voice.
@@ -132,3 +71,44 @@ Online (requires `mplayer` or `ffplay`)
 fpvc-lady-linux-amd64-x.x.x --speak google
 ```
 
+## Administartor panel local web GUI (experimental, under construction)
+When the project is cloned, navigate to the web GUI dir first
+```
+cd \front\
+```
+
+Before running the first time, be sure you have [Node.js](https://nodejs.org/en) installed 
+
+And then install all packages and dependencies:
+
+```
+npm install
+```
+
+If there are any troubles running the project, try doing the automate fixing:
+
+```
+npm audit fix
+```
+
+#### RUNNING THE PROJECT
+Make sure that you are located in the `front` dir:
+```
+cd \front\
+```
+
+then start the project with:
+```
+npm run start-demo
+```
+
+This will concurrently run 3 services: main GUI process and two demo services to mock the backend activites:
+* REACT project on port 3000 - which is the main app
+* json-server on port 3001 (mocking storing configuration and game/round status)
+* wserver on 3003 (mocking pushing messages with current game stats, like hits/damages etc.) - this is programmed to run the fake randomized output as soon as first client connects. Once the random generated data are done (after around a minute) it will restart as soon as one of the clients refreshes.
+
+Navigate to the [localhost at port 3000](http://localhost:3000) address using your web-browser to access the web GUI.
+
+If you want the app to be accessible by other computers in the same network during the demo run - simply change the `localhost` entry with your servers IP address in the following files:
+* `.\.env.development.local`: modify entries: `REACT_APP_MOCK_API_URL` and `REACT_APP_MOCK_WS_URL`
+* `.\package-json`: locate the `json-server` entry in `scripts` and update where it says `-H localhost`
