@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import animation from '../img/loading.gif'
 
-import txt from '../locale/locale.js'
+import txt from '../locale/locale'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'

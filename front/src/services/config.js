@@ -11,7 +11,7 @@ const config = {
 }
 
 const configService = {
-  
+
   getConfig() {
     return Axios.get(apiUrl + (demoMode.toString() === '1' ? '' : "config"), {}, config)
   },
