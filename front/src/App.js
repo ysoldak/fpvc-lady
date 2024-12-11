@@ -9,6 +9,7 @@ import './App.scss'
 import txt from './locale/locale'
 
 import configService from './services/config'
+import gameService from './services/game'
 
 import Main from './component/Main'
 import Options from './component/Options'
@@ -22,26 +23,18 @@ import SettingsIcon from '@mui/icons-material/Settings'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 
-
-
-
-
 import useWebSocket, { ReadyState } from "react-use-websocket"
-
-
-
-
-
-
-
-
-
 
 const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
 const appRevision = process.env.REACT_APP_REVISION
+const wsUrl = process.env.REACT_APP_MOCK_WS_URL
 
 const machineSecured = getCookie('fpvcmMachineSecured')
+const machineReadOnly = getCookie('fpvcmMachineReadOnly')
+const uuidv4 = require("uuid").v4
+
+const uuid = uuidv4()
 
 const theme = createTheme({
   palette: {
@@ -80,21 +73,30 @@ async function updateConfig(label, value) {
   return x.data
 }
 
+async function getGameStatus() {
+  var x = await gameService.getGameStatus()
+  return x.data
+}
+
+async function setGameStatus(status, duration, countdown) {
+  var x = await gameService.setGameStatus(status, duration, countdown)
+  return x.data
+}
+
 function App() {
   const [loading, setLoading] = useState(false)
   const [secured, setSecured] = useState(false)
   const [showConfig, setShowConfig] = useState(false)
   const [showSetPin, setShowSetPin] = useState(false)
   const [showEnterPin, setShowEnterPin] = useState(false)
+  const [gameConfig, setGameConfig] = useState({})
+  const [ladyUp, setLadyUp] = useState(false)
+  const [readOnly, setReadOnly] = useState(false)
+  const [game, setGame] = useState({})
   const [config, setConfig] = useState({})
-
-
-
   const [msgs, setMsgs] = useState([])
 
-
-
-  const WS_URL = "ws://127.0.0.1:3003?username=fpvcm_gui"
+  const WS_URL = wsUrl + "?uuid=" + uuid
   const { sendJsonMessage, lastJsonMessage, readyState } = useWebSocket(
     WS_URL,
     {
@@ -103,40 +105,39 @@ function App() {
     },
   )
 
-  // Run when the connection state (readyState) changes
   useEffect(() => {
     console.log("Connection state changed")
     if (readyState === ReadyState.OPEN) {
       sendJsonMessage({
-        event: "subscribe",
-        data: {
-          channel: "general-chatroom",
-        },
+        event: "subscribe"
       })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readyState])
 
-  // Run when a new WebSocket message is received (lastJsonMessage)
   useEffect(() => {
     console.log(`Got a new message: `, lastJsonMessage)
-    if (lastJsonMessage && lastJsonMessage['testUUID']?.state?.test_msg?.length > 0) {
-      setMsgs([lastJsonMessage['testUUID'].state.test_msg, ...msgs])
+    if (lastJsonMessage && lastJsonMessage[uuid]?.state?.table?.length > 0) {
+      setMsgs([lastJsonMessage[uuid].state.table, ...msgs])
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastJsonMessage])
 
-
-
-
-
   useEffect(() => {
     readConfig()
+    readGame()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    if (config.hasOwnProperty('accessPin') && (config.accessPin === null || config.accessPin === "")) {
+    if (readOnly || machineReadOnly === '1') {
+      setShowSetPin(false)
+      setShowEnterPin(false)
+      if (machineReadOnly === '1') {
+        setReadOnly(true)
+      }
+    }
+    else if (config.hasOwnProperty('accessPin') && (config.accessPin === null || config.accessPin === "")) {
       setShowSetPin(true)
     }
     else if (!secured && config.hasOwnProperty('accessPin') && config.accessPin && machineSecured !== '1') {
@@ -146,7 +147,13 @@ function App() {
       setShowSetPin(false)
       setShowEnterPin(false)
     }
-  }, [config, secured])
+  }, [config, secured, readOnly])
+
+  function updateGameConfig(e, label) {
+    let currentGameConfig = {...gameConfig}
+    currentGameConfig[label] = e.target.value
+    setGameConfig({...currentGameConfig})
+  }
 
   function readConfig() {
     setLoading(true)
@@ -154,8 +161,25 @@ function App() {
     setShowEnterPin(false)
     getConfig().then((res) => {
       setConfig(res)
+      setLadyUp(true)
+      setGameConfig({roundTime: res?.defaultRoundTime, countdown: res?.defaultCountDown})
+    }).catch((err) => {
+      setShowSetPin(false)
+      setShowEnterPin(false)
+      console.error('Error when reading config: ' + err)
+    }).finally(() => {
       setLoading(false)
-    }).catch((err) => { console.error('Error when reading config: ' + err) })
+    })
+  }
+
+  function readGame() {
+    getGameStatus().then((res) => {
+      setGame({
+        roundStatus: res?.round_status,
+        roundRemainingSeconds: res?.round_remaining_seconds,
+        roundEndAt: res?.round_end_at
+      })
+    })
   }
 
   function saveNewConfig(label, value) {
@@ -163,7 +187,15 @@ function App() {
     updateConfig(label, value).then((res) => {
       setConfig(res)
       readConfig()
-    }).catch((err) => { console.error('Error when saving config: ' + err) })
+    }).catch((err) => { console.error('Error when saving config: ' + err) }).finally(() => { setLoading(false) })
+  }
+
+  function saveGameStatus(status) {
+    setLoading(true)
+    setGameStatus(status, gameConfig.roundTime, gameConfig.countdown).then((res) => {
+      readGame()
+      readConfig()
+    }).catch((err) => { console.error('Error when setting game status: ' + err) }).finally(() => { setLoading(false) })
   }
 
   function toggleSettings() {
@@ -180,9 +212,9 @@ function App() {
           &nbsp;Manager
           <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
         </div>
-        <div className="fpvcm-settings-icon">
+        {(!readOnly && ladyUp) && <div className="fpvcm-settings-icon">
           <SettingsIcon onClick={toggleSettings} />
-        </div>
+        </div>}
       </header>
       <Container maxWidth="false" className="fpvcm-container">
         {loading
@@ -190,7 +222,7 @@ function App() {
           : showSetPin
             ? (<PinSetup config={config} saveNewConfig={saveNewConfig} />)
             : showEnterPin
-              ? (<PinEnter config={config} setSecured={setSecured} />)
+              ? (<PinEnter config={config} setSecured={setSecured} setReadOnly={setReadOnly} />)
               : showConfig
                 ? (<Options
                     config={config}
@@ -203,7 +235,13 @@ function App() {
                     config={config}
                     countDownMarks={countDownMarks(config.lang)}
                     roundTimeMarks={roundTimeMarks}
+                    readOnly={readOnly}
+                    updateGameConfig={updateGameConfig}
+                    saveGameStatus={saveGameStatus}
+                    game={game}
+                    ladyUp={ladyUp}
                     msgs={msgs}
+                    uuid={uuid}
                   />)
         }
       </Container>

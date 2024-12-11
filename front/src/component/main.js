@@ -23,6 +23,7 @@ import Paper from '@mui/material/Paper'
 
 function Main(props) {
   const [tab, setTab] = React.useState(0)
+  const [rows, setRows] = React.useState([])
 
   const switchTab = (event, tab) => {
     setTab(tab)
@@ -31,51 +32,68 @@ function Main(props) {
   function createData(
     playerName,
     playerId,
+    playerDesc,
     hits,
     damage,
+    lives
   ) {
-    const score = ((hits * 5) - (damage * 1))
-    return { playerName, playerId, hits, damage, score }
+    const score = ((hits * props.config.hitPoints) + (damage * props.config.damagePoints))
+    return { playerName, playerId, playerDesc, hits, damage, lives, score }
   }
-  
-  const rows = [
-    createData('Zborek', 'C4', 10, 5, 45),
-    createData('Bjoern', 'D2', 5, 5, 20),
-    createData('Matteo', 'E1', 20, 5, 95),
-    createData('Yurii', 'F9', 10, 5, 45),
-  ]
+
+  function comparePoints(a, b) {
+    if (parseInt(a.score) < parseInt(b.score)) { return 1 }
+    if (parseInt(a.score) > parseInt(b.score)) { return -1 }
+    return 0
+  }
+
+  React.useEffect(() => {
+    if (props.msgs.length > 0) {
+      let rows = props.msgs[0].map((msg, i) => {
+        return createData(msg.name, msg.ID, msg.description, msg.kills, msg.deaths, msg.lives)
+      })
+      setRows(rows.sort(comparePoints))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.msgs])
 
   return (
     <Box className="fpvcm-container_box">
       <br />
-      <Grid container spacing={4}>
-        <Grid xl={2} lg={2} md={3} sm={3} xs={3} className="fpvcm-option-label">
-          <span className="fpvcm-input-label">{txt('setRoundTime', props.config.lang)}:</span>
-        </Grid>
-        <Grid xl={4} lg={4} md={8} sm={8} xs={8}>
-          <Slider
-            defaultValue={props.config.defaultRoundTime}
-            min={120}
-            max={600}
-            step={null}
-            marks={props.roundTimeMarks}
-          />
-        </Grid>
-      </Grid>
-      <Grid container spacing={4}>
-        <Grid xl={2} lg={2} md={3} sm={3} xs={3} className="fpvcm-option-label">
-          <span className="fpvcm-input-label">{txt('setCountdown', props.config.lang)}:</span>
-        </Grid>
-        <Grid xl={4} lg={4} md={8} sm={8} xs={8}>
-          <Slider
-            defaultValue={props.config.defaultCountDown}
-            min={10}
-            max={120}
-            step={null}
-            marks={props.countDownMarks}
-          />
-        </Grid>
-      </Grid>
+      {(!props.readOnly && props.ladyUp) && (
+        <>
+          <Grid container spacing={4}>
+            <Grid xl={2} lg={2} md={3} sm={3} xs={3} className="fpvcm-option-label">
+              <span className="fpvcm-input-label">{txt('setRoundTime', props.config.lang)}:</span>
+            </Grid>
+            <Grid xl={4} lg={4} md={8} sm={8} xs={8}>
+              <Slider
+                defaultValue={props.config.defaultRoundTime}
+                onChange={(e) => props.updateGameConfig(e, 'roundTime')}
+                min={120}
+                max={600}
+                step={null}
+                marks={props.roundTimeMarks}
+              />
+            </Grid>
+          </Grid>
+          <Grid container spacing={4}>
+            <Grid xl={2} lg={2} md={3} sm={3} xs={3} className="fpvcm-option-label">
+              <span className="fpvcm-input-label">{txt('setCountdown', props.config.lang)}:</span>
+            </Grid>
+            <Grid xl={4} lg={4} md={8} sm={8} xs={8}>
+              <Slider
+                defaultValue={props.config.defaultCountDown}
+                onChange={(e) => props.updateGameConfig(e, 'countdown')}
+                min={10}
+                max={120}
+                step={null}
+                marks={props.countDownMarks}
+              />
+            </Grid>
+          </Grid>
+        </>
+      )}
       <Grid container spacing={4}>
         <Grid xl={7} lg={7} md={11} sm={11} xs={11}>
           <Box sx={{ width: '100%' }}>
@@ -94,39 +112,49 @@ function Main(props) {
                 <Box sx={{ p: 1 }}>
                   <Card variant="outlined" className="fpvcm-card-wrapper">
                     <CardContent className="fpvcm-card fpvcm-disp-stats">
-                      <TableContainer component={Paper} style={{maxWidth: 450}}>
-                        <Table size="small" className="fpvcm-table-bg" >
-                          <TableHead>
-                            <TableRow>
-                              <TableCell className="fpvcm-table-header-cell">{txt('player', props.config.lang)}</TableCell>
-                              <TableCell align="right" className="fpvcm-table-header-cell">{txt('hits', props.config.lang)}</TableCell>
-                              <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.config.lang)}</TableCell>
-                              <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.config.lang)}</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {rows.map((row) => (
-                              <TableRow
-                                key={row.playerId}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                style={{color: 'white'}}
-                              >
-                                <TableCell component="th" scope="row" className="fpvcm-table-cell">
-                                  {row.playerName}&nbsp;<span className="fpvcm-label">({row.playerId})</span>
-                                </TableCell>
-                                <TableCell align="right" className="fpvcm-table-cell">{row.hits}</TableCell>
-                                <TableCell align="right" className="fpvcm-table-cell">{row.damage}</TableCell>
-                                <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
-                      <Typography display="block" style={{fontWeight: 'bold', paddingTop: '12px'}}>
-                        {txt('currentRoundTime', props.config.lang)}: <span className="fpvcm-label">2:42</span><br />
-                        {txt('remainingRoundTime', props.config.lang)}: <span className="fpvcm-label">2:18</span><br />
-                        {txt('totalHits', props.config.lang)}: <span className="fpvcm-label">{rows.reduce((total, row) => total += row.hits, 0)}</span><br />
-                      </Typography>
+                      {!props.ladyUp && (<span style={{color: "red", fontWeight: "bold"}}>The LADY is not on!</span>)}
+                      {props.ladyUp && (
+                        <>
+                          <TableContainer component={Paper} style={{maxWidth: 750}}>
+                            <Table size="small" className="fpvcm-table-bg" >
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell className="fpvcm-table-header-cell">{txt('player', props.config.lang)}</TableCell>
+                                  <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('desc', props.config.lang)}</TableCell>
+                                  <TableCell align="right" className="fpvcm-table-header-cell">{txt('hits', props.config.lang)}</TableCell>
+                                  <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.config.lang)}</TableCell>
+                                  <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('lives', props.config.lang)}</TableCell>
+                                  <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.config.lang)}</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {rows.map((row, i) => (
+                                  <TableRow
+                                    key={i}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    style={{color: 'white'}}
+                                  >
+                                    <TableCell component="th" scope="row" className="fpvcm-table-cell">
+                                      {row.playerName}&nbsp;<span className="fpvcm-label">({row.playerId})</span>
+                                    </TableCell>
+                                    <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.playerDesc}</TableCell>
+                                    <TableCell align="right" className="fpvcm-table-cell">{row.hits}</TableCell>
+                                    <TableCell align="right" className="fpvcm-table-cell">{row.damage}</TableCell>
+                                    <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
+                                    <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          <Typography display="block" style={{fontWeight: 'bold', paddingTop: '12px'}}>
+                            {props.game?.roundStatus === 'on' && (<>{txt('roundPending', props.config.lang)}<br /></>)}
+                            {/*props.game?.roundStatus === 'on' && (<>{txt('currentRoundTime', props.config.lang)}: <span className="fpvcm-label">2:42</span><br /></>)*/}
+                            {/*props.game?.roundEndAt !== '0' && (<>{txt('remainingRoundTime', props.config.lang)}: <span className="fpvcm-label">2:18</span><br /></>)*/}
+                            {txt('totalHits', props.config.lang)}: <span className="fpvcm-label">{rows.reduce((total, row) => total += row.hits, 0)}</span><br />
+                          </Typography>
+                        </>
+                      )}
                     </CardContent>
                   </Card>
                 </Box>
@@ -141,28 +169,8 @@ function Main(props) {
                   <Card variant="outlined" className="fpvcm-card-wrapper">
                     <CardContent className="fpvcm-card fpvcm-disp-log">
                       <Typography display="block" style={{whiteSpace: "nowrap"}}>
-                        {props.msgs.map((msg, i) => {return (<span key={i}>{msg}<br /></span>)})}
-                        2024/07/12 13:06:46.432333 DAMAG B2 50<br />
-                        2024/07/12 13:06:46.499520 CLAIM D2 4<br />
-                        2024/07/12 13:06:46.432333 DAMAG B2 50<br />
-                        2024/07/12 13:06:46.499520 SOME ADDITIONAL AND VERY LONG MESSAGE HERE...<br />
-                        2024/07/12 13:06:46.432333 DAMAG B2 50<br />
-                        2024/07/12 13:06:46.499520 CLAIM D2 4<br />
-                        2024/07/12 13:06:46.499520 SCORE D2<br />
-                        2024/07/12 13:06:46.499520 SOME ADDITIONAL AND VERY LONG MESSAGE HERE...<br />
-                        2024/07/12 13:06:46.499520 CLAIM D2 4<br />
-                        2024/07/12 13:06:46.432333 DAMAG B2 50<br />
-                        2024/07/12 13:06:46.499520 CLAIM D2 4<br />
-                        2024/07/12 13:06:46.499520 SCORE D2<br />
-                        2024/07/12 13:06:46.499520 SCORE D2<br />
-                        2024/07/12 13:06:46.432333 DAMAG B2 50<br />
-                        2024/07/12 13:06:46.499520 CLAIM D2 4<br />
-                        2024/07/12 13:06:46.499520 SCORE D2<br />
-                        2024/07/12 13:06:46.499520 SCORE D2<br />
-                        2024/07/12 13:06:46.499520 SOME ADDITIONAL AND VERY LONG MESSAGE HERE...<br />
-                        2024/07/12 10:49:51.614043 REGST A1 SKYBEE__<br />
-                        2024/07/12 10:53:40.660985 REGST B1 FPV_COMBAT<br />
-                        2024/07/12 10:54:18.748333 REGST D2 SKYBEE__<br />
+                        {props.msgs.map((msg, i) => {return (<span key={i}>{JSON.stringify(msg)}<br /></span>)})}
+                        Client UUID: {props.uuid}
                       </Typography>
                     </CardContent>
                   </Card>
@@ -171,13 +179,15 @@ function Main(props) {
           </Box>
         </Grid>
       </Grid>
-      <Grid container spacing={4}>
-        <Grid xl={7} lg={7} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px'}}>
-          <Button variant="contained" size="large">
-            {txt('startStop', props.config.lang)}
-          </Button>
+      {(!props.readOnly && props.ladyUp) && (
+        <Grid container spacing={4}>
+          <Grid xl={7} lg={7} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px'}}>
+            <Button variant="contained" size="large" onClick={() => {props.saveGameStatus(props.game?.roundStatus === 'on' ? 'off' : 'on')}}>
+              {txt((props.game?.roundStatus === 'on' ? 'stop' : 'start'), props.config.lang)}
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Box>
   );
 }

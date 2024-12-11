@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { useState } from 'react'
 
-import { txt, langs } from '../locale/locale'
+import { txt, langs } from '../locale/locale.js'
 
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Unstable_Grid2'
-import Select from '@mui/material/Select'
-import Button from '@mui/material/Button'
-import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box/index.js'
+import Grid from '@mui/material/Unstable_Grid2/index.js'
+import Select from '@mui/material/Select/index.js'
+import Button from '@mui/material/Button/index.js'
+import MenuItem from '@mui/material/MenuItem/index.js'
+import TextField from '@mui/material/TextField/index.js'
 
 function Options(props) {
 

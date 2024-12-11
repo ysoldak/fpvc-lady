@@ -1,0 +1,16 @@
+{
+  "config": {
+    "lang": "en",
+    "accessPin": "1234",
+    "defaultRoundTime": 240,
+    "defaultCountDown": 30,
+    "hitPoints": "6",
+    "damagePoints": "-1"
+  },
+  "game": {
+    "round_status": "on",
+    "round_remaining_seconds": 240,
+    "round_countdown_seconds": 30,
+    "round_end_at": "0"
+  }
+}

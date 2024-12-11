@@ -28,6 +28,11 @@ function PinEnter(props) {
     props.setSecured(true)
   }
 
+  function setReadOnly() {
+    setCookie('fpvcmMachineReadOnly', '1', 0.1)
+    props.setReadOnly(true)
+  }
+
   function checkPin(e, alertOnWrong = false) {
     if (e.target.value === props.config.accessPin) {
       setShowSuccessInfo(true)
@@ -65,6 +70,11 @@ function PinEnter(props) {
           <br />
           <Button variant="contained" size="large" onClick={(e) => checkPin(e, true)}>
             {txt('pinEnterLoginBtn', props.config.lang)}
+          </Button>
+          <br />
+          <br />
+          <Button variant="contained" size="large" onClick={setReadOnly}>
+            {txt('enterReadOnlyMode', props.config.lang)}
           </Button>
           <Snackbar
             open={showErrorInfo}

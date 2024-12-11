@@ -44,6 +44,12 @@
   color: white;
 }
 
+@media (max-width:800px) {
+  .hide-narrow {
+    display: none !important
+  }
+}
+
 @media (min-width:680px) {
 
   .fpvcm-header {
