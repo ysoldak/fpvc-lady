@@ -33,3 +33,12 @@ build: clean build-darwin-amd64 build-windows-386 build-windows-amd64 build-linu
 
 run:
 	go run $(SRC)
+
+demo:
+	go run $(SRC) --source demo
+
+demo-cheers:
+	go run $(SRC) --source demo --speak-cheers=true
+
+replay:
+	go run $(SRC) --source file

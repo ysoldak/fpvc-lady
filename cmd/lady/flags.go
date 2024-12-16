@@ -5,7 +5,13 @@ import (
 )
 
 const (
-	flagPort        = "port"
+	flagSource = "source" // serial, file, demo
+
+	flagSerialPort = "serial-port" // serial port name
+
+	flagLogFile = "log-file" // log file path
+	flagLogFrom = "log-from" // log from datetime: YYYY/MM/DD HH:mm:SS.SSSSSS
+
 	flagSpeak       = "speak"
 	flagSpeakLives  = "speak-lives"
 	flagSpeakCheers = "speak-cheers"
@@ -14,11 +20,32 @@ const (
 func getFlags() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringFlag{
-			Name:     flagPort,
-			Usage:    "Port name where HC12 is connected to.",
-			EnvVars:  []string{"PORT"},
+			Name:     flagSource,
+			Usage:    "Source of CSP messages: serial, file, demo.",
+			EnvVars:  []string{"SOURCE"},
+			Required: false,
+			Value:    "serial",
+		},
+		&cli.StringFlag{
+			Name:     flagSerialPort,
+			Usage:    "Port name where HC12 is connected to; by default the system will try find the port automatically.",
+			EnvVars:  []string{"SERIAL_PORT"},
 			Required: false,
 			Value:    "auto",
+		},
+		&cli.StringFlag{
+			Name:     flagLogFile,
+			Usage:    "Path to the log file: save events to (--source serial) or read events from (--source file).",
+			EnvVars:  []string{"LOG_FILE"},
+			Required: false,
+			Value:    "fpvc-lady.log",
+		},
+		&cli.StringFlag{
+			Name:     flagLogFrom,
+			Usage:    "Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]]",
+			EnvVars:  []string{"LOG_FROM"},
+			Required: false,
+			Value:    "",
 		},
 		&cli.StringFlag{
 			Name:     flagSpeak,

@@ -47,8 +47,7 @@ func NewByName(backendName string, phrases chan string) *Tts {
 }
 
 func (tts *Tts) Run() {
-	for {
-		phrase := <-tts.phrases
+	for phrase := range tts.phrases {
 		tts.backend.Speak(phrase)
 	}
 }
