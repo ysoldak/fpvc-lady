@@ -8,7 +8,7 @@ var hitCheers = []string{
 	"Gimme more!",
 	"Pure luck!",
 	"Good one.",
-	"Watch your six, dude",
+	"Watch your six, dude.",
 	"Unbelievable!",
 	"Yes!",
 	"Oh, why him?",

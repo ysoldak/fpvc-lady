@@ -29,6 +29,8 @@ func (d *Demo) Generate(output chan csp.Message) {
 
 	fmt.Println("Demo started.")
 
+	time.Sleep(1 * time.Second)
+
 	for i := 0; i < 3; i++ {
 		for j, v := range state {
 			if delays[j] <= i { // just simulate they not all boot same time
@@ -50,7 +52,7 @@ func (d *Demo) Generate(output chan csp.Message) {
 		output <- *csp.NewHitRequest(v.ID, v.Lives).Message()
 		time.Sleep(100 * time.Millisecond)
 		output <- *csp.NewHitResponse(a.ID, 3).Message()
-		time.Sleep(3 * time.Second)
+		time.Sleep(time.Duration(rand.Intn(9)+1) * time.Second)
 		state[vi].Lives--
 		if state[vi].Lives == 0 {
 			break
