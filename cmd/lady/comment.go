@@ -42,7 +42,9 @@ func commentAction(cc *cli.Context) (err error) {
 	case source == "demo":
 		generator = generate.NewDemo(cc.Int(flagDemoSpeed)) // stream of fake messages is used for input
 		logger = log.NewNull()                              // no output
-		// logger = log.NewFile(logFilePath)                   // log-file is used for output
+		if logFilePath != defaultLogFilePath {              // optionally log-file is used for output
+			logger = log.NewFile(logFilePath)
+		}
 	default:
 		return fmt.Errorf("unknown source: %s", source)
 	}
