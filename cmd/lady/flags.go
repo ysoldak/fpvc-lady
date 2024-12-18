@@ -12,6 +12,8 @@ const (
 	flagLogFile = "log-file" // log file path
 	flagLogFrom = "log-from" // log from datetime: YYYY/MM/DD HH:mm:SS.SSSSSS
 
+	flagDemoSpeed = "demo-speed" // avg events per minute
+
 	flagSpeak       = "speak"
 	flagSpeakLives  = "speak-lives"
 	flagSpeakCheers = "speak-cheers"
@@ -46,6 +48,12 @@ func getFlags() []cli.Flag {
 			EnvVars:  []string{"LOG_FROM"},
 			Required: false,
 			Value:    "",
+		},
+		&cli.IntFlag{
+			Name:    flagDemoSpeed,
+			Usage:   "Number of hits, in average, per minute",
+			EnvVars: []string{"DEMO_SPEED"},
+			Value:   10, // 10 is good speed for demo to end soon and all phrases to be spoken; 20 simulates very intence combat, speaker may have to drop phrases
 		},
 		&cli.StringFlag{
 			Name:     flagSpeak,

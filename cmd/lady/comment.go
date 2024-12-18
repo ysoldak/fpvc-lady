@@ -19,10 +19,8 @@ import (
 func commentAction(cc *cli.Context) (err error) {
 
 	// TTS
-	speech := cc.String(flagSpeak)
-	speakerChan := make(chan string, 100)
-	ttsEngine := tts.NewByName(speech, speakerChan)
-	go ttsEngine.Run()
+	speak := cc.String(flagSpeak)
+	speaker := tts.NewByName(speak)
 
 	// Source & Log
 	var generator generate.Generator
@@ -42,9 +40,9 @@ func commentAction(cc *cli.Context) (err error) {
 		generator = generate.NewLog(logFilePath, logFromDate) // log-file is used for input
 		logger = log.NewNull()                                // no output
 	case source == "demo":
-		generator = generate.NewDemo() // stream of fake messages is used for input
-		logger = log.NewNull()         // no output
-		// logger = log.NewFile(logFilePath) // log-file is used for output
+		generator = generate.NewDemo(cc.Int(flagDemoSpeed)) // stream of fake messages is used for input
+		logger = log.NewNull()                              // no output
+		// logger = log.NewFile(logFilePath)                   // log-file is used for output
 	default:
 		return fmt.Errorf("unknown source: %s", source)
 	}
@@ -63,7 +61,7 @@ func commentAction(cc *cli.Context) (err error) {
 	fmt.Println("Listening to combat events...")
 	fmt.Println()
 
-	speakerChan <- "The lady is ready."
+	speaker.Say("The lady is ready.", 1)
 
 	logger.LogString("") // just an empty line to separate individual sessions visually in the log
 
@@ -76,26 +74,29 @@ func commentAction(cc *cli.Context) (err error) {
 			event := csp.NewBeaconFromMessage(&message)
 			player, new := g.Beacon(event)
 			if new {
-				speakerChan <- fmt.Sprintf("%s registered.", strings.TrimSpace(player.Name))
+				speaker.Say(fmt.Sprintf("%s registered.", strings.TrimSpace(player.Name)), 5)
 			}
 		case csp.CommandHit:
 			if message.IsRequest() {
 				event := csp.NewHitRequestFromMessage(&message)
 				g.HitRequest(event)
 				phrase := fmt.Sprintf("%s was hit.", strings.TrimSpace(g.Victim.Name))
+				speaker.Say(phrase, 100)
 				if cc.Bool(flagSpeakLives) {
-					phrase += fmt.Sprintf(" %d lives left.", g.Victim.Lives)
+					speaker.Say(fmt.Sprintf(" %d lives left.", g.Victim.Lives), 3)
 				}
 				if cc.Bool(flagSpeakCheers) {
-					phrase += " " + hitCheers[rand.Intn(len(hitCheers))]
+					speaker.Say(hitCheers[rand.Intn(len(hitCheers))], 3)
 				}
-				speakerChan <- phrase
 			}
 			if message.IsResponse() {
 				event := csp.NewHitResponseFromMessage(&message)
 				if g.HitResponse(event) {
 					attacker, _ := g.Player(event.ID)
-					speakerChan <- fmt.Sprintf("Score to %s.", strings.TrimSpace(attacker.Name))
+					speaker.Say(fmt.Sprintf("Score to %s.", strings.TrimSpace(attacker.Name)), 5)
+					if cc.Bool(flagSpeakCheers) {
+						speaker.Say(scoreCheers[rand.Intn(len(scoreCheers))], 3)
+					}
 				}
 			}
 		}
@@ -107,6 +108,8 @@ func commentAction(cc *cli.Context) (err error) {
 			fmt.Println(line)
 		}
 	}
+
+	speaker.Flush()
 
 	fmt.Println("That's all, folks.")
 
