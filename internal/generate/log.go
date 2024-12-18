@@ -58,7 +58,7 @@ func (f *Log) Generate(output chan csp.Message) {
 	for scanner.Scan() && !stop {
 		line := scanner.Text()
 
-		if len(line) == 0 {
+		if len(line) == 0 || strings.Contains(line, "START") { // support older log format too
 			stop = readBattleMessage // exit if read at least one battle message before this, means this line potentially starts a new session
 			continue
 		}
@@ -93,6 +93,9 @@ func (f *Log) Generate(output chan csp.Message) {
 		var message *csp.Message
 		cmd := parts[2]
 		switch {
+		case cmd == "REGST": // support older log format
+			message = csp.NewBeacon(byte(id), strings.ReplaceAll(parts[4][0:10], "_", " "), "2.8.0 2.6           ").Message()
+			readBattleMessage = true
 		case cmd == "BEACN":
 			message = csp.NewBeacon(byte(id), parts[4][0:10], parts[4][11:31]).Message()
 			readBattleMessage = true
