@@ -94,7 +94,7 @@ func (f *File) Generate(output chan csp.Message) {
 		cmd := parts[2]
 		switch {
 		case cmd == "BEACN":
-			message = csp.NewBeacon(byte(id), parts[4][0:10], parts[4][10:30]).Message()
+			message = csp.NewBeacon(byte(id), parts[4][0:10], parts[4][11:31]).Message()
 			readBattleMessage = true
 		case cmd == "DAMAG":
 			value, err := strconv.ParseUint(parts[4], 10, 8)
