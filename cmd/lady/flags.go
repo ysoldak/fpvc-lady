@@ -19,6 +19,10 @@ const (
 	flagSpeakCheers = "speak-cheers"
 )
 
+const (
+	defaultLogFilePath = "fpvc-lady.log"
+)
+
 func getFlags() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringFlag{
@@ -40,7 +44,7 @@ func getFlags() []cli.Flag {
 			Usage:    "Path to the log file: save events to (--source serial) or read events from (--source log).",
 			EnvVars:  []string{"LOG_FILE"},
 			Required: false,
-			Value:    "fpvc-lady.log",
+			Value:    defaultLogFilePath,
 		},
 		&cli.StringFlag{
 			Name:     flagLogFrom,
