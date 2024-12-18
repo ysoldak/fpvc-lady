@@ -28,6 +28,7 @@ GLOBAL OPTIONS:
    --serial-port value  Port name where HC12 is connected to; by default the system will try find the port automatically. (default: "auto") [$SERIAL_PORT]
    --log-file value     Path to the log file: save events to (--source serial) or read events from (--source log). (default: "fpvc-lady.log") [$LOG_FILE]
    --log-from value     Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]] [$LOG_FROM]
+   --demo-speed value   Number of hits, in average, per minute (default: 10) [$DEMO_SPEED]
    --speak value        Text-to-speech command: [system], google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
    --speak-lives        Speak lives. (default: false) [$SPEAK_LIVES]
    --speak-cheers       Speak cheers. (default: false) [$SPEAK_CHEERS]
