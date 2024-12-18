@@ -1,6 +1,6 @@
 module github.com/ysoldak/fpvc-lady
 
-go 1.22.4
+go 1.23
 
 require (
 	github.com/hegedustibor/htgo-tts v0.0.0-20211106065519-4b33b08f698f

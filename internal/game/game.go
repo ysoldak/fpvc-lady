@@ -31,21 +31,15 @@ func (g *Game) HitRequest(event *csp.HitRequest) {
 	victim, _ := g.Player(event.ID)
 	victim.Lives = event.Lives - 1
 	victim.Deaths++
+	victim.Updated = time.Now()
 	g.Victim = victim
 }
 
 func (g *Game) HitResponse(event *csp.HitResponse) (ok bool) {
 	attacker, _ := g.Player(event.ID)
-	if attacker == nil {
-		attacker = &Player{
-			ID:    event.ID,
-			Name:  fmt.Sprintf("%X", event.ID),
-			Lives: 255,
-		}
-		g.Players = append(g.Players, attacker)
-	}
 	if g.Victim != nil {
 		attacker.Kills++
+		attacker.Updated = time.Now()
 		g.Victim = nil
 		return true
 	}
@@ -63,6 +57,7 @@ func (g *Game) Player(id byte) (player *Player, isNew bool) {
 		Name:        fmt.Sprintf("%X", id),
 		Description: "Unknown",
 		Lives:       255,
+		Updated:     time.Now(),
 	}
 	g.Players = append(g.Players, player)
 	return player, true

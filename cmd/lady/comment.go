@@ -2,15 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"strings"
-	"time"
 
 	"math/rand"
 
 	"github.com/urfave/cli/v2"
 	"github.com/ysoldak/fpvc-lady/internal/game"
-	"github.com/ysoldak/fpvc-lady/internal/net"
+	"github.com/ysoldak/fpvc-lady/internal/generate"
+	"github.com/ysoldak/fpvc-lady/internal/log"
 	"github.com/ysoldak/fpvc-lady/internal/tts"
 	"github.com/ysoldak/fpvc-lady/internal/utils"
 
@@ -25,30 +24,37 @@ func commentAction(cc *cli.Context) (err error) {
 	ttsEngine := tts.NewByName(speech, speakerChan)
 	go ttsEngine.Run()
 
-	// Serial
-	var serial io.ReadWriter
-	port := cc.String(flagPort)
-	if port != "demo" {
-		serial, err = utils.NewSerial(port)
+	// Source & Log
+	var generator generate.Generator
+	var logger log.Logger
+	source := cc.String(flagSource)
+	logFilePath := cc.String(flagLogFile)
+	logFromDate := cc.String(flagLogFrom)
+	switch {
+	case source == "serial" || source == "auto":
+		serial, err := utils.NewSerial(source)
 		if err != nil {
 			return err
 		}
+		generator = generate.NewWire(serial) // serial port is used for input
+		logger = log.NewFile(logFilePath)    // log-file is used for output
+	case source == "log":
+		generator = generate.NewLog(logFilePath, logFromDate) // log-file is used for input
+		logger = log.NewNull()                                // no output
+	case source == "demo":
+		generator = generate.NewDemo() // stream of fake messages is used for input
+		logger = log.NewNull()         // no output
+		// logger = log.NewFile(logFilePath) // log-file is used for output
+	default:
+		return fmt.Errorf("unknown source: %s", source)
 	}
 
-	// CSP
+	// Generate messages
 	messageChan := make(chan csp.Message, 10)
-	if serial != nil {
-		listener := net.NewListener(serial, messageChan)
-		go listener.Run()
-	} else {
-		go demo(messageChan)
-	}
+	go generator.Generate(messageChan)
 
-	// Game
+	// Game state
 	g := game.NewGame()
-
-	// Trace
-	go trace()
 
 	// Main loop
 	fmt.Println()
@@ -58,24 +64,25 @@ func commentAction(cc *cli.Context) (err error) {
 	fmt.Println()
 
 	speakerChan <- "The lady is ready."
-	traceChan <- "START"
+
+	logger.LogString("") // just an empty line to separate individual sessions visually in the log
 
 	for message := range messageChan {
+
+		logger.LogMessage(message)
 
 		switch message.Command {
 		case csp.CommandBeacon:
 			event := csp.NewBeaconFromMessage(&message)
 			player, new := g.Beacon(event)
 			if new {
-				speakerChan <- fmt.Sprintf("%s registered", player.Name)
-				traceChan <- fmt.Sprintf("REGST %02X %s", player.ID, strings.ReplaceAll(player.Name, " ", "_"))
+				speakerChan <- fmt.Sprintf("%s registered.", strings.TrimSpace(player.Name))
 			}
 		case csp.CommandHit:
 			if message.IsRequest() {
 				event := csp.NewHitRequestFromMessage(&message)
-				traceChan <- fmt.Sprintf("DAMAG %02X %d", event.ID, event.Lives)
 				g.HitRequest(event)
-				phrase := fmt.Sprintf("%s was hit.", g.Victim.Name)
+				phrase := fmt.Sprintf("%s was hit.", strings.TrimSpace(g.Victim.Name))
 				if cc.Bool(flagSpeakLives) {
 					phrase += fmt.Sprintf(" %d lives left.", g.Victim.Lives)
 				}
@@ -86,11 +93,9 @@ func commentAction(cc *cli.Context) (err error) {
 			}
 			if message.IsResponse() {
 				event := csp.NewHitResponseFromMessage(&message)
-				traceChan <- fmt.Sprintf("CLAIM %02X %d", event.ID, event.Power)
 				if g.HitResponse(event) {
 					attacker, _ := g.Player(event.ID)
-					speakerChan <- fmt.Sprintf("Score to %s.", attacker.Name)
-					traceChan <- fmt.Sprintf("SCORE %02X", event.ID)
+					speakerChan <- fmt.Sprintf("Score to %s.", strings.TrimSpace(attacker.Name))
 				}
 			}
 		}
@@ -103,35 +108,7 @@ func commentAction(cc *cli.Context) (err error) {
 		}
 	}
 
+	fmt.Println("That's all, folks.")
+
 	return nil
-}
-
-func demo(messageChan chan csp.Message) {
-	a := csp.NewBeacon(0xA1, "ALICE     ", "fake fake fake fake ")
-	b := csp.NewBeacon(0xB1, "BARTOLOMEO", "fake fake fake fake ")
-	time.Sleep(2 * time.Second)
-
-	messageChan <- *a.Message()
-	time.Sleep(1 * time.Second)
-	messageChan <- *b.Message()
-
-	time.Sleep(6 * time.Second)
-
-	messageChan <- *a.Message()
-	time.Sleep(1 * time.Second)
-	messageChan <- *b.Message()
-
-	time.Sleep(5 * time.Second)
-
-	lives := byte(5)
-	for {
-		messageChan <- *csp.NewHitRequest(0xA1, lives).Message()
-		time.Sleep(100 * time.Millisecond)
-		messageChan <- *csp.NewHitResponse(0xB1, 3).Message()
-		time.Sleep(3 * time.Second)
-		lives--
-		if lives == 0 {
-			break
-		}
-	}
 }

@@ -33,3 +33,22 @@ build: clean build-darwin-amd64 build-windows-386 build-windows-amd64 build-linu
 
 run:
 	go run $(SRC)
+
+# minimal command to start a demo, uses system (win & mac) for tts
+demo:
+	go run $(SRC) --source demo
+
+# very chatty
+demo-heavy-speak:
+	go run $(SRC) --source demo --speak-lives --speak-cheers
+
+# use espeak offline tts (available on Linux)
+demo-espeak:
+	go run $(SRC) --source demo --speak espeak --speak-lives --speak-cheers
+
+# use google online tts
+demo-google:
+	go run $(SRC) --source demo --speak google --speak-lives --speak-cheers
+
+replay:
+	go run $(SRC) --source log --log-file fpvc-lady.log
