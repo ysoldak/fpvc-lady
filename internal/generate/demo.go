@@ -11,10 +11,13 @@ import (
 )
 
 type Demo struct {
+	speed int // avg hits per minute
 }
 
-func NewDemo() *Demo {
-	return &Demo{}
+func NewDemo(speed int) *Demo {
+	return &Demo{
+		speed: speed,
+	}
 }
 
 func (d *Demo) Generate(output chan csp.Message) {
@@ -60,7 +63,13 @@ func (d *Demo) Generate(output chan csp.Message) {
 		output <- *csp.NewHitRequest(v.ID, v.Lives).Message()
 		time.Sleep(100 * time.Millisecond)
 		output <- *csp.NewHitResponse(a.ID, 3).Message()
-		time.Sleep(time.Duration(rand.Intn(4)+1) * time.Second) // this simulates very intence combat, speaker may have to drop phrases
+
+		delay := 60/d.speed + rand.Intn(5) - 2 // desired frequency +-2 sec
+		if delay < 0 {
+			delay = 1
+		}
+		time.Sleep(time.Duration(delay) * time.Second)
+
 		state[vi].Lives--
 		if state[vi].Lives == 0 {
 			break

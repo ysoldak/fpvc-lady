@@ -40,9 +40,9 @@ func commentAction(cc *cli.Context) (err error) {
 		generator = generate.NewLog(logFilePath, logFromDate) // log-file is used for input
 		logger = log.NewNull()                                // no output
 	case source == "demo":
-		generator = generate.NewDemo() // stream of fake messages is used for input
-		logger = log.NewNull()         // no output
-		// logger = log.NewFile(logFilePath) // log-file is used for output
+		generator = generate.NewDemo(cc.Int(flagDemoSpeed)) // stream of fake messages is used for input
+		logger = log.NewNull()                              // no output
+		// logger = log.NewFile(logFilePath)                   // log-file is used for output
 	default:
 		return fmt.Errorf("unknown source: %s", source)
 	}
@@ -94,6 +94,9 @@ func commentAction(cc *cli.Context) (err error) {
 				if g.HitResponse(event) {
 					attacker, _ := g.Player(event.ID)
 					speaker.Say(fmt.Sprintf("Score to %s.", strings.TrimSpace(attacker.Name)), 5)
+					if cc.Bool(flagSpeakCheers) {
+						speaker.Say(scoreCheers[rand.Intn(len(scoreCheers))], 3)
+					}
 				}
 			}
 		}
