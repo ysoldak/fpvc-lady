@@ -11,12 +11,12 @@ import (
 	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
-type File struct {
+type Log struct {
 	path string
 	from time.Time
 }
 
-func NewFile(path string, fromString string) *File {
+func NewLog(path string, fromString string) *Log {
 	fromTime := time.Time{}
 	if fromString != "" {
 		pattern := "2006/01/02"
@@ -33,14 +33,14 @@ func NewFile(path string, fromString string) *File {
 			fromTime = time.Time{}
 		}
 	}
-	return &File{
+	return &Log{
 		path: path,
 		from: fromTime,
 	}
 }
 
 // Delays are inserted between messages to simulate real-time data flow.
-func (f *File) Generate(output chan csp.Message) {
+func (f *Log) Generate(output chan csp.Message) {
 
 	file, err := os.Open(f.path)
 	if err != nil {

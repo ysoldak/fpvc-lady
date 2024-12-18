@@ -21,7 +21,7 @@ func getFlags() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringFlag{
 			Name:     flagSource,
-			Usage:    "Source of CSP messages: serial, file, demo.",
+			Usage:    "Source of CSP messages: serial, log, demo.",
 			EnvVars:  []string{"SOURCE"},
 			Required: false,
 			Value:    "serial",
@@ -35,7 +35,7 @@ func getFlags() []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:     flagLogFile,
-			Usage:    "Path to the log file: save events to (--source serial) or read events from (--source file).",
+			Usage:    "Path to the log file: save events to (--source serial) or read events from (--source log).",
 			EnvVars:  []string{"LOG_FILE"},
 			Required: false,
 			Value:    "fpvc-lady.log",

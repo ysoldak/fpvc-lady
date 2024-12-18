@@ -38,12 +38,9 @@ func commentAction(cc *cli.Context) (err error) {
 		}
 		generator = generate.NewWire(serial) // serial port is used for input
 		logger = log.NewFile(logFilePath)    // log-file is used for output
-		if logger == nil {
-			return fmt.Errorf("error opening log file")
-		}
-	case source == "file":
-		generator = generate.NewFile(logFilePath, logFromDate) // log-file is used for input
-		logger = log.NewNull()                                 // no output
+	case source == "log":
+		generator = generate.NewLog(logFilePath, logFromDate) // log-file is used for input
+		logger = log.NewNull()                                // no output
 	case source == "demo":
 		generator = generate.NewDemo() // stream of fake messages is used for input
 		logger = log.NewNull()         // no output

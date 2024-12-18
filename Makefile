@@ -51,4 +51,4 @@ demo-google:
 	go run $(SRC) --source demo --speak google --speak-lives --speak-cheers
 
 replay:
-	go run $(SRC) --source file --log-file fpvc-lady.log
+	go run $(SRC) --source log --log-file fpvc-lady.log

@@ -24,9 +24,9 @@ COMMANDS:
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --source value       Source of CSP messages: serial, file, demo. (default: "serial") [$SOURCE]
+   --source value       Source of CSP messages: serial, log, demo. (default: "serial") [$SOURCE]
    --serial-port value  Port name where HC12 is connected to; by default the system will try find the port automatically. (default: "auto") [$SERIAL_PORT]
-   --log-file value     Path to the log file: save events to (--source serial) or read events from (--source file). (default: "fpvc-lady.log") [$LOG_FILE]
+   --log-file value     Path to the log file: save events to (--source serial) or read events from (--source log). (default: "fpvc-lady.log") [$LOG_FILE]
    --log-from value     Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]] [$LOG_FROM]
    --speak value        Text-to-speech command: [system], google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
    --speak-lives        Speak lives. (default: false) [$SPEAK_LIVES]
