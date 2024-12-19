@@ -5,15 +5,17 @@ Config files
 - Dead cheers, see https://github.com/ysoldak/fpvc-lady/issues/8
 - I18N, by simple use of yet another conf file?
 
-CUI
+CUI (Console UI)
 - Use textbox and refresh screen, see https://github.com/ysoldak/fpvc-lady/issues/2
-- Highlight latest change in table
+  - example https://github.com/0xcafed00d/joystick/blob/master/joysticktest/joysticktest.go
+- Highlight latest change in table -- color or just bold, highlight whole line perhaps?
 - Session restart, see https://github.com/ysoldak/fpvc-lady/issues/3
 
 WebUI
 - Start http server on port 8080 (configurable)
   - Show table
   - Button to STOP and START (when stopped)
+- Later have full blown nice web interface with all functions
 
 TTS
 - Glue Hit and Score messages if possible, see https://github.com/ysoldak/fpvc-lady/issues/7
@@ -28,6 +30,8 @@ TTS
   - win???
   - mac???
 
-Other
+Serious stuff (Championships, etc)
 - Match timer, see https://github.com/ysoldak/fpvc-lady/issues/4
-
+- Sort table according to kills and deaths, with configurable weights
+- Different weights for different players? Like static target worth less than a real player
+- Adaptable weights based on history? It shall worth more to kill someone who performs better than others historically
