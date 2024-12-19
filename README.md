@@ -68,7 +68,7 @@ npm audit fix
 ```
 
 #### RUNNING THE PROJECT
-Make sure that you are located in the `front` dir:
+Make sure that you are located in the `gui` dir:
 ```
 cd \gui\
 ```
