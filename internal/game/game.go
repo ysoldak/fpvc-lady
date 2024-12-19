@@ -9,17 +9,22 @@ import (
 
 type Game struct {
 	Players []*Player
+	Victim  *Player
 
-	Victim *Player
+	active bool
 }
 
 func NewGame() Game {
 	return Game{
 		Players: []*Player{},
+		active:  true,
 	}
 }
 
 func (g *Game) Beacon(event *csp.Beacon) (player *Player, new bool) {
+	if !g.active {
+		return
+	}
 	player, new = g.Player(event.ID)
 	player.Name = event.Name
 	player.Description = event.Description
@@ -28,6 +33,9 @@ func (g *Game) Beacon(event *csp.Beacon) (player *Player, new bool) {
 }
 
 func (g *Game) HitRequest(event *csp.HitRequest) {
+	if !g.active {
+		return
+	}
 	victim, _ := g.Player(event.ID)
 	victim.Lives = event.Lives - 1
 	victim.Deaths++
@@ -36,6 +44,9 @@ func (g *Game) HitRequest(event *csp.HitRequest) {
 }
 
 func (g *Game) HitResponse(event *csp.HitResponse) (ok bool) {
+	if !g.active {
+		return
+	}
 	attacker, _ := g.Player(event.ID)
 	if g.Victim != nil {
 		attacker.Kills++
@@ -52,6 +63,9 @@ func (g *Game) Player(id byte) (player *Player, isNew bool) {
 			return p, false
 		}
 	}
+	if !g.active {
+		return nil, false
+	}
 	player = &Player{
 		ID:          id,
 		Name:        fmt.Sprintf("%X", id),
@@ -61,6 +75,20 @@ func (g *Game) Player(id byte) (player *Player, isNew bool) {
 	}
 	g.Players = append(g.Players, player)
 	return player, true
+}
+
+func (g *Game) Start() {
+	g.Players = g.Players[0:0]
+	g.Victim = nil
+	g.active = true
+}
+
+func (g *Game) Stop() {
+	g.active = false
+}
+
+func (g *Game) IsActive() bool {
+	return g.active
 }
 
 func (g *Game) Table() []string {

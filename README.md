@@ -26,6 +26,7 @@ COMMANDS:
 GLOBAL OPTIONS:
    --source value       Source of CSP messages: serial, log, demo. (default: "serial") [$SOURCE]
    --serial-port value  Port name where HC12 is connected to; by default the system will try find the port automatically. (default: "auto") [$SERIAL_PORT]
+   --http-port value    HTTP server port number (default: 8080) [$HTTP_PORT]
    --log-file value     Path to the log file: save events to (--source serial) or read events from (--source log). (default: "fpvc-lady.log") [$LOG_FILE]
    --log-from value     Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]] [$LOG_FROM]
    --demo-speed value   Number of hits, in average, per minute (default: 10) [$DEMO_SPEED]
