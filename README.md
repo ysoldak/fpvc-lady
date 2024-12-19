@@ -50,7 +50,7 @@ Good luck!
 ## Administartor panel local web GUI (experimental, under construction)
 When the project is cloned, navigate to the web GUI dir first
 ```
-cd \front\
+cd \gui\
 ```
 
 Before running the first time, be sure you have [Node.js](https://nodejs.org/en) installed 
@@ -70,7 +70,7 @@ npm audit fix
 #### RUNNING THE PROJECT
 Make sure that you are located in the `front` dir:
 ```
-cd \front\
+cd \gui\
 ```
 
 then start the project with:
