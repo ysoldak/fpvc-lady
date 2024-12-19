@@ -58,6 +58,7 @@ func commentAction(cc *cli.Context) (err error) {
 	// Game state
 	g = game.NewGame()
 
+	go doServe(cc)
 
 	// Main loop
 	fmt.Println()

@@ -9,6 +9,8 @@ const (
 
 	flagSerialPort = "serial-port" // serial port name
 
+	flagHttpPort = "http-port" // http port number
+
 	flagLogFile = "log-file" // log file path
 	flagLogFrom = "log-from" // log from datetime: YYYY/MM/DD HH:mm:SS.SSSSSS
 
@@ -38,6 +40,12 @@ func getFlags() []cli.Flag {
 			EnvVars:  []string{"SERIAL_PORT"},
 			Required: false,
 			Value:    "auto",
+		},
+		&cli.IntFlag{
+			Name:    flagHttpPort,
+			Usage:   "HTTP server port number",
+			EnvVars: []string{"HTTP_PORT"},
+			Value:   8080,
 		},
 		&cli.StringFlag{
 			Name:     flagLogFile,
