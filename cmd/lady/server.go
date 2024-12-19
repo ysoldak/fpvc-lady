@@ -20,6 +20,9 @@ var static embed.FS
 var upgrader = websocket.Upgrader{} // use default options
 
 func socket(w http.ResponseWriter, r *http.Request) {
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		return true
+	}
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		fmt.Println("upgrade:", err)
