@@ -67,6 +67,14 @@ If there are any troubles running the project, try doing the automate fixing:
 npm audit fix
 ```
 
+Also, before running the demo mode you need to install websockets module in a different directory, so you need to navigate back:
+
+```
+cd ..
+cd \wserver\
+npm install
+```
+
 #### RUNNING THE PROJECT
 Make sure that you are located in the `gui` dir:
 ```
