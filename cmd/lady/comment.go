@@ -16,6 +16,8 @@ import (
 	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
+var g game.Game
+
 func commentAction(cc *cli.Context) (err error) {
 
 	// TTS
@@ -54,7 +56,8 @@ func commentAction(cc *cli.Context) (err error) {
 	go generator.Generate(messageChan)
 
 	// Game state
-	g := game.NewGame()
+	g = game.NewGame()
+
 
 	// Main loop
 	fmt.Println()
@@ -65,9 +68,15 @@ func commentAction(cc *cli.Context) (err error) {
 
 	speaker.Say("The lady is ready.", 1)
 
-	logger.LogString("") // just an empty line to separate individual sessions visually in the log
-
 	for message := range messageChan {
+
+		if !g.IsActive() {
+			continue
+		}
+
+		if len(g.Players) == 0 {
+			logger.LogString("") // just an empty line to separate individual sessions visually in the log
+		}
 
 		logger.LogMessage(message)
 
