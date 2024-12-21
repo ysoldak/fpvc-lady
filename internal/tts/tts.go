@@ -1,6 +1,9 @@
 package tts
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 const (
 	BackendNone   = "none"
@@ -12,19 +15,30 @@ type TtsBackend interface {
 	Speak(phrase string)
 }
 
+type phrase struct {
+	text string
+	prio int
+}
+
 type Tts struct {
 	backend TtsBackend
-	phrases chan string
+	phrases chan phrase
+	buffer  []phrase
+	flush   bool
 }
 
-func New(backend TtsBackend, phrases chan string) *Tts {
-	return &Tts{
+func New(backend TtsBackend) *Tts {
+	tts := Tts{
 		backend: backend,
-		phrases: phrases,
+		phrases: make(chan phrase, 100),
+		buffer:  []phrase{},
+		flush:   false,
 	}
+	go tts.run()
+	return &tts
 }
 
-func NewByName(backendName string, phrases chan string) *Tts {
+func NewByName(backendName string) *Tts {
 	var backend TtsBackend
 	switch backendName {
 	case BackendNone:
@@ -43,12 +57,76 @@ func NewByName(backendName string, phrases chan string) *Tts {
 		}
 		backend = &Custom{executable: exec, parameters: params}
 	}
-	return New(backend, phrases)
+	return New(backend)
 }
 
-func (tts *Tts) Run() {
-	for {
-		phrase := <-tts.phrases
-		tts.backend.Speak(phrase)
+func (tts *Tts) Say(text string, prio int) {
+	if tts.flush {
+		return
 	}
+	tts.phrases <- phrase{text, prio}
+}
+
+func (tts *Tts) Flush() {
+	tts.flush = true
+	for tts.flush {
+		time.Sleep(100 * time.Millisecond)
+	}
+}
+
+func (tts *Tts) run() {
+	for {
+		select {
+		case phrase := <-tts.phrases:
+			tts.buffer = append(tts.buffer, phrase)
+		default:
+			if len(tts.buffer) == 0 && tts.flush {
+				tts.flush = false
+				return
+			}
+			if len(tts.buffer) > 0 {
+				tts.processBuffer()
+			}
+			time.Sleep(100 * time.Millisecond)
+		}
+	}
+}
+
+func (tts *Tts) processBuffer() {
+
+	// evict low priority phrases (prio < buffer length) one by one until none can be evicted anymore
+	for {
+		evicted := false
+		for i, p := range tts.buffer {
+			if p.prio < len(tts.buffer) {
+				// println("-", p.prio, len(tts.buffer), p.text)
+				tts.buffer = append(tts.buffer[:i], tts.buffer[i+1:]...)
+				evicted = true
+				break
+			}
+		}
+		if !evicted {
+			break
+		}
+	}
+
+	// return fast if nothing left
+	if len(tts.buffer) == 0 {
+		return
+	}
+
+	// construct long phrase and send it to our speech backend
+	longPhrase := ""
+	for _, phrase := range tts.buffer {
+		longPhrase += phrase.text + " "
+	}
+	tts.backend.Speak(longPhrase)
+
+	// following emulates speech, for debugging
+	// println(time.Now().Format("15:04:05.000000"), ">", longPhrase)
+	// time.Sleep(time.Second)
+	// time.Sleep(time.Duration(len(longPhrase)) * 100 * time.Millisecond)
+
+	// empty buffer
+	tts.buffer = tts.buffer[0:0]
 }
