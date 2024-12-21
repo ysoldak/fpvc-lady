@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"math/rand"
@@ -16,7 +17,25 @@ import (
 	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
+var Version = "0.0.0"
+
 var g game.Game
+
+func main() {
+	app := cli.NewApp()
+	app.Name = "fpvc-lady"
+	app.Usage = "FPV Combat Events Announcer"
+
+	app.Flags = getFlags()
+	app.Action = commentAction
+	app.Version = Version
+
+	err := app.Run(os.Args)
+	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
+		os.Exit(1)
+	}
+}
 
 func commentAction(cc *cli.Context) (err error) {
 
