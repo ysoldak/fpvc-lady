@@ -13,7 +13,6 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-//go:generate cp -r ../../front ./
 //go:embed front/*
 var static embed.FS
 
