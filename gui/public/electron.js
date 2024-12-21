@@ -1,6 +1,41 @@
 const electron = require('electron');
-const createServer = require('http');
-const parse = require('url');
+const { app, BrowserWindow } = electron;
+const path = require('path');
+const isDev = require('electron-is-dev');
+
+let mainWindow = null;
+app.on('ready', createWindow);
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+});
+app.on('activate', function () {
+  if (mainWindow === null) {
+    createWindow()
+  }
+});
+function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 1024,
+    height: 1024,
+    title: "Chat desktop app demo"
+  });
+  mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
+  mainWindow.on('closed', function () {
+    mainWindow = null
+  })
+  mainWindow.on('page-title-updated', function (e) {
+    e.preventDefault()
+  });
+}
+
+
+/*
+
+const electron = require('electron');
+//const createServer = require('http');
+//const parse = require('url');
 const next = require('next');
 const { app, BrowserWindow } = electron;
 // const path = require('path');
@@ -14,7 +49,7 @@ app.on('ready', async () => {
     dev: false,
     dir: app.getAppPath() + '/'
   });
-  const requestHandler = nextApp.getRequestHandler();
+  // const requestHandler = nextApp.getRequestHandler();
 
   // Build the renderer code and watch the files
   await nextApp.prepare();
@@ -45,16 +80,12 @@ app.on('ready', async () => {
   
 });
 
-/*
+
+
 const electron = require('electron');
 const { app, BrowserWindow } = electron;
 const path = require('path');
 const isDev = require('electron-is-dev');
-
-import electron from 'electron';
-import path from 'path';
-import isDev from 'electron-is-dev';
-const { app, BrowserWindow } = electron;
 
 
 let mainWindow = null;
@@ -83,4 +114,6 @@ function createWindow() {
     e.preventDefault()
   });
 }
+
+
 */
