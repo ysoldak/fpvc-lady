@@ -57,8 +57,6 @@ fpvc-lady-darwin-amd64-x.x.x --speak "say -v samantha"
 
 ### Linux
 
-Good luck!
-
 On Linux you can either use any offline text-to-speech engine, like "espeak", or use online "google" engine.  
 Note: For 'google' engine to work, either mplayer or ffmpeg (ffplay) must be installed.
 
