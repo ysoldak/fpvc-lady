@@ -64,7 +64,8 @@ func doServe(cc *cli.Context) {
 	http.Handle("/", http.FileServer(http.FS(contentStatic)))
 
 	port := int64(cc.Int(flagHttpPort))
-	err := http.ListenAndServe("localhost:"+strconv.FormatInt(port, 10), nil)
+
+	err := http.ListenAndServe(":"+strconv.FormatInt(port, 10), nil)
 	if errors.Is(err, http.ErrServerClosed) {
 		fmt.Println("server closed")
 	} else if err != nil {
