@@ -2,10 +2,10 @@
   "name": "fpvcm",
   "version": "0.1.0",
   "revision": "1",
-  "main": "public/electron.js",
   "description": "FPV Combat Manager",
   "author": "zborecque",
   "homepage": "./",
+  "buildDir": "../cmd/lady/front/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.0",
@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && node ./move_build.js",
     "eject": "react-scripts eject"
   },
   "build": {
