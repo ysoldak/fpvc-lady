@@ -5,7 +5,7 @@
   "description": "FPV Combat Manager",
   "author": "zborecque",
   "homepage": "./",
-  "buildDir": "../cmd/lady/front/",
+  "buildDir": "../build/front/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.0",

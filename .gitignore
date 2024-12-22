@@ -22,6 +22,4 @@ go.work
 build
 
 *.log
-.vscode/
-front/
-node_modules/
+.vscode

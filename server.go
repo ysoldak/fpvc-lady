@@ -13,7 +13,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-//go:embed front/*
+//go:embed build/front/*
 var static embed.FS
 
 var upgrader = websocket.Upgrader{} // use default options
@@ -59,7 +59,7 @@ func doServe(cc *cli.Context) {
 
 	http.HandleFunc("/ws", socket)
 
-	contentStatic, _ := fs.Sub(static, "front")
+	contentStatic, _ := fs.Sub(static, "build/front")
 	http.Handle("/", http.FileServer(http.FS(contentStatic)))
 
 	port := int64(cc.Int(flagHttpPort))
