@@ -77,5 +77,4 @@ func (d *Demo) Generate(output chan csp.Message) {
 	}
 
 	fmt.Println("Demo finished.")
-	close(output)
 }
