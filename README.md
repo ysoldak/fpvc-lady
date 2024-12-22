@@ -72,12 +72,11 @@ fpvc-lady-linux-amd64-x.x.x --speak google
 ```
 
 ## Administartor panel local web GUI (experimental, under construction)
-When the project is cloned, navigate to the web GUI dir first
+Before running the first time, be sure you have [Node.js](https://nodejs.org/en) installed.
+When the repo is is cloned, navigate to the web GUI dir first:
 ```
 cd \gui\
 ```
-
-Before running the first time, be sure you have [Node.js](https://nodejs.org/en) installed 
 
 And then install all packages and dependencies:
 
@@ -85,21 +84,7 @@ And then install all packages and dependencies:
 npm install
 ```
 
-If there are any troubles running the project, try doing the automate fixing:
-
-```
-npm audit fix
-```
-
-Also, before running the demo mode you need to install websockets module in a different directory, so you need to navigate back:
-
-```
-cd ..
-cd \wserver\
-npm install
-```
-
-#### RUNNING THE PROJECT
+### RUNNING THE PROJECT IN DEVELOPMENT MODE
 Make sure that you are located in the `gui` dir:
 ```
 cd \gui\
@@ -107,16 +92,16 @@ cd \gui\
 
 then start the project with:
 ```
-npm run start-demo
+npm run start
 ```
 
-This will concurrently run 3 services: main GUI process and two demo services to mock the backend activites:
-* REACT project on port 3000 - which is the main app
-* json-server on port 3001 (mocking storing configuration and game/round status)
-* wserver on 3003 (mocking pushing messages with current game stats, like hits/damages etc.) - this is programmed to run the fake randomized output as soon as first client connects. Once the random generated data are done (after around a minute) it will restart as soon as one of the clients refreshes.
+This will concurrently 3 React dev server on port 3000. It will automatically detect that it works in dev mode and will use whichever is set in `.env.development.local` under `REACT_APP_MOCK_WS_URL`. That's why this file is removed from gitignore. If you have the lady running on some other port - simply modify this entry before starting the project.
 
-Navigate to the [localhost at port 3000](http://localhost:3000) address using your web-browser to access the web GUI.
+Navigate to the [localhost:3000](http://localhost:3000) address using your web-browser to access the web GUI.
 
-If you want the app to be accessible by other computers in the same network during the demo run - simply change the `localhost` entry with your servers IP address in the following files:
-* `.\.env.development.local`: modify entries: `REACT_APP_MOCK_API_URL` and `REACT_APP_MOCK_WS_URL`
-* `.\package-json`: locate the `json-server` entry in `scripts` and update where it says `-H localhost`
+### BUILDING THE PROJECT
+When still in `gui` dir simply run the command:
+```
+npm run build
+```
+It will create the bundle with an `index.html` file and will immediately move the project to the `.\cmd\lady\front` directory. This can be changed in `package.json` file under `buildDir`
