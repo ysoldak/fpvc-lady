@@ -24,8 +24,8 @@ const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
 const appRevision = process.env.REACT_APP_REVISION
 
-// const wsUrl = "ws://" + window.location.host + "/ws"
-const wsUrl = "ws://localhost:8080/ws"
+const wsUrlDev = process.env.REACT_APP_MOCK_WS_URL
+const wsUrl = "ws://" + window.location.host + "/ws"
 
 const theme = createTheme({
   palette: {
@@ -73,7 +73,7 @@ function App() {
   const [ladyUp, setLadyUp] = useState(false)
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    wsUrl,
+    wsUrlDev?.length > 0 ? wsUrlDev : wsUrl,
     {
       share: false,
       shouldReconnect: () => true,
