@@ -9,7 +9,7 @@ clean:
 	@mkdir -p build
 
 build-front:
-	cd gui && npm run build
+	cd gui && npm install && npm run build
 
 build-darwin-amd64:
 	GOOS=darwin GOARCH=amd64 go build $(LD_FLAGS) -o build/fpvc-lady-darwin-amd64-$(VERSION) $(SRC)

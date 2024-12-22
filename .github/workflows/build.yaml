@@ -18,6 +18,9 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Setup Node
+      uses: actions/setup-node@v4
+
     - name: Setup Go
       uses: actions/setup-go@v5
       with:
