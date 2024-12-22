@@ -1,8 +1,8 @@
 {
   "setRoundTime": "Rundenzeit [min]",
   "setCountdown": "Countdown",
-  "loading": "Laden",
-  "startStop": "Start/Stoppen",
+  "loading": "Anrufen bei LADY",
+  "ladyNotOn": "Die LADY ist noch nicht bereit",
   "start": "Start",
   "stop": "Stop",
   "desc": "Beschreibung",

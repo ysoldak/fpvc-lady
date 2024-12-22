@@ -6,7 +6,7 @@ import txt from '../locale/locale'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
-import Slider from '@mui/material/Slider'
+// import Slider from '@mui/material/Slider'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
@@ -24,10 +24,13 @@ import Paper from '@mui/material/Paper'
 function Main(props) {
   const [tab, setTab] = React.useState(0)
   const [rows, setRows] = React.useState([])
+  const [game, setGame] = React.useState('stop')
 
   const switchTab = (event, tab) => {
     setTab(tab)
-  };
+  }
+
+  const gameToggle = () => (game === 'stop' ? 'start' : 'stop')
 
   function createData(
     playerName,
@@ -49,8 +52,9 @@ function Main(props) {
 
   React.useEffect(() => {
     if (props.msgs.length > 0) {
-      let rows = props.msgs[0].map((msg, i) => {
-        return createData(msg.name, msg.ID, msg.description, msg.kills, msg.deaths, msg.lives)
+      let rows = props.msgs[0].split('\n').filter((e, i) => i > 1 && e.length > 0).map((msg, i) => {
+        let line = msg.split(/\|\s*/).map(e => e.trim()).filter(e => e.length > 0)
+        return createData(line[1], line[0], line[2], line[4], line[5], line[6])
       })
       setRows(rows.sort(comparePoints))
     }
@@ -60,7 +64,7 @@ function Main(props) {
   return (
     <Box className="fpvcm-container_box">
       <br />
-      {(!props.readOnly && props.ladyUp) && (
+      {/*(props.isAdmin && props.ladyUp) && (
         <>
           <Grid container spacing={4}>
             <Grid xl={2} lg={2} md={3} sm={3} xs={3} className="fpvcm-option-label">
@@ -93,7 +97,7 @@ function Main(props) {
             </Grid>
           </Grid>
         </>
-      )}
+      )*/}
       <Grid container spacing={4}>
         <Grid xl={7} lg={7} md={11} sm={11} xs={11}>
           <Box sx={{ width: '100%' }}>
@@ -112,7 +116,7 @@ function Main(props) {
                 <Box sx={{ p: 1 }}>
                   <Card variant="outlined" className="fpvcm-card-wrapper">
                     <CardContent className="fpvcm-card fpvcm-disp-stats">
-                      {!props.ladyUp && (<span style={{color: "red", fontWeight: "bold"}}>The LADY is not on!</span>)}
+                      {!props.ladyUp && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.config.lang)}</span>)}
                       {props.ladyUp && (
                         <>
                           <TableContainer component={Paper} style={{maxWidth: 750}}>
@@ -151,7 +155,7 @@ function Main(props) {
                             {props.game?.roundStatus === 'on' && (<>{txt('roundPending', props.config.lang)}<br /></>)}
                             {/*props.game?.roundStatus === 'on' && (<>{txt('currentRoundTime', props.config.lang)}: <span className="fpvcm-label">2:42</span><br /></>)*/}
                             {/*props.game?.roundEndAt !== '0' && (<>{txt('remainingRoundTime', props.config.lang)}: <span className="fpvcm-label">2:18</span><br /></>)*/}
-                            {txt('totalHits', props.config.lang)}: <span className="fpvcm-label">{rows.reduce((total, row) => total += row.hits, 0)}</span><br />
+                            {txt('totalHits', props.config.lang)}: <span className="fpvcm-label">{rows.reduce((total, row) => total += parseInt(row.hits), 0)}</span><br />
                           </Typography>
                         </>
                       )}
@@ -168,10 +172,15 @@ function Main(props) {
                 <Box sx={{ p: 1 }}>
                   <Card variant="outlined" className="fpvcm-card-wrapper">
                     <CardContent className="fpvcm-card fpvcm-disp-log">
-                      <Typography display="block" style={{whiteSpace: "nowrap"}}>
-                        {props.msgs.map((msg, i) => {return (<span key={i}>{JSON.stringify(msg)}<br /></span>)})}
-                        Client UUID: {props.uuid}
-                      </Typography>
+                      <div display="block" style={{whiteSpace: "nowrap"}}>
+                        {props.msgs.map((msg, i) => {
+                          return (
+                            <pre key={i}>{msg.split('\n').map((msgLine, li) => { 
+                              return (<span key={li}>{msgLine}<br /></span>)})}
+                              <br />
+                            </pre>)
+                        })}
+                      </div>
                     </CardContent>
                   </Card>
                 </Box>
@@ -179,11 +188,11 @@ function Main(props) {
           </Box>
         </Grid>
       </Grid>
-      {(!props.readOnly && props.ladyUp) && (
+      {(props.isAdmin && props.ladyUp) && (
         <Grid container spacing={4}>
           <Grid xl={7} lg={7} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px'}}>
-            <Button variant="contained" size="large" onClick={() => {props.saveGameStatus(props.game?.roundStatus === 'on' ? 'off' : 'on')}}>
-              {txt((props.game?.roundStatus === 'on' ? 'stop' : 'start'), props.config.lang)}
+            <Button variant="contained" size="large" onClick={() => {props.sendMessage(gameToggle()); setGame(gameToggle());}}>
+              {txt(gameToggle(), props.config.lang)}
             </Button>
           </Grid>
         </Grid>

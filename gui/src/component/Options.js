@@ -3,6 +3,8 @@ import { useState } from 'react'
 
 import { txt, langs } from '../locale/locale.js'
 
+import { setCookie } from '../utils/cookieHandler'
+
 import Box from '@mui/material/Box/index.js'
 import Grid from '@mui/material/Unstable_Grid2/index.js'
 import Select from '@mui/material/Select/index.js'
@@ -17,20 +19,15 @@ function Options(props) {
   function handleChange(e) {
     let newFormConfig = {...formConfig}
     newFormConfig[e.target.name] = e.target.value
+    setCookie('fpvcm_config', JSON.stringify(newFormConfig), 120)
     setFormConfig({...newFormConfig})
-    if (e.target.value.toString().length > 0) {
-      props.saveNewConfig(e.target.name, e.target.value)
-    }
-  }
-
-  function resetPin() {
-    props.saveNewConfig('accessPin', null)
+    props.setConfig({...newFormConfig})
   }
 
   return (
     <Box className="fpvcm-container_box">
       <Grid container spacing={4} style={{marginTop: '12px'}}>
-        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLanguage', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
@@ -46,8 +43,8 @@ function Options(props) {
           </Select>
         </Grid>
       </Grid>
-      <Grid container spacing={4}>
-        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      {/*<Grid container spacing={4}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsDefaultRoundTime', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
@@ -64,7 +61,7 @@ function Options(props) {
         </Grid>
       </Grid>
       <Grid container spacing={4}>
-        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsDefaultCountdown', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
@@ -79,9 +76,9 @@ function Options(props) {
             {props.countDownMarks(props.config.lang).map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
           </Select>
         </Grid>
-      </Grid>
+      </Grid>*/}
       <Grid container spacing={4}>
-        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsHitPoints', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
@@ -97,7 +94,7 @@ function Options(props) {
         </Grid>
       </Grid>
       <Grid container spacing={4}>
-        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsDamagePoints', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
@@ -113,7 +110,7 @@ function Options(props) {
         </Grid>
       </Grid>
       <Grid container spacing={4} style={{marginTop: '36px'}}>
-        <Grid xl={2} lg={2} md={5} sm={5} xs={5}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5}>
           &nbsp;
         </Grid>
         <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
@@ -123,14 +120,14 @@ function Options(props) {
         </Grid>
       </Grid>
       <Grid container spacing={4} style={{marginTop: '24px'}}>
-        <Grid xl={2} lg={2} md={5} sm={5} xs={5}>
+        <Grid xl={3} lg={2} md={5} sm={5} xs={5}>
           &nbsp;
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
-          <Button variant="contained" size="small" onClick={resetPin} style={{minWidth: '100%'}}> 
+        {/*<Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <Button variant="contained" color="secondary" size="small" style={{minWidth: '100%'}} disabled>
             {txt('optionsResetPin', props.config.lang)}
           </Button>
-        </Grid>
+        </Grid>*/}
       </Grid>
     </Box>
   );
