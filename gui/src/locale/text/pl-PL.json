@@ -1,7 +1,8 @@
 {
   "setRoundTime": "Czas rundy [min]",
   "setCountdown": "Odliczanie",
-  "loading": "Ładowanie",
+  "loading": "Łączenie z LADY",
+  "ladyNotOn": "LADY jeszcze nie jest gotowa!",
   "startStop": "Start/Stop",
   "start": "Start",
   "stop": "Stop",

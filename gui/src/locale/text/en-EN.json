@@ -1,7 +1,8 @@
 {
   "setRoundTime": "Round time [min]",
   "setCountdown": "Countdown",
-  "loading": "Loading",
+  "loading": "Reaching to LADY",
+  "ladyNotOn": "The LADY is not turned on!",
   "startStop": "Start/Stop",
   "start": "Start",
   "stop": "Stop",

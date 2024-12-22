@@ -205,10 +205,13 @@
 
 .MuiButtonBase-root {
   font-family: Chakra !important;
-  background-color: #00b50f !important;
-  color: white !important;
   font-size: 1.4em !important;
   font-weight: bold !important;
+}
+
+.Mui-selected {
+  color: white !important;
+  background-color: #00b50f !important;
 }
 
 .MuiTab-root {
@@ -218,7 +221,20 @@
 }
 
 .MuiTabs-root {
+  color: white !important;
   margin-lefT: 18px !important;
+}
+
+.MuiTab-textColorPrimary {
+  color: #CACACA !important;
+}
+
+.MuiTab-root.Mui-selected {
+  color: white !important;
+}
+
+.MuiButton-root {
+  color: white !important;
 }
 
 .MuiOutlinedInput-input {
