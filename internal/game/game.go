@@ -43,18 +43,19 @@ func (g *Game) HitRequest(event *csp.HitRequest) {
 	g.Victim = victim
 }
 
-func (g *Game) HitResponse(event *csp.HitResponse) (ok bool) {
+func (g *Game) HitResponse(event *csp.HitResponse) (victim *Player) {
 	if !g.active {
-		return
+		return nil
 	}
 	attacker, _ := g.Player(event.ID)
 	if g.Victim != nil {
 		attacker.Kills++
 		attacker.Updated = time.Now()
+		victim = g.Victim
 		g.Victim = nil
-		return true
+		return victim
 	}
-	return false
+	return nil
 }
 
 func (g *Game) Player(id byte) (player *Player, isNew bool) {

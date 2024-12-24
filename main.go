@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"math/rand"
 
@@ -20,6 +21,11 @@ import (
 var Version = "0.0.0"
 
 var g game.Game
+var logger log.Logger
+var speaker *tts.Tts
+var lastHitTime = time.Time{}
+
+var config Config = Config{}
 
 func main() {
 	app := cli.NewApp()
@@ -39,13 +45,15 @@ func main() {
 
 func commentAction(cc *cli.Context) (err error) {
 
+	// Init config
+	config.InitFromContext(cc)
+
 	// TTS
 	speak := cc.String(flagSpeak)
-	speaker := tts.NewByName(speak)
+	speaker = tts.NewByName(speak)
 
 	// Source & Log
 	var generator generate.Generator
-	var logger log.Logger
 	source := cc.String(flagSource)
 	logFilePath := cc.String(flagLogFile)
 	logFromDate := cc.String(flagLogFrom)
@@ -88,61 +96,80 @@ func commentAction(cc *cli.Context) (err error) {
 
 	speaker.Say("The lady is ready.", 1)
 
-	for message := range messageChan {
-
-		if !g.IsActive() {
-			continue
-		}
-
-		if len(g.Players) == 0 {
-			logger.LogString("") // just an empty line to separate individual sessions visually in the log
-		}
-
-		logger.LogMessage(message)
-
-		switch message.Command {
-		case csp.CommandBeacon:
-			event := csp.NewBeaconFromMessage(&message)
-			player, new := g.Beacon(event)
-			if new {
-				speaker.Say(fmt.Sprintf("%s registered.", strings.TrimSpace(player.Name)), 5)
-			}
-		case csp.CommandHit:
-			if message.IsRequest() {
-				event := csp.NewHitRequestFromMessage(&message)
-				g.HitRequest(event)
-				phrase := fmt.Sprintf("%s was hit.", strings.TrimSpace(g.Victim.Name))
-				speaker.Say(phrase, 100)
-				if cc.Bool(flagSpeakLives) {
-					speaker.Say(fmt.Sprintf(" %d lives left.", g.Victim.Lives), 3)
-				}
-				if cc.Bool(flagSpeakCheers) {
-					speaker.Say(hitCheers[rand.Intn(len(hitCheers))], 3)
-				}
-			}
-			if message.IsResponse() {
-				event := csp.NewHitResponseFromMessage(&message)
-				if g.HitResponse(event) {
-					attacker, _ := g.Player(event.ID)
-					speaker.Say(fmt.Sprintf("Score to %s.", strings.TrimSpace(attacker.Name)), 5)
-					if cc.Bool(flagSpeakCheers) {
-						speaker.Say(scoreCheers[rand.Intn(len(scoreCheers))], 3)
-					}
-				}
-			}
-		}
-
-		fmt.Println()
-		fmt.Println()
-		fmt.Println()
-		for _, line := range g.Table() {
-			fmt.Println(line)
+	ticker := time.NewTicker(10 * time.Millisecond)
+	for {
+		select {
+		case message := <-messageChan:
+			handleMessage(message)
+		case <-ticker.C:
+			handleTicker()
 		}
 	}
 
-	speaker.Flush()
+}
 
-	fmt.Println("That's all, folks.")
+func handleMessage(message csp.Message) {
+	if !g.IsActive() {
+		return // just drop any message when game is not active
+	}
 
-	return nil
+	if len(g.Players) == 0 {
+		logger.LogString("") // just an empty line to separate individual sessions visually in the log
+	}
+
+	logger.LogMessage(message)
+
+	switch message.Command {
+	case csp.CommandBeacon:
+		event := csp.NewBeaconFromMessage(&message)
+		player, new := g.Beacon(event)
+		if new {
+			speaker.Say(fmt.Sprintf("%s registered.", strings.TrimSpace(player.Name)), 5)
+		}
+	case csp.CommandHit:
+		if message.IsRequest() {
+			event := csp.NewHitRequestFromMessage(&message)
+			g.HitRequest(event)
+			lastHitTime = time.Now()
+		}
+		if message.IsResponse() {
+			event := csp.NewHitResponseFromMessage(&message)
+			if victim := g.HitResponse(event); victim != nil {
+				attacker, _ := g.Player(event.ID)
+				sayHit(victim, attacker)
+				lastHitTime = time.Time{}
+			}
+		}
+	}
+
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	for _, line := range g.Table() {
+		fmt.Println(line)
+	}
+}
+
+func handleTicker() {
+	if !lastHitTime.IsZero() && time.Since(lastHitTime) > 200*time.Millisecond { // unclaimed hit
+		sayHit(g.Victim, nil)
+		g.Victim = nil
+		lastHitTime = time.Time{}
+	}
+}
+
+func sayHit(victim, attacker *game.Player) {
+	phrase := fmt.Sprintf("%s hit", strings.TrimSpace(victim.Name))
+	if attacker != nil {
+		phrase += fmt.Sprintf(" by %s.", strings.TrimSpace(attacker.Name))
+	} else {
+		phrase += "."
+	}
+	speaker.Say(phrase, 100)
+	if config.SpeakLives {
+		speaker.Say(fmt.Sprintf("%d lives left.", victim.Lives), 4)
+	}
+	if config.SpeakCheers {
+		speaker.Say(hitCheers[rand.Intn(len(hitCheers))], 3)
+	}
 }
