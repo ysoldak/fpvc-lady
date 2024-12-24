@@ -37,8 +37,6 @@ GLOBAL OPTIONS:
    --version, -v        print the version
 ```
 
-When `--speak=google`, must have `mplayer` or `ffplay` installed.  
-
 ### Mac
 
 Macs have male voice by default, use command below to switch to a female voice.
@@ -72,4 +70,3 @@ Online (requires `mplayer` or `ffplay`)
 ```
 fpvc-lady-linux-amd64-x.x.x --speak google
 ```
-
