@@ -10,6 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 	"github.com/ysoldak/fpvc-lady/internal/game"
 	"github.com/ysoldak/fpvc-lady/internal/generate"
+	"github.com/ysoldak/fpvc-lady/internal/lang"
 	"github.com/ysoldak/fpvc-lady/internal/log"
 	"github.com/ysoldak/fpvc-lady/internal/tts"
 	"github.com/ysoldak/fpvc-lady/internal/utils"
@@ -20,6 +21,8 @@ import (
 var g game.Game
 var logger log.Logger
 var speaker *tts.Tts
+var translation lang.Translation
+
 var lastHitTime = time.Time{}
 
 var config Config = Config{}
@@ -28,6 +31,7 @@ func commentAction(cc *cli.Context) (err error) {
 
 	// Init config
 	config.InitFromContext(cc)
+	translation = lang.Trans[config.Language]
 
 	// TTS
 	speak := cc.String(flagSpeak)
@@ -150,9 +154,11 @@ func sayHit(victim, attacker *game.Player) {
 	}
 	speaker.Say(phrase, 100)
 	if config.SpeakLives {
-		speaker.Say(fmt.Sprintf("%d lives left.", victim.Lives), 4)
+		format := translation.Speech["lives left"]
+		speaker.Say(fmt.Sprintf(format, victim.Lives), 4)
 	}
 	if config.SpeakCheers {
+		hitCheers := translation.Cheers
 		speaker.Say(hitCheers[rand.Intn(len(hitCheers))], 3)
 	}
 }
