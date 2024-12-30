@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { getCookie } from './utils/cookieHandler'
 
 import logo from './img/FPV-Combat-Logo-light-grey.png'
+import ladyBW from './img/lady_bw.jpeg'
 import './App.scss'
 
 import txt from './locale/locale'
@@ -70,6 +71,7 @@ function App() {
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
   const [poll, setPoll] = useState(null)
+  const [showLady, setShowLady] = useState(false)
   const [ladyUp, setLadyUp] = useState(false)
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(
@@ -125,11 +127,16 @@ function App() {
     setShowConfig(!showConfig)
   }
 
+  function toggleLady() {
+    setShowLady((!showLady &&  Math.random() > 0.5) ? true : false)
+  }
+
   return (
     <ThemeProvider theme={theme}>
     <div className="fpvcm">
       <CssBaseline />
       <header className="fpvcm-header">
+        <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
         <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
         <div className="fpvcm-header_text">
           &nbsp;Manager
@@ -140,25 +147,27 @@ function App() {
         </div>}
       </header>
       <Container maxWidth="false" className="fpvcm-container">
-        {(loading && !showConfig)
-          ? (<Loading lang={config.lang} />)
-          : showConfig
-            ? (<Options
-                config={config}
-                setConfig={setConfig}
-                roundTimeMarks={roundTimeMarks}
-                countDownMarks={countDownMarks}
-                toggleSettings={toggleSettings}
-              />)
-            : (<Main
-                config={config}
-                countDownMarks={countDownMarks(config.lang)}
-                roundTimeMarks={roundTimeMarks}
-                sendMessage={sendMessage}
-                isAdmin={isAdmin}
-                ladyUp={ladyUp}
-                msgs={msgs}
-              />)
+        {showLady
+          ? <img src={ladyBW} alt="FPV Combat Lady" style={{float: "left", margin: "10px", maxWidth: "80vw"}} onClick={() => setShowLady(false)} />
+          : (loading && !showConfig && !showLady)
+            ? (<Loading lang={config.lang} />)
+            : showConfig
+              ? (<Options
+                  config={config}
+                  setConfig={setConfig}
+                  roundTimeMarks={roundTimeMarks}
+                  countDownMarks={countDownMarks}
+                  toggleSettings={toggleSettings}
+                />)
+              : (<Main
+                  config={config}
+                  countDownMarks={countDownMarks(config.lang)}
+                  roundTimeMarks={roundTimeMarks}
+                  sendMessage={sendMessage}
+                  isAdmin={isAdmin}
+                  ladyUp={ladyUp}
+                  msgs={msgs}
+                />)
         }
       </Container>
     </div>

@@ -56,6 +56,15 @@
     height: 52px;
     padding-top: 12px;
 
+    &_lady {
+      position: absolute;
+      z-index: 1000;
+      width: 26px;
+      height: 26px;
+      top: 18px;
+      left: 106px;
+    }
+
     &_text {
       position: relative;
       bottom: -4px;
@@ -97,6 +106,15 @@
   .fpvcm-header {
     height: 40px;
     padding-top: 8px;
+
+    &_lady {
+      position: absolute;
+      z-index: 1000;
+      width: 20px;
+      height: 20px;
+      top: 10px;
+      left: 70px;
+    }
 
     &_text {
       position: relative;
