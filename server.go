@@ -10,13 +10,15 @@ import (
 	"strconv"
 
 	"github.com/gorilla/websocket"
-	"github.com/urfave/cli/v2"
 )
 
 //go:embed build/front/*
 var static embed.FS
 
 var upgrader = websocket.Upgrader{} // use default options
+
+var wsInCh chan string = make(chan string, 10)
+var wsOutCh chan string = make(chan string, 10)
 
 func socket(w http.ResponseWriter, r *http.Request) {
 	upgrader.CheckOrigin = func(r *http.Request) bool {
@@ -28,41 +30,35 @@ func socket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer c.Close()
+	// forward all outbound messages
+	go func() {
+		for message := range wsOutCh {
+			err = c.WriteMessage(websocket.TextMessage, []byte(message))
+			if err != nil {
+				fmt.Println("ws write:", err)
+			}
+		}
+	}()
+	// forward all inbound messages
 	for {
 		mt, message, err := c.ReadMessage()
 		if err != nil {
 			fmt.Println("read:", err)
 			break
 		}
-		switch string(message) {
-		case "table":
-			response := ""
-			for _, line := range g.Table() {
-				response += fmt.Sprintln(line)
-			}
-
-			err = c.WriteMessage(mt, []byte(response))
-			if err != nil {
-				fmt.Println("ws write:", err)
-			}
-		case "start":
-			g.Start()
-		case "stop":
-			g.Stop()
-		default:
-			println("Unknown websocket message:", string(message))
+		if mt != websocket.TextMessage {
+			continue
 		}
+		wsInCh <- string(message)
 	}
 }
 
-func doServe(cc *cli.Context) {
+func doServe(port int64) {
 
 	http.HandleFunc("/ws", socket)
 
 	contentStatic, _ := fs.Sub(static, "build/front")
 	http.Handle("/", http.FileServer(http.FS(contentStatic)))
-
-	port := int64(cc.Int(flagHttpPort))
 
 	err := http.ListenAndServe(":"+strconv.FormatInt(port, 10), nil)
 	if errors.Is(err, http.ErrServerClosed) {
