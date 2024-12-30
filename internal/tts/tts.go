@@ -67,6 +67,7 @@ func (tts *Tts) Say(text string, prio int) {
 	tts.phrases <- phrase{text, prio}
 }
 
+// Flush speaker by blocking until phrase buffer is empty. This also stops speaker routine, so speaker can't be reused.
 func (tts *Tts) Flush() {
 	tts.flush = true
 	for tts.flush {
@@ -75,11 +76,12 @@ func (tts *Tts) Flush() {
 }
 
 func (tts *Tts) run() {
+	ticker := time.NewTicker(100 * time.Millisecond)
 	for {
 		select {
 		case phrase := <-tts.phrases:
 			tts.buffer = append(tts.buffer, phrase)
-		default:
+		case <-ticker.C:
 			if len(tts.buffer) == 0 && tts.flush {
 				tts.flush = false
 				return
@@ -87,7 +89,6 @@ func (tts *Tts) run() {
 			if len(tts.buffer) > 0 {
 				tts.processBuffer()
 			}
-			time.Sleep(100 * time.Millisecond)
 		}
 	}
 }
@@ -122,7 +123,7 @@ func (tts *Tts) processBuffer() {
 	}
 	tts.backend.Speak(longPhrase)
 
-	// following emulates speech, for debugging
+	// following emulates speech delay, for debugging
 	// println(time.Now().Format("15:04:05.000000"), ">", longPhrase)
 	// time.Sleep(time.Second)
 	// time.Sleep(time.Duration(len(longPhrase)) * 100 * time.Millisecond)
