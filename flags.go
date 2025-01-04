@@ -16,6 +16,8 @@ const (
 
 	flagDemoSpeed = "demo-speed" // avg events per minute
 
+	flagLanguage = "lang"
+
 	flagSpeak       = "speak"
 	flagSpeakLives  = "speak-lives"
 	flagSpeakCheers = "speak-cheers"
@@ -66,6 +68,12 @@ func getFlags() []cli.Flag {
 			Usage:   "Number of hits, in average, per minute",
 			EnvVars: []string{"DEMO_SPEED"},
 			Value:   10, // 10 is good speed for demo to end soon and all phrases to be spoken; 20 simulates very intence combat, speaker may have to drop phrases
+		},
+		&cli.StringFlag{
+			Name:     flagLanguage,
+			Usage:    "Language to use: en, ru, etc.",
+			Required: false,
+			Value:    "en",
 		},
 		&cli.StringFlag{
 			Name:     flagSpeak,

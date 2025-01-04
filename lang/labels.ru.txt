@@ -1,0 +1,7 @@
+tableName=Имя
+tableDescription=Описание
+tableUpdated=Обновлено
+tableHits=Попадания
+tableHoles=Пробоины
+tableLives=Жизни
+tableScore=Очки

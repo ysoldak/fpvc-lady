@@ -56,5 +56,14 @@ demo-espeak:
 demo-google:
 	go run $(SRC) --source demo --speak google --speak-lives --speak-cheers
 
+demo-mac-de:
+	go run $(SRC) --source demo --speak 'say -v anna' --lang de --speak-lives --speak-cheers
+
+demo-mac-en:
+	go run $(SRC) --source demo --speak 'say -v stephanie' --lang en --speak-lives --speak-cheers
+
+demo-mac-ru:
+	go run $(SRC) --source demo --speak 'say -v milena' --lang ru --speak-lives --speak-cheers
+
 replay:
 	go run $(SRC) --source log --log-file fpvc-lady.log
