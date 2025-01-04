@@ -14,6 +14,9 @@ build-front:
 build-darwin-amd64:
 	GOOS=darwin GOARCH=amd64 go build $(LD_FLAGS) -o build/fpvc-lady-darwin-amd64-$(VERSION) $(SRC)
 
+build-darwin-arm64:
+	GOOS=darwin GOARCH=arm64 go build $(LD_FLAGS) -o build/fpvc-lady-darwin-arm64-$(VERSION) $(SRC)
+
 build-windows-386:
 	GOOS=windows GOARCH=386 go build $(LD_FLAGS) -o build/fpvc-lady-windows-386-$(VERSION).exe $(SRC)
 
