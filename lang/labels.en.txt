@@ -1,0 +1,7 @@
+tableName=Name
+tableDescription=Description
+tableUpdated=Updated
+tableHits=Hits
+tableHoles=Holes
+tableLives=Lives
+tableScore=Score

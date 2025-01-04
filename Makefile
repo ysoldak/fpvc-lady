@@ -14,6 +14,9 @@ build-front:
 build-darwin-amd64:
 	GOOS=darwin GOARCH=amd64 go build $(LD_FLAGS) -o build/fpvc-lady-darwin-amd64-$(VERSION) $(SRC)
 
+build-darwin-arm64:
+	GOOS=darwin GOARCH=arm64 go build $(LD_FLAGS) -o build/fpvc-lady-darwin-arm64-$(VERSION) $(SRC)
+
 build-windows-386:
 	GOOS=windows GOARCH=386 go build $(LD_FLAGS) -o build/fpvc-lady-windows-386-$(VERSION).exe $(SRC)
 
@@ -52,6 +55,15 @@ demo-espeak:
 # use google online tts
 demo-google:
 	go run $(SRC) --source demo --speak google --speak-lives --speak-cheers
+
+demo-mac-de:
+	go run $(SRC) --source demo --speak 'say -v anna' --lang de --speak-lives --speak-cheers
+
+demo-mac-en:
+	go run $(SRC) --source demo --speak 'say -v stephanie' --lang en --speak-lives --speak-cheers
+
+demo-mac-ru:
+	go run $(SRC) --source demo --speak 'say -v milena' --lang ru --speak-lives --speak-cheers
 
 replay:
 	go run $(SRC) --source log --log-file fpvc-lady.log

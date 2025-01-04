@@ -1,0 +1,7 @@
+launch=Леди к вашим услугам!
+session_start=Начали.
+session_stop=Кончили.
+joined={player} подключился.
+hit={victim} получил.
+hit_by={victim} получил от {attacker}.
+lives_left=Осталось {lives} жизней.

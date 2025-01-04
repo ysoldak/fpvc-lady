@@ -1,19 +1,14 @@
 package main
 
 import (
-	"embed"
 	"errors"
 	"fmt"
-	"io/fs"
 	"net/http"
 	"os"
 	"strconv"
 
 	"github.com/gorilla/websocket"
 )
-
-//go:embed build/front/*
-var static embed.FS
 
 var upgrader = websocket.Upgrader{} // use default options
 
@@ -55,10 +50,9 @@ func socket(w http.ResponseWriter, r *http.Request) {
 
 func doServe(port int64) {
 
-	http.HandleFunc("/ws", socket)
+	handleStatic()
 
-	contentStatic, _ := fs.Sub(static, "build/front")
-	http.Handle("/", http.FileServer(http.FS(contentStatic)))
+	http.HandleFunc("/ws", socket)
 
 	err := http.ListenAndServe(":"+strconv.FormatInt(port, 10), nil)
 	if errors.Is(err, http.ErrServerClosed) {
