@@ -2,6 +2,6 @@ tableName=Name
 tableDescription=Description
 tableUpdated=Updated
 tableHits=Hits
-tableHoles=Holes
+tableDamage=Damage
 tableLives=Lives
 tableScore=Score

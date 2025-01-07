@@ -195,19 +195,19 @@ func handleWebSocketMessage(message string) {
 func printTable() []string {
 	table := []string{}
 	header := fmt.Sprintf(
-		" ID | %-10s | %-20s | %-12s || %10s | %10s | %10s",
+		" ID | %-10s | %-20s | %-12s || %12s | %12s | %10s",
 		lang.Label("tableName"),
 		lang.Label("tableDescription"),
 		lang.Label("tableUpdated"),
 		lang.Label("tableHits"),
-		lang.Label("tableHoles"),
+		lang.Label("tableDamage"),
 		lang.Label("tableLives"))
 	table = append(table, header)
 
-	table = append(table, "--- | ---------- | -------------------- | ------------ || ---------- | ---------- | -----------")
+	table = append(table, "--- | ---------- | -------------------- | ------------ || ------------ | ------------ | -----------")
 	for _, p := range g.Players {
 		updated := p.Updated.Format("15:04:05.000")
-		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %s || %10d | %10d | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
+		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %s || %12d | %12d | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
 	}
 	return table
 }

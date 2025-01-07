@@ -2,6 +2,6 @@ tableName=Имя
 tableDescription=Описание
 tableUpdated=Обновлено
 tableHits=Попадания
-tableHoles=Пробоины
+tableDamage=Повреждения
 tableLives=Жизни
 tableScore=Очки
