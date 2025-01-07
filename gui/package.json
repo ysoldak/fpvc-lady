@@ -1,8 +1,8 @@
 {
-  "name": "fpvcm",
+  "name": "fpvc-lady-web",
   "version": "0.1.0",
   "revision": "1",
-  "description": "FPV Combat Manager",
+  "description": "FPV Combat Lady Web Interface",
   "author": "zborecque",
   "homepage": "./",
   "buildDir": "../build/front/",
@@ -12,12 +12,7 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "axios": "^1.7.7",
-    "concurrently": "^9.1.0",
-    "cross-env": "^7.0.3",
-    "next": "^15.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
@@ -31,8 +26,8 @@
     "eject": "react-scripts eject"
   },
   "build": {
-    "appId": "com.fpvcombat.fpvcm",
-    "productName": "FPV Combat Manager",
+    "appId": "com.fpvcombat.lady.web",
+    "productName": "FPV Combat Lady Web Interface",
     "directories": {
       "output": "dist"
     }
@@ -54,12 +49,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "concurrently": "^4.1.1",
-    "cross-env": "^5.2.0",
-    "electron": "^5.0.8",
-    "electron-builder": "^21.1.5",
-    "wait-on": "^3.3.0"
   }
 }
