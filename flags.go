@@ -16,7 +16,7 @@ const (
 
 	flagDemoSpeed = "demo-speed" // avg events per minute
 
-	flagLanguage = "lang"
+	flagLocale = "locale"
 
 	flagSpeak       = "speak"
 	flagSpeakLives  = "speak-lives"
@@ -70,14 +70,14 @@ func getFlags() []cli.Flag {
 			Value:   10, // 10 is good speed for demo to end soon and all phrases to be spoken; 20 simulates very intence combat, speaker may have to drop phrases
 		},
 		&cli.StringFlag{
-			Name:     flagLanguage,
-			Usage:    "Language to use: en, ru, etc.",
+			Name:     flagLocale,
+			Usage:    "Locale to use: de, en, ru, etc.",
 			Required: false,
 			Value:    "en",
 		},
 		&cli.StringFlag{
 			Name:     flagSpeak,
-			Usage:    "Text-to-speech command: [system], google, none or any other command to convert text to speech.",
+			Usage:    "Text-to-speech command: system, google, none or any other command to convert text to speech.",
 			EnvVars:  []string{"SPEAK"},
 			Required: false,
 			Value:    "system",

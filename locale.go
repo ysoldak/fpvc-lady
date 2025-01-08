@@ -7,49 +7,49 @@ import (
 	"strings"
 )
 
-type Lang struct {
+type Locale struct {
 	comments map[string]string
 	labels   map[string]string
 	cheers   []string
 }
 
-func NewLang(id string) *Lang {
-	cheersFile := "lang/cheers.en.txt"
-	commentsFile := "lang/comments.en.txt"
-	labelsFile := "lang/labels.en.txt"
+func NewLocale(id string) *Locale {
+	cheersFile := localeDir + "/cheers.en.txt"
+	commentsFile := localeDir + "/comments.en.txt"
+	labelsFile := localeDir + "/labels.en.txt"
 
 	if id != "en" {
-		files, err := os.ReadDir("lang")
+		files, err := os.ReadDir(localeDir)
 		if err != nil {
 			panic(err)
 		}
 		for _, file := range files {
 			if file.Name() == "comments."+id+".txt" {
-				commentsFile = "lang/" + file.Name()
+				commentsFile = localeDir + "/" + file.Name()
 			} else if file.Name() == "labels."+id+".txt" {
-				labelsFile = "lang/" + file.Name()
+				labelsFile = localeDir + "/" + file.Name()
 			} else if file.Name() == "cheers."+id+".txt" {
-				cheersFile = "lang/" + file.Name()
+				cheersFile = localeDir + "/" + file.Name()
 			}
 		}
 	}
 
-	return &Lang{
+	return &Locale{
 		comments: fileToMap(commentsFile),
 		labels:   fileToMap(labelsFile),
 		cheers:   fileToSlice(cheersFile),
 	}
 }
 
-func (l *Lang) Comment(id string) string {
+func (l *Locale) Comment(id string) string {
 	return l.comments[id]
 }
 
-func (l *Lang) Label(id string) string {
+func (l *Locale) Label(id string) string {
 	return l.labels[id]
 }
 
-func (l *Lang) RandomCheer() string {
+func (l *Locale) RandomCheer() string {
 	return l.cheers[rand.Intn(len(l.cheers))]
 }
 

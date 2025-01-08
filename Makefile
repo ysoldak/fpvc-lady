@@ -40,30 +40,41 @@ build: clean build-front build-darwin-amd64 build-darwin-arm64 build-windows-386
 run:
 	go run $(SRC)
 
-# minimal command to start a demo, uses system (win & mac) for tts
+# Minimal command to start a demo, uses system (win & mac) for tts
 demo:
 	go run $(SRC) --source demo
 
-# very chatty
+# Very chatty
 demo-heavy-speak:
 	go run $(SRC) --source demo --speak-lives --speak-cheers
 
-# use espeak offline tts (available on Linux)
+# Use espeak offline tts (available on Linux)
 demo-espeak:
 	go run $(SRC) --source demo --speak espeak --speak-lives --speak-cheers
 
-# use google online tts
+# Use google online tts
 demo-google:
 	go run $(SRC) --source demo --speak google --speak-lives --speak-cheers
 
+demo-google-sv:
+	go run $(SRC) --source demo --speak google --locale sv --speak-lives --speak-cheers
+
+# Mac voices
 demo-mac-de:
-	go run $(SRC) --source demo --speak 'say -v anna' --lang de --speak-lives --speak-cheers
+	go run $(SRC) --source demo --speak 'say -v anna' --locale de --speak-lives --speak-cheers
 
 demo-mac-en:
-	go run $(SRC) --source demo --speak 'say -v stephanie' --lang en --speak-lives --speak-cheers
+	go run $(SRC) --source demo --speak 'say -v stephanie' --locale en --speak-lives --speak-cheers
+
+demo-mac-pl:
+	go run $(SRC) --source demo --speak 'say -v zosia' --locale pl --speak-lives --speak-cheers
 
 demo-mac-ru:
-	go run $(SRC) --source demo --speak 'say -v milena' --lang ru --speak-lives --speak-cheers
+	go run $(SRC) --source demo --speak 'say -v milena' --locale ru --speak-lives --speak-cheers
 
+demo-mac-sv:
+	go run $(SRC) --source demo --speak 'say -v alva' --locale sv --speak-lives --speak-cheers
+
+# Replay a log file
 replay:
 	go run $(SRC) --source log --log-file fpvc-lady.log

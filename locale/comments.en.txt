@@ -1,3 +1,5 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
 launch=The Lady is ready!
 session_start=Session started.
 session_stop=Session stopped.

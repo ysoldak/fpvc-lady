@@ -41,13 +41,13 @@ func New(backend TtsBackend) *Tts {
 	return &tts
 }
 
-func NewByName(backendName string) *Tts {
+func NewByName(backendName, lang string) *Tts {
 	var backend TtsBackend
 	switch backendName {
 	case BackendNone:
 		backend = &None{}
 	case BackendGoogle:
-		backend = NewGoogle()
+		backend = NewGoogle(lang)
 	case BackendSystem:
 		backend = NewSystem()
 	default:

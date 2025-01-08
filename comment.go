@@ -19,7 +19,7 @@ import (
 var g game.Game
 var logger log.Logger
 var speaker *tts.Tts
-var lang *Lang
+var locale *Locale
 
 var lastHitTime = time.Time{}
 
@@ -30,12 +30,12 @@ func commentAction(cc *cli.Context) (err error) {
 	// Init config
 	config.InitFromContext(cc)
 
-	// Init lang
-	lang = NewLang(config.Language)
+	// Init locale
+	locale = NewLocale(config.Locale)
 
 	// TTS
 	speak := cc.String(flagSpeak)
-	speaker = tts.NewByName(speak)
+	speaker = tts.NewByName(speak, config.Locale) // technically, locale != language, but we expect two-letter locale codes, so they can be used as language codes too
 
 	// Source & Log
 	var generator generate.Generator
@@ -79,7 +79,7 @@ func commentAction(cc *cli.Context) (err error) {
 	fmt.Println("Listening to combat events...")
 	fmt.Println()
 
-	speaker.Say(lang.Comment("launch"), 1)
+	speaker.Say(locale.Comment("launch"), 1)
 
 	ticker := time.NewTicker(10 * time.Millisecond)
 	for {
@@ -111,7 +111,7 @@ func handleCombatMessage(message csp.Message) {
 		event := csp.NewBeaconFromMessage(&message)
 		player, new := g.Beacon(event)
 		if new {
-			joinedPhrase := lang.Comment("joined")
+			joinedPhrase := locale.Comment("joined")
 			joinedPhrase = strings.ReplaceAll(joinedPhrase, "{player}", strings.TrimSpace(player.Name))
 			speaker.Say(joinedPhrase, 5)
 		}
@@ -150,28 +150,28 @@ func handleTicker() {
 func sayHit(victim, attacker *game.Player) {
 	block := tts.PhraseBlock{}
 
-	hitPhrase := lang.Comment("hit")
+	hitPhrase := locale.Comment("hit")
 	hitPhrase = strings.ReplaceAll(hitPhrase, "{victim}", strings.TrimSpace(victim.Name))
 	block = append(block, tts.Phrase{Text: hitPhrase, Prio: 100})
 
 	if attacker != nil {
-		hitByPhrase := lang.Comment("hit_by")
+		hitByPhrase := locale.Comment("hit_by")
 		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{attacker}", strings.TrimSpace(attacker.Name))
 		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{victim}", strings.TrimSpace(victim.Name))
 		block = append(block, tts.Phrase{Text: hitByPhrase, Prio: 3})
 	}
 
 	if config.SpeakLives {
-		livesPhrase := lang.Comment("lives_left")
+		livesPhrase := locale.Comment("lives_left")
 		livesPhrase = strings.ReplaceAll(livesPhrase, "{lives}", strconv.Itoa(int(victim.Lives)))
 		lastPhraseInBlock := block[len(block)-1] // we copy last phrase in the block (can be w/ or w/o attacker) and append "lives left" to it.
-		block = append(block, tts.Phrase{Text: lastPhraseInBlock.Text + livesPhrase, Prio: 2})
+		block = append(block, tts.Phrase{Text: lastPhraseInBlock.Text + " " + livesPhrase, Prio: 2})
 	}
 
 	speaker.SayBlock(block)
 
 	if config.SpeakCheers {
-		speaker.Say(lang.RandomCheer(), 2)
+		speaker.Say(locale.RandomCheer(), 2)
 	}
 }
 
@@ -195,19 +195,19 @@ func handleWebSocketMessage(message string) {
 func printTable() []string {
 	table := []string{}
 	header := fmt.Sprintf(
-		" ID | %-10s | %-20s | %-12s || %12s | %12s | %10s",
-		lang.Label("tableName"),
-		lang.Label("tableDescription"),
-		lang.Label("tableUpdated"),
-		lang.Label("tableHits"),
-		lang.Label("tableDamage"),
-		lang.Label("tableLives"))
+		" ID | %-10s | %-20s | %-16s || %12s | %12s | %10s",
+		locale.Label("tableName"),
+		locale.Label("tableDescription"),
+		locale.Label("tableUpdated"),
+		locale.Label("tableHits"),
+		locale.Label("tableDamage"),
+		locale.Label("tableLives"))
 	table = append(table, header)
 
-	table = append(table, "--- | ---------- | -------------------- | ------------ || ------------ | ------------ | -----------")
+	table = append(table, "--- | ---------- | -------------------- | ---------------- || ------------ | ------------ | -----------")
 	for _, p := range g.Players {
 		updated := p.Updated.Format("15:04:05.000")
-		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %s || %12d | %12d | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
+		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %-16s || %12d | %12d | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
 	}
 	return table
 }
