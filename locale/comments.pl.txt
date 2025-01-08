@@ -1,9 +1,9 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
-launch=Pani do usług!
-session_start=Zaczęliśmy.
-session_stop=Skończyliśmy.
-joined={player} dołączył.
-hit={victim} uszkodzenie.
-hit_by={victim} uszkodzenie od {attacker}.
+launch=Lejdi do usług!
+session_start=Zaczynamy rundę.
+session_stop=Runda zakończona.
+joined=Dołącza {player}.
+hit={victim} trafiony.
+hit_by={victim} oberwał od {attacker}.
 lives_left=Pozostało {lives} żyć.

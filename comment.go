@@ -196,12 +196,12 @@ func printTable() []string {
 	table := []string{}
 	header := fmt.Sprintf(
 		" ID | %-10s | %-20s | %-16s || %12s | %12s | %10s",
-		locale.Label("tableName"),
-		locale.Label("tableDescription"),
-		locale.Label("tableUpdated"),
-		locale.Label("tableHits"),
-		locale.Label("tableDamage"),
-		locale.Label("tableLives"))
+		strings.TrimSpace(locale.Label("tableName")),
+		strings.TrimSpace(locale.Label("tableDescription")),
+		strings.TrimSpace(locale.Label("tableUpdated")),
+		strings.TrimSpace(locale.Label("tableHits")),
+		strings.TrimSpace(locale.Label("tableDamage")),
+		strings.TrimSpace(locale.Label("tableLives")))
 	table = append(table, header)
 
 	table = append(table, "--- | ---------- | -------------------- | ---------------- || ------------ | ------------ | -----------")
