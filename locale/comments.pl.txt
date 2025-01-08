@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+launch=Pani do usług!
+session_start=Zaczęliśmy.
+session_stop=Skończyliśmy.
+joined={player} dołączył.
+hit={victim} uszkodzenie.
+hit_by={victim} uszkodzenie od {attacker}.
+lives_left=Pozostało {lives} żyć.

@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
-
-	"math/rand"
 
 	"github.com/urfave/cli/v2"
 	"github.com/ysoldak/fpvc-lady/internal/game"
@@ -20,6 +19,8 @@ import (
 var g game.Game
 var logger log.Logger
 var speaker *tts.Tts
+var locale *Locale
+
 var lastHitTime = time.Time{}
 
 var config Config = Config{}
@@ -29,9 +30,12 @@ func commentAction(cc *cli.Context) (err error) {
 	// Init config
 	config.InitFromContext(cc)
 
+	// Init locale
+	locale = NewLocale(config.Locale)
+
 	// TTS
 	speak := cc.String(flagSpeak)
-	speaker = tts.NewByName(speak)
+	speaker = tts.NewByName(speak, config.Locale) // technically, locale != language, but we expect two-letter locale codes, so they can be used as language codes too
 
 	// Source & Log
 	var generator generate.Generator
@@ -75,7 +79,7 @@ func commentAction(cc *cli.Context) (err error) {
 	fmt.Println("Listening to combat events...")
 	fmt.Println()
 
-	speaker.Say("The lady is ready.", 1)
+	speaker.Say(locale.Comment("launch"), 1)
 
 	ticker := time.NewTicker(10 * time.Millisecond)
 	for {
@@ -107,7 +111,9 @@ func handleCombatMessage(message csp.Message) {
 		event := csp.NewBeaconFromMessage(&message)
 		player, new := g.Beacon(event)
 		if new {
-			speaker.Say(fmt.Sprintf("%s registered.", strings.TrimSpace(player.Name)), 5)
+			joinedPhrase := locale.Comment("joined")
+			joinedPhrase = strings.ReplaceAll(joinedPhrase, "{player}", strings.TrimSpace(player.Name))
+			speaker.Say(joinedPhrase, 5)
 		}
 	case csp.CommandHit:
 		if message.IsRequest() {
@@ -128,7 +134,7 @@ func handleCombatMessage(message csp.Message) {
 	fmt.Println()
 	fmt.Println()
 	fmt.Println()
-	for _, line := range g.Table() {
+	for _, line := range printTable() {
 		fmt.Println(line)
 	}
 }
@@ -142,18 +148,30 @@ func handleTicker() {
 }
 
 func sayHit(victim, attacker *game.Player) {
-	phrase := fmt.Sprintf("%s hit", strings.TrimSpace(victim.Name))
+	block := tts.PhraseBlock{}
+
+	hitPhrase := locale.Comment("hit")
+	hitPhrase = strings.ReplaceAll(hitPhrase, "{victim}", strings.TrimSpace(victim.Name))
+	block = append(block, tts.Phrase{Text: hitPhrase, Prio: 100})
+
 	if attacker != nil {
-		phrase += fmt.Sprintf(" by %s.", strings.TrimSpace(attacker.Name))
-	} else {
-		phrase += "."
+		hitByPhrase := locale.Comment("hit_by")
+		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{attacker}", strings.TrimSpace(attacker.Name))
+		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{victim}", strings.TrimSpace(victim.Name))
+		block = append(block, tts.Phrase{Text: hitByPhrase, Prio: 3})
 	}
-	speaker.Say(phrase, 100)
+
 	if config.SpeakLives {
-		speaker.Say(fmt.Sprintf("%d lives left.", victim.Lives), 4)
+		livesPhrase := locale.Comment("lives_left")
+		livesPhrase = strings.ReplaceAll(livesPhrase, "{lives}", strconv.Itoa(int(victim.Lives)))
+		lastPhraseInBlock := block[len(block)-1] // we copy last phrase in the block (can be w/ or w/o attacker) and append "lives left" to it.
+		block = append(block, tts.Phrase{Text: lastPhraseInBlock.Text + " " + livesPhrase, Prio: 2})
 	}
+
+	speaker.SayBlock(block)
+
 	if config.SpeakCheers {
-		speaker.Say(hitCheers[rand.Intn(len(hitCheers))], 3)
+		speaker.Say(locale.RandomCheer(), 2)
 	}
 }
 
@@ -161,7 +179,7 @@ func handleWebSocketMessage(message string) {
 	switch message {
 	case "table":
 		response := ""
-		for _, line := range g.Table() {
+		for _, line := range printTable() {
 			response += fmt.Sprintln(line)
 		}
 		wsOutCh <- response
@@ -172,4 +190,34 @@ func handleWebSocketMessage(message string) {
 	default:
 		println("Unknown websocket message:", message)
 	}
+}
+
+func printTable() []string {
+	table := []string{}
+	header := fmt.Sprintf(
+		" ID | %-10s | %-20s | %-16s || %12s | %12s | %10s",
+		locale.Label("tableName"),
+		locale.Label("tableDescription"),
+		locale.Label("tableUpdated"),
+		locale.Label("tableHits"),
+		locale.Label("tableDamage"),
+		locale.Label("tableLives"))
+	table = append(table, header)
+
+	table = append(table, "--- | ---------- | -------------------- | ---------------- || ------------ | ------------ | -----------")
+	for _, p := range g.Players {
+		updated := p.Updated.Format("15:04:05.000")
+		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %-16s || %12d | %12d | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
+	}
+	return table
+}
+
+func printableString(str string) string {
+	result := str
+	for i := 0; i < len(result); i++ {
+		if result[i] < 0x20 || result[i] > 0x7E {
+			result = result[:i] + "?" + result[i+1:]
+		}
+	}
+	return result
 }

@@ -91,24 +91,3 @@ func (g *Game) Stop() {
 func (g *Game) IsActive() bool {
 	return g.active
 }
-
-func (g *Game) Table() []string {
-	table := []string{}
-	table = append(table, " ID | Name       | Description          | Updated      || Kills | Deaths | Lives ")
-	table = append(table, "--- | ---------- | -------------------- | ------------ || ----- | ------ | ------")
-	for _, p := range g.Players {
-		updated := p.Updated.Format("15:04:05.000")
-		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %s || %5d | %6d | %5d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
-	}
-	return table
-}
-
-func printableString(str string) string {
-	result := str
-	for i := 0; i < len(result); i++ {
-		if result[i] < 0x20 || result[i] > 0x7E {
-			result = result[:i] + "?" + result[i+1:]
-		}
-	}
-	return result
-}
