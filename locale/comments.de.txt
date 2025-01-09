@@ -1,9 +1,9 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
-launch=Dame, zu Ihren Diensten!
-session_start=Wir haben begonnen.
-session_stop=Wir sind fertig.
-joined={player} verband.
+launch=Die Lady ist bereit.
+session_start=Das Match beginnt.
+session_stop=Das Match ist vorbei.
+joined={player} ist beigetreten.
 hit={victim} wurde getroffen.
 hit_by={victim} wurde von {attacker} getroffen.
 lives_left={lives} Leben übrig.
