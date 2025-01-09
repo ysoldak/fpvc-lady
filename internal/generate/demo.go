@@ -24,10 +24,10 @@ func (d *Demo) Generate(output chan csp.Message) {
 
 	// all players in the simulated game
 	state := []game.Player{
-		{ID: 0xA1, Name: "ALPHA     ", Description: "2.8.0 2.6           ", Lives: 5},
-		{ID: 0xB3, Name: "BRAVO     ", Description: "2.8.0 2.5           ", Lives: 5},
-		{ID: 0xC5, Name: "CHARLIE   ", Description: "2.8.0 2.6           ", Lives: 5},
-		{ID: 0xD4, Name: "DELTA     ", Description: "2.8.0 2.6           ", Lives: 5},
+		{ID: 0xA1, Name: "ALPHA     ", Description: "2.8.0 2.6           ", Lives: 50},
+		{ID: 0xB3, Name: "BRAVO     ", Description: "2.8.0 2.5           ", Lives: 100},
+		{ID: 0xC5, Name: "CHARLIE   ", Description: "2.8.0 2.6           ", Lives: 150},
+		{ID: 0xD4, Name: "DELTA     ", Description: "2.8.0 2.6           ", Lives: 250},
 	}
 
 	// randomize player boot and join the game moments
