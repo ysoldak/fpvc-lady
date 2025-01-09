@@ -18,7 +18,7 @@ USAGE:
    fpvc-lady [global options] command [command options] 
 
 VERSION:
-   0.0.0
+   0.7.1
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -50,14 +50,14 @@ fpvc-lady-darwin-amd64-x.x.x --speak "say -v samantha"
 1. Create a folder of your choice - we will use "D:\FPV-COMBAT\lady" in this example
    - place fpvc-lady-windows-amd64-X.X.X.exe in that folder
 2. Create a Shortut on your Desktop
-   - Target: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.5.1.exe --serial-port COM3"
+   - Target: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.7.1.exe --serial-port COM3"
      - Exchange **COM3** with the port that your CP2102 module uses when plugged in
      - add arguments according to your needs - refer to global options above
    - Execute in: "D:\FPV-COMBAT\lady\"
 3. Replace the standard Icon with our loveley Combat Lady Icon
 
-4. Example for a running the lady in demo mode with cheers, lives, and log file
-  - Target for shortcut:   C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.5.1.exe --source demo --speak google --speak-cheers --speak-lives --log-file D:\FPV-COMBAT\lady\LOGS\combat.txt"
+4. Example for a running the lady in demo mode with cheers, lives, and log file in english
+  - Target for shortcut:   C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.7.1.exe --source demo --speak google --speak-cheers --speak-lives --log-file -D:\FPV-COMBAT\lady\LOGS\combat.txt --locale en"
 
 ### Linux
 
