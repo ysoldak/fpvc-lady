@@ -15,10 +15,10 @@ NAME:
    fpvc-lady - FPV Combat Events Announcer
 
 USAGE:
-   fpvc-lady [global options] command [command options]
+   fpvc-lady [global options] command [command options] 
 
 VERSION:
-   0.0.0
+   0.7.1
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -30,7 +30,8 @@ GLOBAL OPTIONS:
    --log-file value     Path to the log file: save events to (--source serial) or read events from (--source log). (default: "fpvc-lady.log") [$LOG_FILE]
    --log-from value     Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]] [$LOG_FROM]
    --demo-speed value   Number of hits, in average, per minute (default: 10) [$DEMO_SPEED]
-   --speak value        Text-to-speech command: [system], google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
+   --locale value       Locale to use: de, en, ru, etc. (default: "en")
+   --speak value        Text-to-speech command: system, google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
    --speak-lives        Speak lives. (default: false) [$SPEAK_LIVES]
    --speak-cheers       Speak cheers. (default: false) [$SPEAK_CHEERS]
    --help, -h           show help
@@ -49,11 +50,14 @@ fpvc-lady-darwin-amd64-x.x.x --speak "say -v samantha"
 1. Create a folder of your choice - we will use "D:\FPV-COMBAT\lady" in this example
    - place fpvc-lady-windows-amd64-X.X.X.exe in that folder
 2. Create a Shortut on your Desktop
-   - Target: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.3.0.exe --serial-port COM3"
+   - Target: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.7.1.exe --serial-port COM3"
      - Exchange **COM3** with the port that your CP2102 module uses when plugged in
      - add arguments according to your needs - refer to global options above
    - Execute in: "D:\FPV-COMBAT\lady\"
 3. Replace the standard Icon with our loveley Combat Lady Icon
+
+4. Example for a running the lady in demo mode with cheers, lives, and log file in english
+  - Target for shortcut:   C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noexit "D:\FPV-COMBAT\lady\fpvc-lady-windows-amd64-0.7.1.exe --source demo --speak google --speak-cheers --speak-lives --log-file -D:\FPV-COMBAT\lady\LOGS\combat.txt --locale en"
 
 ### Linux
 

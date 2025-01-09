@@ -37,5 +37,7 @@
   "optionsHitPoints": "Punkty za trafienie",
   "optionsDamagePoints": "Punkty za bycie trafionym",
   "optionsResetPin": "Zresetuj PIN dostępu",
-  "optionsExit": "Wyjście"
+  "optionsExit": "Wyjście",
+  "exportLast": "Pobierz ostatnie",
+  "exportAll": "Pobierz wszystko"
 }

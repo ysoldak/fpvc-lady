@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+launch=Die Lady ist bereit.
+session_start=Das Match beginnt.
+session_stop=Das Match ist vorbei.
+joined={player} ist beigetreten.
+hit={victim} wurde getroffen.
+hit_by={victim} wurde von {attacker} getroffen.
+lives_left={lives} Leben übrig.

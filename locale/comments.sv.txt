@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+launch=The Lady är redo!
+session_start=Startad.
+session_stop=Färdig.
+joined={player} gick med.
+hit={victim} träffades.
+hit_by={victim} träffades av {attacker}.
+lives_left={lives} liv kvar.

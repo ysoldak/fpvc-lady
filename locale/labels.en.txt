@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+tableName=Name
+tableDescription=Description
+tableUpdated=Updated
+tableHits=Hits
+tableDamage=Damage
+tableLives=Lives
+tableScore=Score
