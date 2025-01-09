@@ -61,8 +61,10 @@ func (d *Demo) Generate(output chan csp.Message) {
 		v := state[vi]
 		a := state[ai]
 		output <- *csp.NewHitRequest(v.ID, v.Lives).Message()
-		time.Sleep(100 * time.Millisecond)
-		output <- *csp.NewHitResponse(a.ID, 3).Message()
+		if vi != 0 || state[vi].Lives != 5 { // simulate unclaimed hit for ALPHA when they have 5 lives
+			time.Sleep(100 * time.Millisecond)
+			output <- *csp.NewHitResponse(a.ID, 3).Message()
+		}
 
 		delay := 60/d.speed + rand.Intn(5) - 2 // desired frequency +-2 sec
 		if delay < 0 {
@@ -77,5 +79,4 @@ func (d *Demo) Generate(output chan csp.Message) {
 	}
 
 	fmt.Println("Demo finished.")
-	close(output)
 }

@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+tableName=Nazwa
+tableDescription=Opis
+tableUpdated=Zaktualizowano
+tableHits=Trafienia
+tableDamage=Uszkodzenia
+tableLives=Życia
+tableScore=Punkty

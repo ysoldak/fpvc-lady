@@ -1,0 +1,303 @@
+.fpvcm {
+  min-height: 100vh;
+  background-color: #333;
+  padding-bottom: 18px;
+  font-family: Chakra;
+  text-align: center;
+  color: #fff;
+}
+
+.fpvcm-container {
+  width: 100%;
+  background-color: #333;
+  overflow: hidden;
+  padding: 0px !important;
+
+  &_box {
+    background-color: 333;
+    color: #fff;
+    margin: 0px;
+    padding-top: 58px !important;
+    padding-left: 12px;
+    padding: 0px;
+    text-align: left;
+    min-height: 90vh;
+    width: 100%;
+  }
+}
+
+.fpvcm-settings-icon {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.fpvcm-header {
+  position: fixed;
+  background-color: #121212;
+  z-index: 1;
+  width: 100%;
+  font-size: 1.5em;
+  text-align: left;
+  padding-left: 6px;
+  color: white;
+}
+
+@media (max-width:800px) {
+  .hide-narrow {
+    display: none !important
+  }
+}
+
+@media (min-width:680px) {
+
+  .fpvcm-header {
+    height: 52px;
+    padding-top: 12px;
+
+    &_text {
+      position: relative;
+      bottom: -4px;
+    }
+
+    &_version {
+      padding-lefT: 8px;
+      color: #00b50f;
+      font-size: 0.6em;
+      font-weight: bold;
+    }
+
+    &_logo {
+      max-height: 40px;
+    }
+  }
+
+  .fpvcm-input-label {
+    font-family: Chakra !important;
+    font-size: 1.2em;
+    position: relative;
+    top: 6px;
+  }
+
+  .fpvcm-settings-icon {
+    right: 12px;
+    top: 12px;
+  }
+
+  .MuiSlider-markLabel {
+    font-family: Chakra !important;
+    color: #6ecc67 !important;
+  }
+
+}
+
+@media (max-width:679px) {
+
+  .fpvcm-header {
+    height: 40px;
+    padding-top: 8px;
+
+    &_text {
+      position: relative;
+      font-size: 0.8rem;
+      bottom: -4px;
+    }
+
+    &_version {
+      padding-lefT: 8px;
+      color: #00b50f;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+
+    &_logo {
+      max-height: 26px;
+    }
+  }
+
+  .fpvcm-input-label {
+    font-family: Chakra !important;
+    font-size: 0.65em;
+    position: relative;
+    top: 6px;
+  }
+
+  .fpvcm-settings-icon {
+    right: 12px;
+    top: 6px;
+  }
+
+  .MuiSlider-markLabel {
+    font-family: Chakra !important;
+    color: #6ecc67 !important;
+    font-size: 0.75em !important;
+  }
+
+  .fpvcm-container {
+    &_box {
+      padding-top: 28px !important;
+    }
+  }
+
+  .fpvcm-table-header-cell {
+    font-size: 0.6em !important;
+  }
+  
+  .fpvcm-table-cell {
+    font-size: 0.6em !important;
+  }
+  
+}
+
+.fpvcm-option-label {
+  text-align: center;
+}
+
+.fpvcm-card-wrapper {
+  margin-left: 10px;
+  border-color: #006400 !important;
+}
+
+.fpvcm-card {
+  background-color: #000;
+  padding: 2px !important;
+  padding-left: 8px !important;
+  overflow: scroll;
+  height: 46vh;
+  color: #009400 !important;
+}
+
+.fpvcm-disp-stats {
+  font-size: 1.2em;
+}
+
+.fpvcm-disp-stats p {
+  color: white !important;
+}
+
+.fpvcm-disp-log {
+  font-size: 0.8em;
+}
+
+.fpvcm-label {
+  color: #00b50f;
+}
+
+.fpvcm-label-warning {
+  color: #dbd512;
+}
+
+.fpvcm-label-danger {
+  color: #e63720;
+}
+
+.MuiSlider-root {
+  font-family: Chakra !important;
+  color: #00b50f !important;
+}
+
+.MuiTypography-root {
+  font-family: Chakra !important;
+  font-size: 0.9em !important;
+  color: #009400 !important;
+}
+
+.MuiButtonBase-root {
+  font-family: Chakra !important;
+  font-size: 1.4em !important;
+  font-weight: bold !important;
+}
+
+.Mui-selected {
+  color: white !important;
+  background-color: #00b50f !important;
+}
+
+.MuiTab-root {
+  height: 12px !important;
+  background-color: rgba(0, 0, 0, 0) !important;
+  font-size: 0.9em !important;
+}
+
+.MuiTabs-root {
+  color: white !important;
+  margin-lefT: 18px !important;
+}
+
+.MuiTab-textColorPrimary {
+  color: #CACACA !important;
+}
+
+.MuiTab-root.Mui-selected {
+  color: white !important;
+}
+
+.MuiButton-root {
+  color: white !important;
+}
+
+.MuiOutlinedInput-input {
+  color: white !important;
+  border-color: #00b50f !important;
+  --TextField-brandBorderColor: #E0E3E7;
+  --TextField-brandBorderHoverColor: #B2BAC2;
+  --TextField-brandBorderFocusedColor: #6F7E8C;
+
+  & label.Mui-focused {
+    color: #00b50f;
+  }
+
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border-color: #00b50f !important;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00b50f;
+  -webkit-border-radius: 1ex;
+  -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+  background: #000;
+}
+
+.fpvcm-loading {
+  border: solid 0px black;
+  max-width: 200px;
+  position: fixed;
+  margin: 0 auto;
+  top: 200px;
+  left: CALC(50% - 100px);
+  text-align: center;
+}
+
+.fpvcm-pin-screen {
+  border: solid 0px black;
+  max-width: 100%;
+  position: fixed;
+  margin: 0 auto;
+  top: 200px;
+  text-align: center;
+}
+
+.fpvcm-table-bg {
+  background-color: black;
+}
+
+.fpvcm-table-header-cell {
+  color: #00b50f !important;
+  font-weight: bold !important;
+}
+
+.fpvcm-table-cell {
+  color: white !important;
+}

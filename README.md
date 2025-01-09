@@ -15,7 +15,7 @@ NAME:
    fpvc-lady - FPV Combat Events Announcer
 
 USAGE:
-   fpvc-lady [global options] command [command options]
+   fpvc-lady [global options] command [command options] 
 
 VERSION:
    0.0.0
@@ -30,14 +30,13 @@ GLOBAL OPTIONS:
    --log-file value     Path to the log file: save events to (--source serial) or read events from (--source log). (default: "fpvc-lady.log") [$LOG_FILE]
    --log-from value     Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]] [$LOG_FROM]
    --demo-speed value   Number of hits, in average, per minute (default: 10) [$DEMO_SPEED]
-   --speak value        Text-to-speech command: [system], google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
+   --locale value       Locale to use: de, en, ru, etc. (default: "en")
+   --speak value        Text-to-speech command: system, google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
    --speak-lives        Speak lives. (default: false) [$SPEAK_LIVES]
    --speak-cheers       Speak cheers. (default: false) [$SPEAK_CHEERS]
    --help, -h           show help
    --version, -v        print the version
 ```
-
-When `--speak=google`, must have `mplayer` or `ffplay` installed.  
 
 ### Mac
 
@@ -75,4 +74,3 @@ Online (requires `mplayer` or `ffplay`)
 ```
 fpvc-lady-linux-amd64-x.x.x --speak google
 ```
-

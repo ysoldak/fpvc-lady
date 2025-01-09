@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+launch=Леди к вашим услугам!
+session_start=Начали.
+session_stop=Кончили.
+joined={player} подключился.
+hit={victim} повреждение.
+hit_by={victim} повреждение от {attacker}.
+lives_left=Осталось {lives} жизней.

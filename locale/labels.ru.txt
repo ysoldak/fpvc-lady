@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+tableName=Имя
+tableDescription=Описание
+tableUpdated=Обновлено
+tableHits=Попадания
+tableDamage=Повреждения
+tableLives=Жизни
+tableScore=Очки

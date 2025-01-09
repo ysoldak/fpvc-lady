@@ -1,0 +1,53 @@
+{
+  "name": "fpvc-lady-web",
+  "version": "0.1.0",
+  "revision": "1",
+  "description": "FPV Combat Lady Web Interface",
+  "author": "zborecque",
+  "homepage": "./",
+  "buildDir": "../build/front/",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/material": "^5.16.7",
+    "axios": "^1.7.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-scripts": "5.0.1",
+    "react-use-websocket": "^4.9.0",
+    "sass": "^1.77.8",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build && node ./move_build.js",
+    "eject": "react-scripts eject"
+  },
+  "build": {
+    "appId": "com.fpvcombat.lady.web",
+    "productName": "FPV Combat Lady Web Interface",
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

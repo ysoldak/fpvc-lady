@@ -1,0 +1,9 @@
+# THIS FILE IS GENERATED, DO NOT EDIT
+
+tableName=Namn
+tableDescription=Beskrivning
+tableUpdated=Uppdaterad
+tableHits=Träffar
+tableDamage=Skada
+tableLives=Livs
+tableScore=Poäng
