@@ -50,6 +50,31 @@ function Main(props) {
     return 0
   }
 
+  function downloadData(full) {
+    let filename = 'fpvcombat_session_' + new Date().toJSON().slice(0,19).replace('T', '__')
+    filename += full ? '__all' : ''
+    let type = 'text'
+    let data = ''
+    if (props.msgs.length > 0) {
+      data = full ? props.msgs.join('\n\n') : props.msgs[0]
+    }
+    var file = new Blob([data], {type: type})
+    if (window.navigator.msSaveOrOpenBlob) // IE10+
+      window.navigator.msSaveOrOpenBlob(file, filename);
+    else { // Others
+      var a = document.createElement("a")
+      var url = URL.createObjectURL(file)
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      setTimeout(function() {
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url)
+      }, 0) 
+    }
+  }
+
   React.useEffect(() => {
     if (props.msgs.length > 0) {
       let rows = props.msgs[0].split('\n').filter((e, i) => i > 1 && e.length > 0).map((msg, i) => {
@@ -183,6 +208,20 @@ function Main(props) {
                       </div>
                     </CardContent>
                   </Card>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                  <Grid container spacing={4} style={{marginLeft: '0px'}}>
+                    <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
+                      <Button variant="contained" size="small" onClick={() => downloadData(false)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+                        {txt('exportLast', props.config.lang)}
+                      </Button>
+                      </Grid>
+                      <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
+                      <Button variant="contained" size="small" onClick={() => downloadData(true)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+                        {txt('exportAll', props.config.lang)}
+                      </Button>
+                    </Grid>
+                  </Grid>
                 </Box>
               </div>
           </Box>

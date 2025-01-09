@@ -36,5 +36,7 @@
   "optionsHitPoints": "Treffen punkte",
   "optionsDamagePoints": "Schaden punkte",
   "optionsResetPin": "Reset access PIN",
-  "optionsExit": "Verlassen"
+  "optionsExit": "Verlassen",
+  "exportLast": "Export letzte",
+  "exportAll": "Alles exportieren"
 }
