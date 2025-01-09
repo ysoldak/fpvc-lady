@@ -37,5 +37,7 @@
   "optionsHitPoints": "Points for hit score",
   "optionsDamagePoints": "Points for receiving damage",
   "optionsResetPin": "Reset access PIN",
-  "optionsExit": "Exit"
+  "optionsExit": "Exit",
+  "exportLast": "Export last",
+  "exportAll": "Export all"
 }
