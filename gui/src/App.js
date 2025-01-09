@@ -72,6 +72,8 @@ function App() {
   const [msgs, setMsgs] = useState([])
   const [poll, setPoll] = useState(null)
   const [showLady, setShowLady] = useState(false)
+  const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
+  const [ladyClicks, setLadyClicks] = useState(0)
   const [ladyUp, setLadyUp] = useState(false)
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(
@@ -128,7 +130,23 @@ function App() {
   }
 
   function toggleLady() {
-    setShowLady((!showLady &&  Math.random() > 0.5) ? true : false)
+    let randomFactor = 1 - ((ladyClicks + 1) / 10)
+    if (!showLady) {
+      if (Math.random() > randomFactor || ladyClicks >= 5) {
+        setShowLady(true)
+        setLadyJustTriggered(true)
+        setTimeout(() => {
+          setLadyJustTriggered(false)
+        }, 2000)
+      }
+      else {
+        setLadyClicks(ladyClicks+1)
+      }
+    }
+    else if (!ladyJustTriggered) {
+      setLadyClicks(0)
+      setShowLady(false)
+    }
   }
 
   return (
@@ -148,7 +166,7 @@ function App() {
       </header>
       <Container maxWidth="false" className="fpvcm-container">
         {showLady
-          ? <img src={ladyBW} alt="FPV Combat Lady" style={{float: "left", margin: "10px", maxWidth: "80vw"}} onClick={() => setShowLady(false)} />
+          ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw", flex: "justify"}} onClick={() => toggleLady()} />
           : (loading && !showConfig && !showLady)
             ? (<Loading lang={config.lang} />)
             : showConfig
