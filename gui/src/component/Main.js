@@ -4,6 +4,8 @@ import '../App.scss'
 
 import txt from '../locale/locale'
 
+import Loading from '../component/Loading'
+
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 // import Slider from '@mui/material/Slider'
@@ -50,12 +52,33 @@ function Main(props) {
     return 0
   }
 
-  function downloadData(full) {
-    let filename = 'fpvcombat_session_' + new Date().toJSON().slice(0,19).replace('T', '__')
+  function downloadData(full, stats) {
+    let filename = 'fpvcombat_session_'
+    filename += stats ? 'stats_' : ''
+    filename += new Date().toJSON().slice(0,19).replace('T', '__')
     filename += full ? '__all' : ''
     let type = 'text'
     let data = ''
-    if (props.msgs.length > 0) {
+    if (stats) {
+      data += txt('player', props.config.lang).substring(0, 16).padEnd(16, ' ') + ' | '
+      data += txt('desc', props.config.lang).substring(0, 20).padEnd(20, ' ') + ' || '
+      data += txt('hits', props.config.lang).substring(0, 12).padStart(12, ' ') + ' | '
+      data += txt('damage', props.config.lang).substring(0, 12).padStart(12, ' ') + ' | '
+      data += txt('lives', props.config.lang).substring(0, 12).padStart(12, ' ') + ' | '
+      data += txt('score', props.config.lang).substring(0, 12).padStart(12, ' ') + ' \n'
+      data += '---------------- | -------------------- || ------------ | ------------ | ------------ | ------------ \n'
+      rows.forEach((row) => {
+        data += (row.playerName.substring(0, 11) + ' (' + row.playerId + ')').padEnd(16, ' ') + ' | '
+        data += row.playerDesc.substring(0, 20).padEnd(20, ' ') + ' || '
+        data += row.hits.toString().substring(0, 12).padStart(12, ' ') + ' | '
+        data += row.damage.toString().substring(0, 12).padStart(12, ' ') + ' | '
+        data += row.lives.toString().substring(0, 12).padStart(12, ' ') + ' | '
+        data += row.score.toString().substring(0, 12).padStart(12, ' ') + ' \n'
+      })
+      data += '\n'
+      data += txt('totalHits', props.config.lang) + ': ' + rows.reduce((total, row) => total += parseInt(row.hits), 0)
+    }
+    else if (!stats && props.msgs.length > 0) {
       data = full ? props.msgs.join('\n\n') : props.msgs[0]
     }
     var file = new Blob([data], {type: type})
@@ -130,6 +153,7 @@ function Main(props) {
               <Tabs value={tab} onChange={switchTab} sx={{color: 'red'}}>
                 <Tab label="Stats" id="fpvcmTab0"  />
                 <Tab label="Log" id="fpvcmTab1" />
+                {props.loading && <Loading lang={props.config.lang} />}
               </Tabs>
             </Box>
               <div
@@ -187,6 +211,15 @@ function Main(props) {
                     </CardContent>
                   </Card>
                 </Box>
+                <Box sx={{ p: 1 }}>
+                  <Grid container spacing={4} style={{marginLeft: '0px'}}>
+                    <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
+                      <Button variant="contained" size="small" onClick={() => downloadData(false, true)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+                        {txt('exportStats', props.config.lang)}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
               </div>
               <div
                 role="tabpanel"
@@ -212,12 +245,12 @@ function Main(props) {
                 <Box sx={{ p: 1 }}>
                   <Grid container spacing={4} style={{marginLeft: '0px'}}>
                     <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-                      <Button variant="contained" size="small" onClick={() => downloadData(false)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+                      <Button variant="contained" size="small" onClick={() => downloadData(false, false)} style={{minWidth: '100%', overflow: 'hidden'}}> 
                         {txt('exportLast', props.config.lang)}
                       </Button>
-                      </Grid>
-                      <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-                      <Button variant="contained" size="small" onClick={() => downloadData(true)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+                    </Grid>
+                    <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
+                      <Button variant="contained" size="small" onClick={() => downloadData(true, false)} style={{minWidth: '100%', overflow: 'hidden'}}> 
                         {txt('exportAll', props.config.lang)}
                       </Button>
                     </Grid>

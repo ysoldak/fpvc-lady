@@ -166,10 +166,8 @@ function App() {
       </header>
       <Container maxWidth="false" className="fpvcm-container">
         {showLady
-          ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw", flex: "justify"}} onClick={() => toggleLady()} />
-          : (loading && !showConfig && !showLady)
-            ? (<Loading lang={config.lang} />)
-            : showConfig
+          ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
+          :  showConfig
               ? (<Options
                   config={config}
                   setConfig={setConfig}
@@ -179,6 +177,7 @@ function App() {
                 />)
               : (<Main
                   config={config}
+                  loading={loading}
                   countDownMarks={countDownMarks(config.lang)}
                   roundTimeMarks={roundTimeMarks}
                   sendMessage={sendMessage}
