@@ -168,23 +168,23 @@ function App() {
         {showLady
           ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
           :  showConfig
-              ? (<Options
-                  config={config}
-                  setConfig={setConfig}
-                  roundTimeMarks={roundTimeMarks}
-                  countDownMarks={countDownMarks}
-                  toggleSettings={toggleSettings}
-                />)
-              : (<Main
-                  config={config}
-                  loading={loading}
-                  countDownMarks={countDownMarks(config.lang)}
-                  roundTimeMarks={roundTimeMarks}
-                  sendMessage={sendMessage}
-                  isAdmin={isAdmin}
-                  ladyUp={ladyUp}
-                  msgs={msgs}
-                />)
+            ? (<Options
+                config={config}
+                setConfig={setConfig}
+                roundTimeMarks={roundTimeMarks}
+                countDownMarks={countDownMarks}
+                toggleSettings={toggleSettings}
+              />)
+            : (<Main
+                config={config}
+                loading={loading}
+                countDownMarks={countDownMarks(config.lang)}
+                roundTimeMarks={roundTimeMarks}
+                sendMessage={sendMessage}
+                isAdmin={isAdmin}
+                ladyUp={ladyUp}
+                msgs={msgs}
+              />)
         }
       </Container>
     </div>
