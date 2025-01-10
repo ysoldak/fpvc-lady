@@ -38,6 +38,7 @@
   "optionsDamagePoints": "Points for receiving damage",
   "optionsResetPin": "Reset access PIN",
   "optionsExit": "Exit",
+  "exportStats": "Export stats",
   "exportLast": "Export last",
   "exportAll": "Export all"
 }
