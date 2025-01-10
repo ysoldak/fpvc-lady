@@ -7,22 +7,21 @@ import (
 	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
-type Game struct {
-	Players []*Player
-	Victim  *Player
-
-	active bool
+type Session struct {
+	Active  bool      `json:"active"`
+	Players []*Player `json:"players"`
+	Victim  *Player   `json:"-"`
 }
 
-func NewGame() Game {
-	return Game{
+func NewSession() Session {
+	return Session{
 		Players: []*Player{},
-		active:  true,
+		Active:  true,
 	}
 }
 
-func (g *Game) Beacon(event *csp.Beacon) (player *Player, new bool) {
-	if !g.active {
+func (g *Session) Beacon(event *csp.Beacon) (player *Player, new bool) {
+	if !g.Active {
 		return
 	}
 	player, new = g.Player(event.ID)
@@ -32,24 +31,24 @@ func (g *Game) Beacon(event *csp.Beacon) (player *Player, new bool) {
 	return
 }
 
-func (g *Game) HitRequest(event *csp.HitRequest) {
-	if !g.active {
+func (g *Session) HitRequest(event *csp.HitRequest) {
+	if !g.Active {
 		return
 	}
 	victim, _ := g.Player(event.ID)
 	victim.Lives = event.Lives - 1
-	victim.Deaths++
+	victim.Damage++
 	victim.Updated = time.Now()
 	g.Victim = victim
 }
 
-func (g *Game) HitResponse(event *csp.HitResponse) (victim *Player) {
-	if !g.active {
+func (g *Session) HitResponse(event *csp.HitResponse) (victim *Player) {
+	if !g.Active {
 		return nil
 	}
 	attacker, _ := g.Player(event.ID)
 	if g.Victim != nil {
-		attacker.Kills++
+		attacker.Hits++
 		attacker.Updated = time.Now()
 		victim = g.Victim
 		g.Victim = nil
@@ -58,13 +57,13 @@ func (g *Game) HitResponse(event *csp.HitResponse) (victim *Player) {
 	return nil
 }
 
-func (g *Game) Player(id byte) (player *Player, isNew bool) {
+func (g *Session) Player(id byte) (player *Player, isNew bool) {
 	for _, p := range g.Players {
 		if p.ID == id {
 			return p, false
 		}
 	}
-	if !g.active {
+	if !g.Active {
 		return nil, false
 	}
 	player = &Player{
@@ -78,16 +77,19 @@ func (g *Game) Player(id byte) (player *Player, isNew bool) {
 	return player, true
 }
 
-func (g *Game) Start() {
+func (g *Session) Start() {
+	if g.Active {
+		return
+	}
 	g.Players = g.Players[0:0]
 	g.Victim = nil
-	g.active = true
+	g.Active = true
 }
 
-func (g *Game) Stop() {
-	g.active = false
+func (g *Session) Stop() {
+	g.Active = false
 }
 
-func (g *Game) IsActive() bool {
-	return g.active
+func (g *Session) IsActive() bool {
+	return g.Active
 }

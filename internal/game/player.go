@@ -8,7 +8,7 @@ type Player struct {
 	Description string
 	Value       byte
 	Lives       byte
-	Kills       byte
-	Deaths      byte
+	Hits        byte
+	Damage      byte
 	Updated     time.Time
 }
