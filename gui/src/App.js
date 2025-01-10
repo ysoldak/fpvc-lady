@@ -11,7 +11,6 @@ import txt from './locale/locale'
 
 import Main from './component/Main'
 import Options from './component/Options'
-import Loading from './component/Loading'
 
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
