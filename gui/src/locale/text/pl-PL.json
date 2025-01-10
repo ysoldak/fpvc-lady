@@ -38,6 +38,7 @@
   "optionsDamagePoints": "Punkty za bycie trafionym",
   "optionsResetPin": "Zresetuj PIN dostępu",
   "optionsExit": "Wyjście",
+  "exportStats": "Pobierz tabelę",
   "exportLast": "Pobierz ostatnie",
   "exportAll": "Pobierz wszystko"
 }

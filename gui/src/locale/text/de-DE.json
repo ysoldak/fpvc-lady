@@ -37,6 +37,7 @@
   "optionsDamagePoints": "Schadenspunkte",
   "optionsResetPin": "PIN zurücksetzen",
   "optionsExit": "zurück",
+  "exportStats": "Export stats",
   "exportLast": "Export letzte",
   "exportAll": "Alles exportieren"
 }
