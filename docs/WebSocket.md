@@ -29,44 +29,40 @@ Session status update (backend pushes w/o explicit request from frontend), note 
     "active" : true,
     "players" : [
       {
-        "Lives" : 49,
-        "ID" : 161,
-        "Description" : "2.8.0 2.6           ",
-        "Updated" : "2025-01-10T22:47:03.922416+01:00",
-        "Damage" : 1,
-        "Name" : "ALPHA     ",
-        "Hits" : 0,
-        "Value" : 0
+        "lives" : 49,
+        "id" : 161,
+        "description" : "2.8.0 2.6",
+        "updated" : "2025-01-10T22:47:03.922416+01:00",
+        "damage" : 1,
+        "name" : "ALPHA",
+        "hits" : 0
       },
       {
-        "Lives" : 99,
-        "ID" : 179,
-        "Description" : "2.8.0 2.5           ",
-        "Updated" : "2025-01-10T22:46:57.820151+01:00",
-        "Damage" : 1,
-        "Name" : "BRAVO     ",
-        "Hits" : 0,
-        "Value" : 0
+        "lives" : 99,
+        "id" : 179,
+        "description" : "2.8.0 2.5",
+        "updated" : "2025-01-10T22:46:57.820151+01:00",
+        "damage" : 1,
+        "name" : "BRAVO",
+        "hits" : 0
       },
       {
-        "Lives" : 149,
-        "ID" : 197,
-        "Description" : "2.8.0 2.6           ",
-        "Updated" : "2025-01-10T22:47:08.022816+01:00",
-        "Damage" : 1,
-        "Name" : "CHARLIE   ",
-        "Hits" : 2,
-        "Value" : 0
+        "lives" : 149,
+        "id" : 197,
+        "description" : "2.8.0 2.6",
+        "updated" : "2025-01-10T22:47:08.022816+01:00",
+        "damage" : 1,
+        "name" : "CHARLIE",
+        "hits" : 2
       },
       {
-        "Lives" : 249,
-        "ID" : 212,
-        "Description" : "2.8.0 2.6           ",
-        "Updated" : "2025-01-10T22:47:08.122942+01:00",
-        "Damage" : 1,
-        "Name" : "DELTA     ",
-        "Hits" : 2,
-        "Value" : 0
+        "lives" : 249,
+        "id" : 212,
+        "description" : "2.8.0 2.6",
+        "updated" : "2025-01-10T22:47:08.122942+01:00",
+        "damage" : 1,
+        "name" : "DELTA",
+        "hits" : 2
       }
     ]
   },
@@ -95,44 +91,40 @@ _note "seq" value is the same as in request_
     "active" : true,
     "players" : [
       {
-        "Lives" : 49,
-        "ID" : 161,
-        "Description" : "2.8.0 2.6           ",
-        "Updated" : "2025-01-10T22:47:03.922416+01:00",
-        "Damage" : 1,
-        "Name" : "ALPHA     ",
-        "Hits" : 0,
-        "Value" : 0
+        "lives" : 49,
+        "id" : 161,
+        "description" : "2.8.0 2.6",
+        "updated" : "2025-01-10T22:47:03.922416+01:00",
+        "damage" : 1,
+        "name" : "ALPHA",
+        "hits" : 0
       },
       {
-        "Lives" : 99,
-        "ID" : 179,
-        "Description" : "2.8.0 2.5           ",
-        "Updated" : "2025-01-10T22:46:57.820151+01:00",
-        "Damage" : 1,
-        "Name" : "BRAVO     ",
-        "Hits" : 0,
-        "Value" : 0
+        "lives" : 99,
+        "id" : 179,
+        "description" : "2.8.0 2.5",
+        "updated" : "2025-01-10T22:46:57.820151+01:00",
+        "damage" : 1,
+        "name" : "BRAVO",
+        "hits" : 0
       },
       {
-        "Lives" : 149,
-        "ID" : 197,
-        "Description" : "2.8.0 2.6           ",
-        "Updated" : "2025-01-10T22:47:08.022816+01:00",
-        "Damage" : 1,
-        "Name" : "CHARLIE   ",
-        "Hits" : 2,
-        "Value" : 0
+        "lives" : 149,
+        "id" : 197,
+        "description" : "2.8.0 2.6",
+        "updated" : "2025-01-10T22:47:08.022816+01:00",
+        "damage" : 1,
+        "name" : "CHARLIE",
+        "hits" : 2
       },
       {
-        "Lives" : 249,
-        "ID" : 212,
-        "Description" : "2.8.0 2.6           ",
-        "Updated" : "2025-01-10T22:47:08.122942+01:00",
-        "Damage" : 1,
-        "Name" : "DELTA     ",
-        "Hits" : 2,
-        "Value" : 0
+        "lives" : 249,
+        "id" : 212,
+        "description" : "2.8.0 2.6",
+        "updated" : "2025-01-10T22:47:08.122942+01:00",
+        "damage" : 1,
+        "name" : "DELTA",
+        "hits" : 2
       }
     ]
   },

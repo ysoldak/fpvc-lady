@@ -12,13 +12,13 @@ func sayHit(victim, attacker *game.Player) {
 	block := tts.PhraseBlock{}
 
 	hitPhrase := locale.Comment("hit")
-	hitPhrase = strings.ReplaceAll(hitPhrase, "{victim}", strings.TrimSpace(victim.Name))
+	hitPhrase = strings.ReplaceAll(hitPhrase, "{victim}", victim.Name)
 	block = append(block, tts.Phrase{Text: hitPhrase, Prio: 100})
 
 	if attacker != nil {
 		hitByPhrase := locale.Comment("hit_by")
-		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{attacker}", strings.TrimSpace(attacker.Name))
-		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{victim}", strings.TrimSpace(victim.Name))
+		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{attacker}", attacker.Name)
+		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{victim}", victim.Name)
 		block = append(block, tts.Phrase{Text: hitByPhrase, Prio: 3})
 	}
 

@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	csp "github.com/ysoldak/fpvc-serial-protocol"
@@ -25,8 +26,8 @@ func (g *Session) Beacon(event *csp.Beacon) (player *Player, new bool) {
 		return
 	}
 	player, new = g.Player(event.ID)
-	player.Name = event.Name
-	player.Description = event.Description
+	player.Name = strings.TrimSpace(event.Name)
+	player.Description = strings.TrimSpace(event.Description)
 	player.Updated = time.Now()
 	return
 }

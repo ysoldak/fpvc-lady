@@ -24,7 +24,7 @@ func handleCombatMessage(message csp.Message) {
 		player, new := session.Beacon(event)
 		if new {
 			joinedPhrase := locale.Comment("joined")
-			joinedPhrase = strings.ReplaceAll(joinedPhrase, "{player}", strings.TrimSpace(player.Name))
+			joinedPhrase = strings.ReplaceAll(joinedPhrase, "{player}", player.Name)
 			speaker.Say(joinedPhrase, 5)
 		}
 	case csp.CommandHit:

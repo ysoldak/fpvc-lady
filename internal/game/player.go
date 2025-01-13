@@ -3,12 +3,11 @@ package game
 import "time"
 
 type Player struct {
-	ID          byte
-	Name        string
-	Description string
-	Value       byte
-	Lives       byte
-	Hits        byte
-	Damage      byte
-	Updated     time.Time
+	ID          byte      `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Lives       byte      `json:"lives"`
+	Hits        byte      `json:"hits"`
+	Damage      byte      `json:"damage"`
+	Updated     time.Time `json:"updated"`
 }
