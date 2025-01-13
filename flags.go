@@ -14,13 +14,15 @@ const (
 	flagLogFile = "log-file" // log file path
 	flagLogFrom = "log-from" // log from datetime: YYYY/MM/DD HH:mm:SS.SSSSSS
 
+	flagLogSocket = "log-socket" // log socket messages
+
 	flagDemoSpeed = "demo-speed" // avg events per minute
 
 	flagLocale = "locale"
 
-	flagSpeak       = "speak"
-	flagSpeakLives  = "speak-lives"
-	flagSpeakCheers = "speak-cheers"
+	flagSpeakCommand = "speak"
+	flagSpeakLives   = "speak-lives"
+	flagSpeakCheers  = "speak-cheers"
 )
 
 const (
@@ -51,10 +53,17 @@ func getFlags() []cli.Flag {
 		},
 		&cli.StringFlag{
 			Name:     flagLogFile,
-			Usage:    "Path to the log file: save events to (--source serial) or read events from (--source log).",
+			Usage:    "Path to the log file: save events to (when --source=serial) or read events from (when --source=log).",
 			EnvVars:  []string{"LOG_FILE"},
 			Required: false,
 			Value:    defaultLogFilePath,
+		},
+		&cli.StringFlag{
+			Name:     flagLogSocket,
+			Usage:    "File path to log web socket communication.",
+			EnvVars:  []string{"LOG_SOCKET"},
+			Required: false,
+			Value:    "",
 		},
 		&cli.StringFlag{
 			Name:     flagLogFrom,
@@ -76,7 +85,7 @@ func getFlags() []cli.Flag {
 			Value:    "en",
 		},
 		&cli.StringFlag{
-			Name:     flagSpeak,
+			Name:     flagSpeakCommand,
 			Usage:    "Text-to-speech command: system, google, none or any other command to convert text to speech.",
 			EnvVars:  []string{"SPEAK"},
 			Required: false,

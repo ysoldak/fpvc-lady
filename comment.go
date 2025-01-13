@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/urfave/cli/v2"
@@ -16,25 +14,25 @@ import (
 	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
-var g game.Game
+var session game.Session
 var logger log.Logger
 var speaker *tts.Tts
 var locale *Locale
 
 var lastHitTime = time.Time{}
 
-var config Config = Config{}
+var config Config
 
 func commentAction(cc *cli.Context) (err error) {
 
 	// Init config
-	config.InitFromContext(cc)
+	config = NewConfigFromContext(cc)
 
 	// Init locale
 	locale = NewLocale(config.Locale)
 
 	// TTS
-	speak := cc.String(flagSpeak)
+	speak := cc.String(flagSpeakCommand)
 	speaker = tts.NewByName(speak, config.Locale) // technically, locale != language, but we expect two-letter locale codes, so they can be used as language codes too
 
 	// Source & Log
@@ -68,8 +66,9 @@ func commentAction(cc *cli.Context) (err error) {
 	go generator.Generate(messageChan)
 
 	// Game state
-	g = game.NewGame()
+	session = game.NewSession()
 
+	// Http server
 	go doServe(int64(cc.Int(flagHttpPort)))
 
 	// Main loop
@@ -87,7 +86,7 @@ func commentAction(cc *cli.Context) (err error) {
 		case message := <-messageChan:
 			handleCombatMessage(message)
 		case message := <-wsInCh:
-			handleWebSocketMessage(message)
+			handleSocketMessage(message)
 		case <-ticker.C:
 			handleTicker()
 		}
@@ -95,129 +94,10 @@ func commentAction(cc *cli.Context) (err error) {
 
 }
 
-func handleCombatMessage(message csp.Message) {
-	if !g.IsActive() {
-		return // just drop any message when game is not active
-	}
-
-	if len(g.Players) == 0 {
-		logger.LogString("") // just an empty line to separate individual sessions visually in the log
-	}
-
-	logger.LogMessage(message)
-
-	switch message.Command {
-	case csp.CommandBeacon:
-		event := csp.NewBeaconFromMessage(&message)
-		player, new := g.Beacon(event)
-		if new {
-			joinedPhrase := locale.Comment("joined")
-			joinedPhrase = strings.ReplaceAll(joinedPhrase, "{player}", strings.TrimSpace(player.Name))
-			speaker.Say(joinedPhrase, 5)
-		}
-	case csp.CommandHit:
-		if message.IsRequest() {
-			event := csp.NewHitRequestFromMessage(&message)
-			g.HitRequest(event)
-			lastHitTime = time.Now()
-		}
-		if message.IsResponse() {
-			event := csp.NewHitResponseFromMessage(&message)
-			if victim := g.HitResponse(event); victim != nil {
-				attacker, _ := g.Player(event.ID)
-				sayHit(victim, attacker)
-				lastHitTime = time.Time{}
-			}
-		}
-	}
-
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
-	for _, line := range printTable() {
-		fmt.Println(line)
-	}
-}
-
 func handleTicker() {
 	if !lastHitTime.IsZero() && time.Since(lastHitTime) > 200*time.Millisecond { // unclaimed hit
-		sayHit(g.Victim, nil)
-		g.Victim = nil
+		sayHit(session.Victim, nil)
+		session.Victim = nil
 		lastHitTime = time.Time{}
 	}
-}
-
-func sayHit(victim, attacker *game.Player) {
-	block := tts.PhraseBlock{}
-
-	hitPhrase := locale.Comment("hit")
-	hitPhrase = strings.ReplaceAll(hitPhrase, "{victim}", strings.TrimSpace(victim.Name))
-	block = append(block, tts.Phrase{Text: hitPhrase, Prio: 100})
-
-	if attacker != nil {
-		hitByPhrase := locale.Comment("hit_by")
-		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{attacker}", strings.TrimSpace(attacker.Name))
-		hitByPhrase = strings.ReplaceAll(hitByPhrase, "{victim}", strings.TrimSpace(victim.Name))
-		block = append(block, tts.Phrase{Text: hitByPhrase, Prio: 3})
-	}
-
-	if config.SpeakLives {
-		livesPhrase := locale.Comment("lives_left")
-		livesPhrase = strings.ReplaceAll(livesPhrase, "{lives}", strconv.Itoa(int(victim.Lives)))
-		lastPhraseInBlock := block[len(block)-1] // we copy last phrase in the block (can be w/ or w/o attacker) and append "lives left" to it.
-		block = append(block, tts.Phrase{Text: lastPhraseInBlock.Text + " " + livesPhrase, Prio: 2})
-	}
-
-	speaker.SayBlock(block)
-
-	if config.SpeakCheers {
-		speaker.Say(locale.RandomCheer(), 2)
-	}
-}
-
-func handleWebSocketMessage(message string) {
-	switch message {
-	case "table":
-		response := ""
-		for _, line := range printTable() {
-			response += fmt.Sprintln(line)
-		}
-		wsOutCh <- response
-	case "start":
-		g.Start()
-	case "stop":
-		g.Stop()
-	default:
-		println("Unknown websocket message:", message)
-	}
-}
-
-func printTable() []string {
-	table := []string{}
-	header := fmt.Sprintf(
-		" ID | %-10s | %-20s | %-16s || %12s | %12s | %10s",
-		strings.TrimSpace(locale.Label("tableName")),
-		strings.TrimSpace(locale.Label("tableDescription")),
-		strings.TrimSpace(locale.Label("tableUpdated")),
-		strings.TrimSpace(locale.Label("tableHits")),
-		strings.TrimSpace(locale.Label("tableDamage")),
-		strings.TrimSpace(locale.Label("tableLives")))
-	table = append(table, header)
-
-	table = append(table, "--- | ---------- | -------------------- | ---------------- || ------------ | ------------ | -----------")
-	for _, p := range g.Players {
-		updated := p.Updated.Format("15:04:05.000")
-		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %-16s || %12d | %12d | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Kills, p.Deaths, p.Lives))
-	}
-	return table
-}
-
-func printableString(str string) string {
-	result := str
-	for i := 0; i < len(result); i++ {
-		if result[i] < 0x20 || result[i] > 0x7E {
-			result = result[:i] + "?" + result[i+1:]
-		}
-	}
-	return result
 }
