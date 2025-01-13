@@ -18,6 +18,12 @@ func NewLocale(id string) *Locale {
 	commentsFile := localeDir + "/comments.en.txt"
 	labelsFile := localeDir + "/labels.en.txt"
 
+	locale := &Locale{
+		comments: fileToMap(commentsFile),
+		labels:   fileToMap(labelsFile),
+		cheers:   fileToSlice(cheersFile),
+	}
+
 	if id != "en" {
 		files, err := os.ReadDir(localeDir)
 		if err != nil {
@@ -26,19 +32,18 @@ func NewLocale(id string) *Locale {
 		for _, file := range files {
 			if file.Name() == "comments."+id+".txt" {
 				commentsFile = localeDir + "/" + file.Name()
+				locale.comments = mergeMaps(locale.comments, fileToMap(commentsFile))
 			} else if file.Name() == "labels."+id+".txt" {
 				labelsFile = localeDir + "/" + file.Name()
+				locale.labels = mergeMaps(locale.labels, fileToMap(labelsFile))
 			} else if file.Name() == "cheers."+id+".txt" {
 				cheersFile = localeDir + "/" + file.Name()
+				locale.cheers = fileToSlice(cheersFile)
 			}
 		}
 	}
 
-	return &Locale{
-		comments: fileToMap(commentsFile),
-		labels:   fileToMap(labelsFile),
-		cheers:   fileToSlice(cheersFile),
-	}
+	return locale
 }
 
 func (l *Locale) Comment(id string) string {
@@ -82,6 +87,17 @@ func fileToMap(file string) map[string]string {
 		if len(parts) == 2 {
 			result[string(parts[0])] = string(parts[1])
 		}
+	}
+	return result
+}
+
+func mergeMaps(a, b map[string]string) map[string]string {
+	result := make(map[string]string)
+	for k, v := range a {
+		result[k] = v
+	}
+	for k, v := range b {
+		result[k] = v
 	}
 	return result
 }

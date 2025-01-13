@@ -1,7 +1,6 @@
 package generate
 
 import (
-	"fmt"
 	"time"
 
 	"math/rand"
@@ -35,8 +34,6 @@ func (d *Demo) Generate(output chan csp.Message) {
 	for range state {
 		delays = append(delays, rand.Intn(len(state)))
 	}
-
-	fmt.Println("Demo started.")
 
 	time.Sleep(1 * time.Second)
 
@@ -77,6 +74,4 @@ func (d *Demo) Generate(output chan csp.Message) {
 			break
 		}
 	}
-
-	fmt.Println("Demo finished.")
 }

@@ -117,6 +117,4 @@ func (f *Log) Generate(output chan csp.Message) {
 		output <- *message
 	}
 
-	fmt.Println("Replay finished.")
-
 }

@@ -1,5 +1,10 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
+title=FPVCombat Announcer
+
+connected=Connected
+disconnected=Disconnected
+
 tableName=Name
 tableDescription=Description
 tableUpdated=Updated
@@ -7,3 +12,17 @@ tableHits=Hits
 tableDamage=Damage
 tableLives=Lives
 tableScore=Score
+
+on=on
+off=off
+
+configSource=Source
+configLocale=Locale
+configCheers=Cheers
+configLives=Lives
+configSpeech=Speech
+
+keysQuit=quit
+keysToggleConnection=connect/disconnect
+keysToggleLives=toggle lives
+keysToggleCheers=toggle cheers

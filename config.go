@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	Source       string `json:"-"`
 	LogSocket    string `json:"logSocket"`
 	Locale       string `json:"locale"`
 	SpeakCommand string `json:"speakCommand"`
@@ -16,6 +17,7 @@ type Config struct {
 
 func NewConfigFromContext(cc *cli.Context) (config Config) {
 	return Config{
+		Source:       cc.String(flagSource),
 		LogSocket:    cc.String(flagLogSocket),
 		Locale:       cc.String(flagLocale),
 		SpeakCommand: cc.String(flagSpeakCommand),
