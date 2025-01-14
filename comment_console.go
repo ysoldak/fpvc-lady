@@ -16,7 +16,7 @@ func dumpTable() {
 }
 
 func printTable() {
-	table := sessionTable()
+	table := sessionTableDecorated(true)
 	tHeight := len(table)
 	tWidth := len([]rune(table[0]))
 
@@ -39,7 +39,7 @@ func printTable() {
 	emitStr(screen, 0, 0, tcell.StyleDefault, fmt.Sprintf("┌%s┐", strings.Repeat("─", tWidth+2)))
 	emitStr(screen, 0, 1, tcell.StyleDefault, fmt.Sprintf("│ %s │", header))
 	emitStr(screen, 0, 2, tcell.StyleDefault, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth+2)))
-	for i, line := range sessionTable() {
+	for i, line := range table {
 		emitStr(screen, 0, i+3, tcell.StyleDefault, "│ "+line+" │")
 	}
 	emitStr(screen, 0, 3+tHeight+0, tcell.StyleDefault, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth+2)))
@@ -51,6 +51,10 @@ func printTable() {
 }
 
 func sessionTable() []string {
+	return sessionTableDecorated(false)
+}
+
+func sessionTableDecorated(decorate bool) []string {
 	table := []string{}
 	header := fmt.Sprintf(
 		" ID | %-10s | %-20s | %-16s || %12s | %12s | %10s",
@@ -65,7 +69,17 @@ func sessionTable() []string {
 	table = append(table, "--- | ---------- | -------------------- | ---------------- || ------------ | ------------ | ----------")
 	for _, p := range session.Players {
 		updated := p.Updated.Format("15:04:05.000")
-		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %-16s || %12d | %12d | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, p.Hits, p.Damage, p.Lives))
+		hits := fmt.Sprintf("%d", p.Hits)
+		damage := fmt.Sprintf("%d", p.Damage)
+		if decorate {
+			if session.LastHit.Attacker != nil && p.ID == session.LastHit.Attacker.ID {
+				hits = fmt.Sprintf("-> %s", hits)
+			}
+			if session.LastHit.Victim != nil && p.ID == session.LastHit.Victim.ID {
+				damage = fmt.Sprintf("-> %s", damage)
+			}
+		}
+		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %-16s || %12s | %12s | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, hits, damage, p.Lives))
 	}
 	return table
 }
