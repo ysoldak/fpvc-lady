@@ -29,6 +29,7 @@ Session status update (backend pushes w/o explicit request from frontend), note 
     "active" : true,
     "players" : [
       {
+        "score": -1,
         "lives" : 49,
         "id" : 161,
         "description" : "2.8.0 2.6",
@@ -38,6 +39,7 @@ Session status update (backend pushes w/o explicit request from frontend), note 
         "hits" : 0
       },
       {
+        "score": -1,
         "lives" : 99,
         "id" : 179,
         "description" : "2.8.0 2.5",
@@ -47,6 +49,7 @@ Session status update (backend pushes w/o explicit request from frontend), note 
         "hits" : 0
       },
       {
+        "score": 5,
         "lives" : 149,
         "id" : 197,
         "description" : "2.8.0 2.6",
@@ -56,6 +59,7 @@ Session status update (backend pushes w/o explicit request from frontend), note 
         "hits" : 2
       },
       {
+        "score": 5,
         "lives" : 249,
         "id" : 212,
         "description" : "2.8.0 2.6",
@@ -91,6 +95,7 @@ _note "seq" value is the same as in request_
     "active" : true,
     "players" : [
       {
+        "score": -1,
         "lives" : 49,
         "id" : 161,
         "description" : "2.8.0 2.6",
@@ -100,6 +105,7 @@ _note "seq" value is the same as in request_
         "hits" : 0
       },
       {
+        "score": -1,
         "lives" : 99,
         "id" : 179,
         "description" : "2.8.0 2.5",
@@ -109,6 +115,7 @@ _note "seq" value is the same as in request_
         "hits" : 0
       },
       {
+        "score": 5,
         "lives" : 149,
         "id" : 197,
         "description" : "2.8.0 2.6",
@@ -118,6 +125,7 @@ _note "seq" value is the same as in request_
         "hits" : 2
       },
       {
+        "score": 5,
         "lives" : 249,
         "id" : 212,
         "description" : "2.8.0 2.6",
@@ -186,6 +194,8 @@ Response
   "payload" : {
     "locale" : "en",
     "logSocket": "",
+    "scoreHits" : "A1-E9:3,F1-FF:1",
+    "scoreDamages" : "-1",
     "speakCommand" : "system",
     "speakCheers" : false,
     "speakLives" : false
@@ -202,6 +212,8 @@ Request
   "payload" : {
     "locale" : "ru",
     "logSocket": "fpvc-lady.socket.log",
+    "scoreHits" : "A1-E9:3,F1-FF:1",
+    "scoreDamages" : "-1",
     "speakCommand" : "say -v Milena",
     "speakCheers" : false,
     "speakLives" : false
@@ -217,6 +229,8 @@ Response
   "payload" : {
     "locale" : "ru",
     "logSocket": "fpvc-lady.socket.log",
+    "scoreHits" : "A1-E9:3,F1-FF:1",
+    "scoreDamages" : "-1",
     "speakCommand" : "say -v Milena",
     "speakCheers" : false,
     "speakLives" : false

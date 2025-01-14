@@ -27,6 +27,7 @@ func (d *Demo) Generate(output chan csp.Message) {
 		{ID: 0xB3, Name: "BRAVO     ", Description: "2.8.0 2.5           ", Lives: 100},
 		{ID: 0xC5, Name: "CHARLIE   ", Description: "2.8.0 2.6           ", Lives: 150},
 		{ID: 0xD4, Name: "DELTA     ", Description: "2.8.0 2.6           ", Lives: 250},
+		{ID: 0xF1, Name: "TARGET    ", Description: "1.5.0 2.6           ", Lives: 255},
 	}
 
 	// randomize player boot and join the game moments
@@ -52,7 +53,7 @@ func (d *Demo) Generate(output chan csp.Message) {
 	for {
 		vi := rand.Intn(len(state))
 		ai := rand.Intn(len(state))
-		for ai == vi {
+		for ai == vi || ai == len(state)-1 { // can't hit self and target can't shoot
 			ai = rand.Intn(len(state))
 		}
 		v := state[vi]

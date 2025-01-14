@@ -69,7 +69,15 @@ func commentAction(cc *cli.Context) (err error) {
 	go generator.Generate(messageChan)
 
 	// Game state
-	session = game.NewSession()
+	scoreHit, err := ParseScoreConfigs(config.ScoreHit)
+	if err != nil {
+		panic(err)
+	}
+	scoreDamage, err := ParseScoreConfigs(config.ScoreDamage)
+	if err != nil {
+		panic(err)
+	}
+	session = game.NewSession(scoreHit, scoreDamage)
 
 	// Http server
 	go doServe(int64(cc.Int(flagHttpPort)))
@@ -111,10 +119,16 @@ func commentAction(cc *cli.Context) (err error) {
 							session.Start()
 							screen.Clear()
 						}
+					case ev.Rune() == 'x' || ev.Rune() == 'X':
+						screen.Clear()
+						showConfigLines = !showConfigLines
 					case ev.Rune() == 'c' || ev.Rune() == 'C':
 						config.SpeakCheers = !config.SpeakCheers
 					case ev.Rune() == 'l' || ev.Rune() == 'L':
 						config.SpeakLives = !config.SpeakLives
+					case ev.Rune() == 'q' || ev.Rune() == 'Q':
+						close(quit)
+						return
 					}
 					printTable()
 				case tcell.KeyCtrlC, tcell.KeyEscape:
@@ -153,6 +167,7 @@ loop:
 
 func handleTicker() {
 	if !lastHitTime.IsZero() && time.Since(lastHitTime) > 200*time.Millisecond { // unclaimed hit
+		session.UpdateScores()
 		sayHit(session.Victim, nil)
 		session.Victim = nil
 		lastHitTime = time.Time{}

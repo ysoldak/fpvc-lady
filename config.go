@@ -13,6 +13,8 @@ type Config struct {
 	SpeakCommand string `json:"speakCommand"`
 	SpeakLives   bool   `json:"speakLives"`
 	SpeakCheers  bool   `json:"speakCheers"`
+	ScoreHit     string `json:"scoreHits"`
+	ScoreDamage  string `json:"scoreDamages"`
 }
 
 func NewConfigFromContext(cc *cli.Context) (config Config) {
@@ -23,6 +25,8 @@ func NewConfigFromContext(cc *cli.Context) (config Config) {
 		SpeakCommand: cc.String(flagSpeakCommand),
 		SpeakCheers:  cc.Bool(flagSpeakCheers),
 		SpeakLives:   cc.Bool(flagSpeakLives),
+		ScoreHit:     cc.String(flagScoreHit),
+		ScoreDamage:  cc.String(flagScoreDamage),
 	}
 }
 
