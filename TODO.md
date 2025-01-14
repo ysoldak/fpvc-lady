@@ -5,12 +5,6 @@
 - Dad jokes, create the file on first start from values in binary
 - Dead cheers, see https://github.com/ysoldak/fpvc-lady/issues/8
 
-## CUI (Console UI)
-- Use textbox and refresh screen, see https://github.com/ysoldak/fpvc-lady/issues/2
-  - example https://github.com/0xcafed00d/joystick/blob/master/joysticktest/joysticktest.go
-- Highlight latest change in table -- color or just bold, highlight whole line perhaps?
-- Session restart, see https://github.com/ysoldak/fpvc-lady/issues/3
-
 ## WebUI
 - Full blown nice web interface with all functions
 
@@ -32,6 +26,11 @@
 
 
 # Implemented
+
+## CUI (Console UI)
+- Using tcell https://github.com/gdamore/tcell
+- Highlight latest change in table, both attacker and victim with "->"
+- Session restart (start/stop by pressing Spacebar), see https://github.com/ysoldak/fpvc-lady/issues/3
 
 ## Config files
 - Cheers file, create the file on first start from values in binary, in "locale" folder
