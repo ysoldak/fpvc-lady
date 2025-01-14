@@ -85,9 +85,16 @@ function App() {
 
   useEffect(() => {
     if (lastMessage && lastMessage.data?.length > 0) {
-      if (lastMessage.data !== msgs[0]) {
-        setLadyUp(true)
-        setMsgs([lastMessage.data, ...msgs])
+      let JSONmsg = {}
+      try {
+        JSONmsg = JSON.parse(lastMessage?.data)
+        console.debug(JSONmsg)
+      }
+      catch {
+        if (lastMessage.data !== msgs[0]) {
+          setLadyUp(true)
+          setMsgs([lastMessage.data, ...msgs])
+        }
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
