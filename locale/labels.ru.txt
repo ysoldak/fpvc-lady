@@ -1,5 +1,10 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
+title=FPVCombat Комментатор
+
+sessionActive=Слушаю
+sessionStopped=Не слушаю
+
 tableName=Имя
 tableDescription=Описание
 tableUpdated=Обновлено
@@ -7,3 +12,17 @@ tableHits=Попадания
 tableDamage=Повреждения
 tableLives=Жизни
 tableScore=Очки
+
+on=вкл
+off=выкл
+
+configSource=Источник
+configLocale=Локаль
+configCheers=Возгласы
+configLives=Жизни
+configSpeech=Произношение
+
+keysQuit=выход
+keysToggleSession=начать/остановить сессию
+keysToggleLives=вкл/выкл жизни
+keysToggleCheers=вкл/выкл возгласы

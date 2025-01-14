@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gdamore/tcell/v2"
 	"github.com/urfave/cli/v2"
 	"github.com/ysoldak/fpvc-lady/internal/game"
 	"github.com/ysoldak/fpvc-lady/internal/generate"
@@ -18,6 +19,8 @@ var session game.Session
 var logger log.Logger
 var speaker *tts.Tts
 var locale *Locale
+
+var screen tcell.Screen
 
 var lastHitTime = time.Time{}
 
@@ -80,7 +83,52 @@ func commentAction(cc *cli.Context) (err error) {
 
 	speaker.Say(locale.Comment("launch"), 1)
 
+	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
+	screen, err = tcell.NewScreen()
+	if err != nil {
+		return err
+	}
+	if err = screen.Init(); err != nil {
+		return err
+	}
+
+	screen.Clear()
+	printTable()
+
+	quit := make(chan struct{})
+	go func() {
+		for {
+			ev := screen.PollEvent()
+			switch ev := ev.(type) {
+			case *tcell.EventKey:
+				switch ev.Key() {
+				case tcell.KeyRune:
+					switch {
+					case ev.Rune() == ' ':
+						if session.Active {
+							session.Stop()
+						} else {
+							session.Start()
+							screen.Clear()
+						}
+					case ev.Rune() == 'c' || ev.Rune() == 'C':
+						config.SpeakCheers = !config.SpeakCheers
+					case ev.Rune() == 'l' || ev.Rune() == 'L':
+						config.SpeakLives = !config.SpeakLives
+					}
+					printTable()
+				case tcell.KeyCtrlC, tcell.KeyEscape:
+					close(quit)
+					return
+				}
+			case *tcell.EventResize:
+				screen.Sync()
+			}
+		}
+	}()
+
 	ticker := time.NewTicker(10 * time.Millisecond)
+loop:
 	for {
 		select {
 		case message := <-messageChan:
@@ -89,9 +137,18 @@ func commentAction(cc *cli.Context) (err error) {
 			handleSocketMessage(message)
 		case <-ticker.C:
 			handleTicker()
+		case <-quit:
+			screen.Fini()
+			break loop
 		}
 	}
 
+	dumpTable()
+
+	fmt.Println()
+	fmt.Println("That's all, folks!")
+
+	return nil
 }
 
 func handleTicker() {

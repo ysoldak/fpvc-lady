@@ -8,16 +8,23 @@ import (
 	csp "github.com/ysoldak/fpvc-serial-protocol"
 )
 
+type Hit struct {
+	Attacker *Player
+	Victim   *Player
+}
+
 type Session struct {
 	Active  bool      `json:"active"`
 	Players []*Player `json:"players"`
 	Victim  *Player   `json:"-"`
+	LastHit Hit       `json:"-"`
 }
 
 func NewSession() Session {
 	return Session{
 		Players: []*Player{},
 		Active:  true,
+		LastHit: Hit{},
 	}
 }
 
@@ -41,6 +48,10 @@ func (g *Session) HitRequest(event *csp.HitRequest) {
 	victim.Damage++
 	victim.Updated = time.Now()
 	g.Victim = victim
+	g.LastHit = Hit{
+		Attacker: nil,
+		Victim:   victim,
+	}
 }
 
 func (g *Session) HitResponse(event *csp.HitResponse) (victim *Player) {
@@ -52,6 +63,10 @@ func (g *Session) HitResponse(event *csp.HitResponse) (victim *Player) {
 		attacker.Hits++
 		attacker.Updated = time.Now()
 		victim = g.Victim
+		g.LastHit = Hit{
+			Attacker: attacker,
+			Victim:   victim,
+		}
 		g.Victim = nil
 		return victim
 	}
@@ -84,6 +99,7 @@ func (g *Session) Start() {
 	}
 	g.Players = g.Players[0:0]
 	g.Victim = nil
+	g.LastHit = Hit{}
 	g.Active = true
 }
 
