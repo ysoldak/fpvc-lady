@@ -2,8 +2,8 @@
 
 title=FPVCombat Комментатор
 
-connected=Подключён
-disconnected=Отключён
+sessionActive=Слушаю
+sessionStopped=Не слушаю
 
 tableName=Имя
 tableDescription=Описание
@@ -23,6 +23,6 @@ configLives=Жизни
 configSpeech=Произношение
 
 keysQuit=выход
-keysToggleConnection=подкл/откл
+keysToggleSession=начать/остановить сессию
 keysToggleLives=вкл/выкл жизни
 keysToggleCheers=вкл/выкл возгласы

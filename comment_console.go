@@ -21,9 +21,9 @@ func printTable() {
 	tWidth := len([]rune(table[0]))
 
 	title := locale.Label("title") //"FPVCombat Announcer"
-	state := locale.Label("connected")
+	state := locale.Label("sessionActive")
 	if !session.Active {
-		state = locale.Label("disconnected")
+		state = locale.Label("sessionStopped")
 	}
 	header := fmt.Sprintf("%s%s%s", title, strings.Repeat(" ", tWidth-len([]rune(title))-len([]rune(state))), strings.ToUpper(state))
 
@@ -32,7 +32,7 @@ func printTable() {
 		config.Source, config.Locale, onoff(config.SpeakCheers), onoff(config.SpeakLives), config.SpeakCommand)
 	configLine := fmt.Sprintf("%s%s", config, strings.Repeat(" ", tWidth-len([]rune(config))))
 
-	keys := "[ESC/Ctrl+C] " + locale.Label("keysQuit") + "  [Space] " + locale.Label("keysToggleConnection") + "  [C] " + locale.Label("keysToggleCheers") + "  [L] " + locale.Label("keysToggleLives") + ""
+	keys := "[ESC/Ctrl+C] " + locale.Label("keysQuit") + "  [Space] " + locale.Label("keysToggleSession") + "  [C] " + locale.Label("keysToggleCheers") + "  [L] " + locale.Label("keysToggleLives") + ""
 	version := "v" + Version
 	footer := fmt.Sprintf("%s%s%s", keys, strings.Repeat(" ", tWidth-len([]rune(keys))-len([]rune(version))), version)
 

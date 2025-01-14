@@ -2,8 +2,8 @@
 
 title=FPVCombat Announcer
 
-connected=Connected
-disconnected=Disconnected
+sessionActive=Active
+sessionStopped=Stopped
 
 tableName=Name
 tableDescription=Description
@@ -23,6 +23,6 @@ configLives=Lives
 configSpeech=Speech
 
 keysQuit=quit
-keysToggleConnection=connect/disconnect
+keysToggleSession=start/stop session
 keysToggleLives=toggle lives
 keysToggleCheers=toggle cheers
