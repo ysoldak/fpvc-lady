@@ -26,8 +26,11 @@ func handleSocketMessage(message string) {
 		wsOutCh <- response
 	case "start":
 		session.Start()
+		screen.Clear()
+		printTable()
 	case "stop":
 		session.Stop()
+		printTable()
 	default:
 		var msg SocketMessage
 		err := json.Unmarshal([]byte(message), &msg)
@@ -52,8 +55,11 @@ func handleSocketMessage(message string) {
 				if m["active"] != nil {
 					if m["active"].(bool) {
 						session.Start()
+						screen.Clear()
+						printTable()
 					} else {
 						session.Stop()
+						printTable()
 					}
 				} else {
 					fmt.Println("Invalid session data, can send only 'active' field", msg.Payload)
