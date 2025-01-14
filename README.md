@@ -12,13 +12,13 @@ Optionally, install a separate 433mhz antenna to better reception.
 ## Usage
 ```
 NAME:
-   fpvc-lady - FPV Combat Events Announcer
+   fpvc-lady - FPVCombat Announcer
 
 USAGE:
    fpvc-lady [global options] command [command options] 
 
 VERSION:
-   0.7.1
+   0.0.0
 
 COMMANDS:
    help, h  Shows a list of commands or help for one command
@@ -27,7 +27,8 @@ GLOBAL OPTIONS:
    --source value       Source of CSP messages: serial, log, demo. (default: "serial") [$SOURCE]
    --serial-port value  Port name where HC12 is connected to; by default the system will try find the port automatically. (default: "auto") [$SERIAL_PORT]
    --http-port value    HTTP server port number (default: 8080) [$HTTP_PORT]
-   --log-file value     Path to the log file: save events to (--source serial) or read events from (--source log). (default: "fpvc-lady.log") [$LOG_FILE]
+   --log-file value     Path to the log file: save events to (when --source=serial) or read events from (when --source=log). (default: "fpvc-lady.log") [$LOG_FILE]
+   --log-socket value   File path to log web socket communication. [$LOG_SOCKET]
    --log-from value     Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]] [$LOG_FROM]
    --demo-speed value   Number of hits, in average, per minute (default: 10) [$DEMO_SPEED]
    --locale value       Locale to use: de, en, ru, etc. (default: "en")
