@@ -23,6 +23,9 @@ const (
 	flagSpeakCommand = "speak"
 	flagSpeakLives   = "speak-lives"
 	flagSpeakCheers  = "speak-cheers"
+
+	flagScoreHit    = "score-hit"
+	flagScoreDamage = "score-damage"
 )
 
 const (
@@ -104,6 +107,18 @@ func getFlags() []cli.Flag {
 			EnvVars:  []string{"SPEAK_CHEERS"},
 			Required: false,
 			Value:    false,
+		},
+		&cli.StringFlag{
+			Name:     flagScoreHit,
+			Usage:    "How much a hit is worth. Fomat: [minID[-maxID]:]score,...",
+			Required: false,
+			Value:    "A1-E9:3,F1-FF:1", // A-E are players, F is a static target
+		},
+		&cli.StringFlag{
+			Name:     flagScoreDamage,
+			Usage:    "How much damage costs you. Fomat: [minID[-maxID]:]score,...",
+			Required: false,
+			Value:    "-1",
 		},
 	}
 }

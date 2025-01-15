@@ -75,6 +75,12 @@ demo-mac-ru:
 demo-mac-sv:
 	go run $(SRC) --source demo --speak 'say -v alva' --locale sv --speak-lives --speak-cheers
 
+# Use a custom score
+# Hitting A1-C9 adds 3 points, D1-D9 adds 5 points, F1-F9 adds 1 point
+# Damage from anyone subsctracts 1 point
+demo-score-hit-damage:
+	go run $(SRC) --source demo --score-hit A1-C9:3,D1-D9:5,F1-F9:1 --score-damage -1
+
 # Replay a log file
 replay:
 	go run $(SRC) --source log --log-file fpvc-lady.log

@@ -18,11 +18,14 @@ off=off
 
 configSource=Source
 configLocale=Locale
-configCheers=Cheers
-configLives=Lives
+configCheers=Say Cheers
+configLives=Say Lives
 configSpeech=Speech
+configScoreDamage=Score Damage
+configScoreHit=Score Hit
 
 keysQuit=quit
-keysToggleSession=start/stop session
-keysToggleLives=toggle lives
-keysToggleCheers=toggle cheers
+keysToggleSession=session
+keysToggleLives=lives
+keysToggleCheers=cheers
+keysToggleConfig=config

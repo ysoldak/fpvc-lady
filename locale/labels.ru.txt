@@ -17,12 +17,15 @@ on=вкл
 off=выкл
 
 configSource=Источник
-configLocale=Локаль
-configCheers=Возгласы
-configLives=Жизни
+configLocale=Локализация
+configCheers=Поздравления
+configLives=Объявлять жизни
 configSpeech=Произношение
+configScoreDamage=Очки за повреждения
+configScoreHit=Очки за попадания
 
 keysQuit=выход
-keysToggleSession=начать/остановить сессию
-keysToggleLives=вкл/выкл жизни
-keysToggleCheers=вкл/выкл возгласы
+keysToggleSession=сессия
+keysToggleLives=жизни
+keysToggleCheers=поздравления
+keysToggleConfig=конфигурация

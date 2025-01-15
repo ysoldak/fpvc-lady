@@ -8,6 +8,8 @@ import (
 	"github.com/mattn/go-runewidth"
 )
 
+var showConfigLines = false
+
 func dumpTable() {
 	fmt.Println()
 	for _, line := range sessionTable() {
@@ -25,28 +27,61 @@ func printTable() {
 	if !session.Active {
 		state = locale.Label("sessionStopped")
 	}
-	header := fmt.Sprintf("%s%s%s", title, strings.Repeat(" ", tWidth-len([]rune(title))-len([]rune(state))), strings.ToUpper(state))
+	header := fmt.Sprintf("%s%s%s", title, strings.Repeat(" ", tWidth-2-len([]rune(title))-len([]rune(state))), strings.ToUpper(state))
 
-	config := fmt.Sprintf(
-		locale.Label("configSource")+": %s, "+locale.Label("configLocale")+": %s, "+locale.Label("configCheers")+": %s, "+locale.Label("configLives")+": %s, "+locale.Label("configSpeech")+": %s",
-		config.Source, config.Locale, onoff(config.SpeakCheers), onoff(config.SpeakLives), config.SpeakCommand)
-	configLine := fmt.Sprintf("%s%s", config, strings.Repeat(" ", tWidth-len([]rune(config))))
-
-	keys := "[ESC/Ctrl+C] " + locale.Label("keysQuit") + "  [Space] " + locale.Label("keysToggleSession") + "  [C] " + locale.Label("keysToggleCheers") + "  [L] " + locale.Label("keysToggleLives") + ""
-	version := "v" + Version
-	footer := fmt.Sprintf("%s%s%s", keys, strings.Repeat(" ", tWidth-len([]rune(keys))-len([]rune(version))), version)
-
-	emitStr(screen, 0, 0, tcell.StyleDefault, fmt.Sprintf("┌%s┐", strings.Repeat("─", tWidth+2)))
-	emitStr(screen, 0, 1, tcell.StyleDefault, fmt.Sprintf("│ %s │", header))
-	emitStr(screen, 0, 2, tcell.StyleDefault, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth+2)))
-	for i, line := range table {
-		emitStr(screen, 0, i+3, tcell.StyleDefault, "│ "+line+" │")
+	configLines := []string{
+		locale.Label("configSource") + ":\"" + config.Source + "\" " + locale.Label("configLocale") + ":\"" + config.Locale + "\" " + locale.Label("configSpeech") + ":\"" + config.SpeakCommand + "\"",
 	}
-	emitStr(screen, 0, 3+tHeight+0, tcell.StyleDefault, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth+2)))
-	emitStr(screen, 0, 3+tHeight+1, tcell.StyleDefault, fmt.Sprintf("│ %s │", configLine))
-	emitStr(screen, 0, 3+tHeight+2, tcell.StyleDefault, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth+2)))
-	emitStr(screen, 0, 3+tHeight+3, tcell.StyleDefault, fmt.Sprintf("│ %s │", footer))
-	emitStr(screen, 0, 3+tHeight+4, tcell.StyleDefault, fmt.Sprintf("└%s┘", strings.Repeat("─", tWidth+2)))
+	if showConfigLines {
+		configLines = []string{
+			locale.Label("configSource") + ":" + config.Source,
+			locale.Label("configLocale") + ":" + config.Locale,
+			locale.Label("configSpeech") + ":" + config.SpeakCommand,
+			locale.Label("configScoreHit") + ":" + config.ScoreHit,
+			locale.Label("configScoreDamage") + ":" + config.ScoreDamage,
+			locale.Label("configCheers") + ":" + onoff(config.SpeakCheers),
+			locale.Label("configLives") + ":" + onoff(config.SpeakLives),
+		}
+	}
+	cHeight := len(configLines)
+
+	bullet := " " + string(tcell.RuneBullet) + " "
+	keys := "[ESC/Q] " + locale.Label("keysQuit") +
+		bullet + "[Space] " + locale.Label("keysToggleSession") +
+		bullet + "[C] " + locale.Label("keysToggleCheers") +
+		bullet + "[L] " + locale.Label("keysToggleLives") +
+		bullet + "[X] " + locale.Label("keysToggleConfig")
+	version := "v" + Version
+	footer := fmt.Sprintf("%s%s%s", keys, strings.Repeat(" ", tWidth-2-len([]rune(keys))-len([]rune(version))), version)
+
+	// header
+	printStr(screen, 0, 0, fmt.Sprintf("┌%s┐", strings.Repeat("─", tWidth)))
+	printStr(screen, 0, 1, fmt.Sprintf("│ %s │", header))
+	printStr(screen, 0, 2, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth)))
+
+	// table
+	for i, line := range table {
+		printStr(screen, 0, i+3, "│"+line+"│")
+	}
+	printStr(screen, 0, 3+tHeight+0, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth)))
+
+	// config
+	if showConfigLines {
+		for i, line := range configLines {
+			parts := strings.SplitN(line, ":", 2)
+			fmtLine := fmt.Sprintf("%-20s %s", parts[0], parts[1])
+			padLine := fmt.Sprintf("%s%s", fmtLine, strings.Repeat(" ", tWidth-2-len([]rune(fmtLine))))
+			printStr(screen, 0, 3+tHeight+i+1, fmt.Sprintf("│ %s │", padLine))
+		}
+	} else {
+		padLine := fmt.Sprintf("%s%s^", configLines[0], strings.Repeat(" ", tWidth-2-1-len([]rune(configLines[0]))))
+		printStr(screen, 0, 3+tHeight+1, fmt.Sprintf("│ %s │", padLine))
+	}
+	printStr(screen, 0, 3+tHeight+cHeight+1, fmt.Sprintf("├%s┤", strings.Repeat("─", tWidth)))
+
+	// footer
+	printStr(screen, 0, 3+tHeight+cHeight+2, fmt.Sprintf("│ %s │", footer))
+	printStr(screen, 0, 3+tHeight+cHeight+3, fmt.Sprintf("└%s┘", strings.Repeat("─", tWidth)))
 	screen.Show()
 }
 
@@ -57,29 +92,31 @@ func sessionTable() []string {
 func sessionTableDecorated(decorate bool) []string {
 	table := []string{}
 	header := fmt.Sprintf(
-		" ID | %-10s | %-20s | %-16s || %12s | %12s | %10s",
+		" ID | %-10s | %-20s | %-16s || %12s | %12s | %10s || %10s ",
 		strings.TrimSpace(locale.Label("tableName")),
 		strings.TrimSpace(locale.Label("tableDescription")),
 		strings.TrimSpace(locale.Label("tableUpdated")),
 		strings.TrimSpace(locale.Label("tableHits")),
 		strings.TrimSpace(locale.Label("tableDamage")),
-		strings.TrimSpace(locale.Label("tableLives")))
+		strings.TrimSpace(locale.Label("tableLives")),
+		strings.TrimSpace(locale.Label("tableScore")),
+	)
 	table = append(table, header)
 
-	table = append(table, "--- | ---------- | -------------------- | ---------------- || ------------ | ------------ | ----------")
+	table = append(table, " -- | ---------- | -------------------- | ---------------- || ------------ | ------------ | ---------- || ---------- ")
 	for _, p := range session.Players {
 		updated := p.Updated.Format("15:04:05.000")
 		hits := fmt.Sprintf("%d", p.Hits)
 		damage := fmt.Sprintf("%d", p.Damage)
 		if decorate {
 			if session.LastHit.Attacker != nil && p.ID == session.LastHit.Attacker.ID {
-				hits = fmt.Sprintf("-> %s", hits)
+				hits = fmt.Sprintf("%c %s", tcell.RuneRArrow, hits)
 			}
 			if session.LastHit.Victim != nil && p.ID == session.LastHit.Victim.ID {
-				damage = fmt.Sprintf("-> %s", damage)
+				damage = fmt.Sprintf("%c %s", tcell.RuneRArrow, damage)
 			}
 		}
-		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %-16s || %12s | %12s | %10d", p.ID, printableString(p.Name), printableString(p.Description), updated, hits, damage, p.Lives))
+		table = append(table, fmt.Sprintf(" %X | %-10s | %-20s | %-16s || %12s | %12s | %10d || %10d ", p.ID, printableString(p.Name), printableString(p.Description), updated, hits, damage, p.Lives, p.Score))
 	}
 	return table
 }
@@ -94,7 +131,7 @@ func printableString(str string) string {
 	return result
 }
 
-func emitStr(s tcell.Screen, x, y int, style tcell.Style, str string) {
+func printStr(s tcell.Screen, x, y int, str string) {
 	for _, c := range str {
 		var comb []rune
 		w := runewidth.RuneWidth(c)
@@ -103,7 +140,7 @@ func emitStr(s tcell.Screen, x, y int, style tcell.Style, str string) {
 			c = ' '
 			w = 1
 		}
-		s.SetContent(x, y, c, comb, style)
+		s.SetContent(x, y, c, comb, tcell.StyleDefault)
 		x += w
 	}
 }
