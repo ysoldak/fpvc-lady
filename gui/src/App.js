@@ -62,6 +62,8 @@ const initSettings =  {
   "damagePoints": -1
 }
 
+const useJsonMsgs = true
+
 function App() {
 
   const [loading, setLoading] = useState(false)
@@ -69,6 +71,7 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
+  const [jsonMsgs, setJsonMsgs] = useState([])
   const [poll, setPoll] = useState(null)
   const [showLady, setShowLady] = useState(false)
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
@@ -88,7 +91,9 @@ function App() {
       let JSONmsg = {}
       try {
         JSONmsg = JSON.parse(lastMessage?.data)
-        console.debug(JSONmsg)
+        if (JSONmsg?.payload?.players?.length > 0) {
+          setJsonMsgs(JSONmsg?.payload?.players)
+        }
       }
       catch {
         if (lastMessage.data !== msgs[0]) {
@@ -187,8 +192,10 @@ function App() {
                 countDownMarks={countDownMarks(config.lang)}
                 roundTimeMarks={roundTimeMarks}
                 sendMessage={sendMessage}
+                useJsonMsgs={useJsonMsgs}
                 isAdmin={isAdmin}
                 ladyUp={ladyUp}
+                jsonMsgs={jsonMsgs}
                 msgs={msgs}
               />)
         }
