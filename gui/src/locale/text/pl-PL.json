@@ -34,6 +34,7 @@
   "optionsLanguage": "Język aplikacji",
   "optionsDefaultRoundTime": "Domyślny czas rundy [min]",
   "optionsDefaultCountdown": "Domyślne odliczanie",
+  "optionsUseServerScore": "Punktacja obliczana przez serwer",
   "optionsHitPoints": "Punkty za trafienie",
   "optionsDamagePoints": "Punkty za bycie trafionym",
   "optionsResetPin": "Zresetuj PIN dostępu",

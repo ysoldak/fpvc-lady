@@ -40,10 +40,18 @@ function Main(props) {
     playerDesc,
     hits,
     damage,
-    lives
+    lives,
+    score = 0
   ) {
-    const score = ((hits * props.config.hitPoints) + (damage * props.config.damagePoints))
-    return { playerName, playerId, playerDesc, hits, damage, lives, score }
+    return {
+      playerName,
+      playerId,
+      playerDesc,
+      hits,
+      damage,
+      lives,
+      score: props.config.useLocalScore ? ((hits * props.config.hitPoints) + (damage * props.config.damagePoints)) : score
+    }
   }
 
   function comparePoints(a, b) {
@@ -101,7 +109,7 @@ function Main(props) {
   React.useEffect(() => {
     if (props.jsonMsgs.length > 0 && props.useJsonMsgs) {
       let rows = props.jsonMsgs.map((msg, i) => {
-        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives)
+        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.score)
       })
       setRows(rows.sort(comparePoints))
     }

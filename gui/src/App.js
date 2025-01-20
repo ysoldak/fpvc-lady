@@ -56,6 +56,7 @@ const countDownMarks = (lang) =>  [
 
 const initSettings =  {
   "lang": "en",
+  "useLocalScore": false,
   "defaultRoundTime": 240,
   "defaultCountDown": 30,
   "hitPoints": 5,
