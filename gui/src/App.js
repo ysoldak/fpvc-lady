@@ -9,7 +9,7 @@ import './App.scss'
 
 import txt from './locale/locale'
 
-import Main from './component/Main'
+import Main from './component/Main/Main'
 import Options from './component/Options'
 
 import CssBaseline from '@mui/material/CssBaseline'
@@ -56,11 +56,14 @@ const countDownMarks = (lang) =>  [
 
 const initSettings =  {
   "lang": "en",
+  "useLocalScore": false,
   "defaultRoundTime": 240,
   "defaultCountDown": 30,
   "hitPoints": 5,
   "damagePoints": -1
 }
+
+const useJsonMsgs = true
 
 function App() {
 
@@ -69,6 +72,7 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
+  const [jsonMsgs, setJsonMsgs] = useState([])
   const [poll, setPoll] = useState(null)
   const [showLady, setShowLady] = useState(false)
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
@@ -88,7 +92,9 @@ function App() {
       let JSONmsg = {}
       try {
         JSONmsg = JSON.parse(lastMessage?.data)
-        console.debug(JSONmsg)
+        if (JSONmsg?.payload?.players?.length > 0) {
+          setJsonMsgs([JSONmsg?.payload?.players, ...jsonMsgs])
+        }
       }
       catch {
         if (lastMessage.data !== msgs[0]) {
@@ -187,8 +193,10 @@ function App() {
                 countDownMarks={countDownMarks(config.lang)}
                 roundTimeMarks={roundTimeMarks}
                 sendMessage={sendMessage}
+                useJsonMsgs={useJsonMsgs}
                 isAdmin={isAdmin}
                 ladyUp={ladyUp}
+                jsonMsgs={jsonMsgs}
                 msgs={msgs}
               />)
         }

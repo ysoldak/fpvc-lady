@@ -9,6 +9,7 @@ import Box from '@mui/material/Box/index.js'
 import Grid from '@mui/material/Unstable_Grid2/index.js'
 import Select from '@mui/material/Select/index.js'
 import Button from '@mui/material/Button/index.js'
+import Switch from '@mui/material/Switch'
 import MenuItem from '@mui/material/MenuItem/index.js'
 import TextField from '@mui/material/TextField/index.js'
 
@@ -18,7 +19,12 @@ function Options(props) {
 
   function handleChange(e) {
     let newFormConfig = {...formConfig}
-    newFormConfig[e.target.name] = e.target.value
+    if (e.target.name === 'useLocalScore') {
+      newFormConfig[e.target.name] = !e.target.checked
+    }
+    else {
+      newFormConfig[e.target.name] = e.target.value
+    }
     setCookie('fpvcm_config', JSON.stringify(newFormConfig), 120)
     setFormConfig({...newFormConfig})
     props.setConfig({...newFormConfig})
@@ -79,36 +85,56 @@ function Options(props) {
       </Grid>*/}
       <Grid container spacing={4}>
         <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
-          <span className="fpvcm-input-label">{txt('optionsHitPoints', props.config.lang)}:</span>
+          <span className="fpvcm-input-label">{txt('optionsUseServerScore', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
-          <TextField
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6} style={{paddingTop: '25px'}}>
+          <Switch
             id="hitpoints-select"
-            name="hitPoints"
+            name="useLocalScore"
             variant="outlined"
-            type="number"
-            value={formConfig.hitPoints}
-            onChange={handleChange}
+            data={{toggle: true}}
+            checked={!formConfig.useLocalScore}
+            onClick={handleChange}
             style={{minWidth: '50%'}}
           />
         </Grid>
       </Grid>
-      <Grid container spacing={4}>
-        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
-          <span className="fpvcm-input-label">{txt('optionsDamagePoints', props.config.lang)}:</span>
-        </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
-          <TextField
-            id="hitpoints-select"
-            name="damagePoints"
-            variant="outlined"
-            type="number"
-            value={formConfig.damagePoints}
-            onChange={handleChange}
-            style={{minWidth: '50%'}}
-          />
-        </Grid>
-      </Grid>
+      {formConfig.useLocalScore && (
+        <Grid container spacing={4}>
+          <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+            <span className="fpvcm-input-label">{txt('optionsHitPoints', props.config.lang)}:</span>
+          </Grid>
+          <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+            <TextField
+              id="hitpoints-select"
+              name="hitPoints"
+              variant="outlined"
+              type="number"
+              value={formConfig.hitPoints}
+              onChange={handleChange}
+              style={{minWidth: '50%'}}
+            />
+          </Grid>
+        </Grid>)
+      }
+      {formConfig.useLocalScore && (
+        <Grid container spacing={4}>
+          <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+            <span className="fpvcm-input-label">{txt('optionsDamagePoints', props.config.lang)}:</span>
+          </Grid>
+          <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+            <TextField
+              id="hitpoints-select"
+              name="damagePoints"
+              variant="outlined"
+              type="number"
+              value={formConfig.damagePoints}
+              onChange={handleChange}
+              style={{minWidth: '50%'}}
+            />
+          </Grid>
+        </Grid>)
+      }
       <Grid container spacing={4} style={{marginTop: '36px'}}>
         <Grid xl={3} lg={3} md={5} sm={5} xs={5}>
           &nbsp;

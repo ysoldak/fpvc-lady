@@ -33,6 +33,7 @@
   "optionsLanguage": "Applicationsprache",
   "optionsDefaultRoundTime": "Standard Rundenzeit [min]",
   "optionsDefaultCountdown": "Standard Countdown",
+  "optionsUseServerScore": "Score calculated by the server",
   "optionsHitPoints": "Trefferpunkte",
   "optionsDamagePoints": "Schadenspunkte",
   "optionsResetPin": "PIN zurücksetzen",

@@ -34,6 +34,7 @@
   "optionsLanguage": "Application language",
   "optionsDefaultRoundTime": "Default round time [min]",
   "optionsDefaultCountdown": "Default countdown",
+  "optionsUseServerScore": "Score calculated by the server",
   "optionsHitPoints": "Points for hit score",
   "optionsDamagePoints": "Points for receiving damage",
   "optionsResetPin": "Reset access PIN",
