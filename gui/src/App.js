@@ -9,7 +9,7 @@ import './App.scss'
 
 import txt from './locale/locale'
 
-import Main from './component/Main'
+import Main from './component/Main/Main'
 import Options from './component/Options'
 
 import CssBaseline from '@mui/material/CssBaseline'
@@ -93,7 +93,7 @@ function App() {
       try {
         JSONmsg = JSON.parse(lastMessage?.data)
         if (JSONmsg?.payload?.players?.length > 0) {
-          setJsonMsgs(JSONmsg?.payload?.players)
+          setJsonMsgs([JSONmsg?.payload?.players, ...jsonMsgs])
         }
       }
       catch {
