@@ -56,10 +56,18 @@ const countDownMarks = (lang) =>  [
 
 const initSettings =  {
   "lang": "en",
+  "ladyLocale": "en",
+  "ladyLogSocker": "fpvc-lady.socket.log",
+  "ladySpeakCommand": "say -v Milena",
+  "speakCheers": false,
+  "speakLives": false,
   "useLocalScore": false,
   "defaultRoundTime": 240,
   "defaultCountDown": 30,
+  "hitAddresses": "A1-E9",
+  "hitTargetAddresses": "F1-FF",
   "hitPoints": 5,
+  "hitTargetPoints": 1,
   "damagePoints": -1
 }
 
@@ -149,43 +157,43 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-    <div className="fpvcm">
-      <CssBaseline />
-      <header className="fpvcm-header">
-        <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
-        <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
-        <div className="fpvcm-header_text">
-          &nbsp;Manager
-          <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
-        </div>
-        {isAdmin && <div className="fpvcm-settings-icon">
-          <SettingsIcon onClick={toggleSettings} />
-        </div>}
-      </header>
-      <Container maxWidth="false" className="fpvcm-container">
-        {showLady
-          ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
-          :  showConfig
-            ? (<Options
-                config={config}
-                setConfig={setConfig}
-                roundTimeMarks={roundTimeMarks}
-                countDownMarks={countDownMarks}
-                toggleSettings={toggleSettings}
-              />)
-            : (<Main
-                config={config}
-                loading={loading}
-                countDownMarks={countDownMarks(config.lang)}
-                roundTimeMarks={roundTimeMarks}
-                sendMessage={sendMessage}
-                isAdmin={isAdmin}
-                ladyUp={ladyUp}
-                msgs={msgs}
-              />)
-        }
-      </Container>
-    </div>
+      <div className="fpvcm">
+        <CssBaseline />
+        <header className="fpvcm-header">
+          <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
+          <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
+          <div className="fpvcm-header_text">
+            &nbsp;Manager
+            <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
+          </div>
+          {isAdmin && <div className="fpvcm-settings-icon">
+            <SettingsIcon onClick={toggleSettings} />
+          </div>}
+        </header>
+        <Container maxWidth="false" className="fpvcm-container">
+          {showLady
+            ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
+            :  showConfig
+              ? (<Options
+                  config={config}
+                  setConfig={setConfig}
+                  roundTimeMarks={roundTimeMarks}
+                  countDownMarks={countDownMarks}
+                  toggleSettings={toggleSettings}
+                />)
+              : (<Main
+                  config={config}
+                  loading={loading}
+                  countDownMarks={countDownMarks(config.lang)}
+                  roundTimeMarks={roundTimeMarks}
+                  sendMessage={sendMessage}
+                  isAdmin={isAdmin}
+                  ladyUp={ladyUp}
+                  msgs={msgs}
+                />)
+          }
+        </Container>
+      </div>
     </ThemeProvider>
   );
 }
