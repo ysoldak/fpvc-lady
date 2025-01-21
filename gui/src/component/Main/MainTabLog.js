@@ -18,14 +18,7 @@ function MainTabLog(props) {
         <Card variant="outlined" className="fpvcm-card-wrapper">
           <CardContent className="fpvcm-card fpvcm-disp-log">
             <div display="block" style={{whiteSpace: "nowrap"}}>
-              {!props.useJsonMsgs && props.msgs?.map((msg, i) => {
-                return (
-                  <pre key={i}>{msg.split('\n').map((msgLine, li) => { 
-                    return (<span key={li}>{msgLine}<br /></span>)})}
-                    <br />
-                  </pre>)
-              })}
-              {props.useJsonMsgs && props.jsonMsgs?.map((msg, i) => {
+              {props.msgs?.map((msg, i) => {
                 return (
                   <pre key={i}>
                     {msg.map((pl, i) => {
@@ -41,12 +34,12 @@ function MainTabLog(props) {
       <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
           <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(false, false, props.lang, props.rows, props.jsonMsgs, props.useJsonMsgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+            <Button variant="contained" size="small" onClick={() => exportData(false, false, props.lang, props.rows, props.msgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
               {txt('exportLast', props.lang)}
             </Button>
           </Grid>
           <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.jsonMsgs, props.useJsonMsgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
               {txt('exportAll', props.lang)}
             </Button>
           </Grid>

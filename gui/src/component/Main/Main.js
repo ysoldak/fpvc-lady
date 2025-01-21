@@ -52,20 +52,9 @@ function Main(props) {
   }
 
   React.useEffect(() => {
-    if (props.jsonMsgs.length > 0 && props.useJsonMsgs) {
-      let rows = props.jsonMsgs[0].map((msg, i) => {
+    if (props.msgs.length > 0) {
+      let rows = props.msgs[0].map((msg, i) => {
         return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.score)
-      })
-      setRows(rows.sort(comparePoints))
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.jsonMsgs])
-
-  React.useEffect(() => {
-    if (props.msgs.length > 0 && !props.useJsonMsgs) {
-      let rows = props.msgs[0].split('\n').filter((e, i) => i > 1 && e.length > 0).map((msg, i) => {
-        let line = msg.split(/\|\s*/).map(e => e.trim()).filter(e => e.length > 0)
-        return createData(line[1], line[0], line[2], line[4], line[5], line[6])
       })
       setRows(rows.sort(comparePoints))
     }
@@ -99,7 +88,7 @@ function Main(props) {
               hidden={tab !== 1}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabLog msgs={props.msgs} useJsonMsgs={props.useJsonMsgs} lang={props.config.lang} rows={rows} jsonMsgs={props.jsonMsgs} />
+              <MainTabLog msgs={props.msgs} lang={props.config.lang} rows={rows} />
             </div>
           </Box>
         </Grid>

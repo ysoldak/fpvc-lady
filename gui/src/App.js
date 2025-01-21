@@ -63,8 +63,6 @@ const initSettings =  {
   "damagePoints": -1
 }
 
-const useJsonMsgs = true
-
 function App() {
 
   const [loading, setLoading] = useState(false)
@@ -72,7 +70,6 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
-  const [jsonMsgs, setJsonMsgs] = useState([])
   const [showLady, setShowLady] = useState(false)
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
   const [ladyClicks, setLadyClicks] = useState(0)
@@ -92,14 +89,11 @@ function App() {
       try {
         JSONmsg = JSON.parse(lastMessage?.data)
         if (JSONmsg?.payload?.players?.length > 0) {
-          setJsonMsgs([JSONmsg?.payload?.players, ...jsonMsgs])
+          setMsgs([JSONmsg?.payload?.players, ...msgs])
         }
       }
       catch {
-        if (lastMessage.data !== msgs[0]) {
-          setLadyUp(true)
-          setMsgs([lastMessage.data, ...msgs])
-        }
+        console.error('Unable to parse JSON data coming from the server:', lastMessage?.data)
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -185,10 +179,8 @@ function App() {
                 countDownMarks={countDownMarks(config.lang)}
                 roundTimeMarks={roundTimeMarks}
                 sendMessage={sendMessage}
-                useJsonMsgs={useJsonMsgs}
                 isAdmin={isAdmin}
                 ladyUp={ladyUp}
-                jsonMsgs={jsonMsgs}
                 msgs={msgs}
               />)
         }

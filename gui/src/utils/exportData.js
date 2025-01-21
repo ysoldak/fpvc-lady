@@ -1,6 +1,6 @@
 import txt from '../locale/locale'
 
-export function exportData(full, stats, lang, rows, msgs, useJsonMsgs = false) {
+export function exportData(full, stats, lang, rows, msgs) {
   let filename = 'fpvcombat_session_'
   filename += stats ? 'stats_' : ''
   filename += new Date().toJSON().slice(0,19).replace('T', '__')
@@ -27,12 +27,7 @@ export function exportData(full, stats, lang, rows, msgs, useJsonMsgs = false) {
     data += txt('totalHits', lang) + ': ' + rows.reduce((total, row) => total += parseInt(row.hits), 0)
   }
   else if (!stats && msgs.length > 0) {
-    if (useJsonMsgs) {
-      data = full ? msgs.map(m => JSON.stringify(m)).join('\n\n') : msgs[0].map(p => JSON.stringify(p)).join('\n')
-    }
-    else {
-      data = full ? msgs.join('\n\n') : msgs[0]
-    }
+    data = full ? msgs.map(m => JSON.stringify(m)).join('\n\n') : msgs[0].map(p => JSON.stringify(p)).join('\n')
   }
   var file = new Blob([data], {type: type})
   if (window.navigator.msSaveOrOpenBlob) // IE10+
