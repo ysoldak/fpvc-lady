@@ -73,7 +73,6 @@ function App() {
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
   const [jsonMsgs, setJsonMsgs] = useState([])
-  const [poll, setPoll] = useState(null)
   const [showLady, setShowLady] = useState(false)
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
   const [ladyClicks, setLadyClicks] = useState(0)
@@ -113,17 +112,10 @@ function App() {
     else if (readyState === 1) {
       setLoading(false)
       setLadyUp(true)
-      if (!poll) {
-        setPoll(setInterval(function () {
-          sendMessage("table")
-        }, 1500))
-      }
     }
     else {
-      clearInterval(poll)
       setLoading(false)
       setLadyUp(false)
-      setPoll(null)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readyState])
