@@ -10,8 +10,9 @@ import (
 )
 
 type Hit struct {
-	Attacker *Player
-	Victim   *Player
+	AttackerID *byte     `json:"attackerId"`
+	VictimID   *byte     `json:"victimId"`
+	Timestamp  time.Time `json:"timestamp"`
 }
 
 type IDRange struct {
@@ -25,12 +26,13 @@ type ScoreConfig struct {
 }
 
 type Session struct {
-	Active       bool          `json:"active"`
-	Players      []*Player     `json:"players"`
+	Active  bool      `json:"active"`
+	Players []*Player `json:"players"`
+	Hits    []Hit     `json:"hits"`
+
 	ScoreHits    []ScoreConfig `json:"-"`
 	ScoreDamages []ScoreConfig `json:"-"`
 	Victim       *Player       `json:"-"`
-	LastHit      Hit           `json:"-"`
 }
 
 func NewSession(scoreHits, scoreDamages []ScoreConfig) Session {
@@ -39,7 +41,7 @@ func NewSession(scoreHits, scoreDamages []ScoreConfig) Session {
 		Active:       true,
 		ScoreHits:    scoreHits,
 		ScoreDamages: scoreDamages,
-		LastHit:      Hit{},
+		Hits:         []Hit{},
 	}
 }
 
@@ -63,10 +65,11 @@ func (g *Session) HitRequest(event *csp.HitRequest) {
 	victim.Damage++
 	victim.Updated = time.Now()
 	g.Victim = victim
-	g.LastHit = Hit{
-		Attacker: nil,
-		Victim:   victim,
-	}
+	g.Hits = append(g.Hits, Hit{
+		AttackerID: nil,
+		VictimID:   &victim.ID,
+		Timestamp:  time.Now(),
+	})
 	// note: can't update scores here, because we don't know who was shooting
 }
 
@@ -79,10 +82,7 @@ func (g *Session) HitResponse(event *csp.HitResponse) (victim *Player) {
 		attacker.Hits++
 		attacker.Updated = time.Now()
 		victim = g.Victim
-		g.LastHit = Hit{
-			Attacker: attacker,
-			Victim:   victim,
-		}
+		g.Hits[len(g.Hits)-1].AttackerID = &attacker.ID
 		g.UpdateScores() // update scores, all information is available
 		g.Victim = nil
 		return victim
@@ -96,30 +96,34 @@ func (g *Session) UpdateScores() {
 	if !g.Active {
 		return
 	}
-	if g.LastHit.Attacker == nil && g.LastHit.Victim == nil {
+	if len(g.Hits) == 0 {
 		return
 	}
 
+	lastHit := g.Hits[len(g.Hits)-1]
+
 	// adjust score for victim, depends who been shooting
 	// for simplicity, make attacker non-nil
-	attacker := g.LastHit.Attacker
-	if attacker == nil {
-		attacker = g.LastHit.Victim // hit by unknown
+	attackerID := lastHit.AttackerID
+	if attackerID == nil {
+		attackerID = lastHit.VictimID // hit by unknown
 	}
 	// do adjustment
 	for _, sd := range g.ScoreDamages {
-		if attacker.ID >= sd.Range.Min && attacker.ID <= sd.Range.Max {
-			g.LastHit.Victim.Score += sd.Score
+		if *attackerID >= sd.Range.Min && *attackerID <= sd.Range.Max {
+			victim, _ := g.Player(*lastHit.VictimID)
+			victim.Score += sd.Score
 			break
 		}
 	}
 
 	// adjust score for attacker, depends who been hit
 	// if there were no attacker (hit by unknown), no need to adjust any more scores
-	if g.LastHit.Attacker != nil {
+	if lastHit.AttackerID != nil {
 		for _, sh := range g.ScoreHits {
-			if g.LastHit.Victim.ID >= sh.Range.Min && g.LastHit.Victim.ID <= sh.Range.Max {
-				g.LastHit.Attacker.Score += sh.Score
+			if *lastHit.VictimID >= sh.Range.Min && *lastHit.VictimID <= sh.Range.Max {
+				attacker, _ := g.Player(*lastHit.AttackerID)
+				attacker.Score += sh.Score
 				break
 			}
 		}
@@ -160,7 +164,7 @@ func (g *Session) Start() {
 	}
 	g.Players = g.Players[0:0]
 	g.Victim = nil
-	g.LastHit = Hit{}
+	g.Hits = g.Hits[0:0]
 	g.Active = true
 }
 

@@ -108,11 +108,12 @@ func sessionTableDecorated(decorate bool) []string {
 		updated := p.Updated.Format("15:04:05.000")
 		hits := fmt.Sprintf("%d", p.Hits)
 		damage := fmt.Sprintf("%d", p.Damage)
-		if decorate {
-			if session.LastHit.Attacker != nil && p.ID == session.LastHit.Attacker.ID {
+		if decorate && len(session.Hits) > 0 {
+			lastHit := session.Hits[len(session.Hits)-1]
+			if lastHit.AttackerID != nil && p.ID == *lastHit.AttackerID {
 				hits = fmt.Sprintf("%c %s", tcell.RuneRArrow, hits)
 			}
-			if session.LastHit.Victim != nil && p.ID == session.LastHit.Victim.ID {
+			if lastHit.VictimID != nil && p.ID == *lastHit.VictimID {
 				damage = fmt.Sprintf("%c %s", tcell.RuneRArrow, damage)
 			}
 		}

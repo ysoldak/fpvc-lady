@@ -68,6 +68,14 @@ Session status update (backend pushes w/o explicit request from frontend), note 
         "name" : "DELTA",
         "hits" : 2
       }
+    ],
+    "hits" : [
+      {
+        "victimId" : 179,
+        "attackerId" : 197,
+        "timestamp" : "2025-01-10T22:47:08.122942+01:00"
+      },
+      ...
     ]
   },
   "type" : "session",
@@ -134,6 +142,14 @@ _note "seq" value is the same as in request_
         "name" : "DELTA",
         "hits" : 2
       }
+    ],
+    "hits" : [
+      {
+        "victimId" : 179,
+        "attackerId" : 197,
+        "timestamp" : "2025-01-10T22:47:08.122942+01:00"
+      },
+      ...
     ]
   },
   "type" : "session",
