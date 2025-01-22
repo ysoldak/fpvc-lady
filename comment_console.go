@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/gdamore/tcell/v2"
 	"github.com/mattn/go-runewidth"
@@ -23,10 +24,33 @@ func printTable() {
 	tWidth := len([]rune(table[0]))
 
 	title := locale.Label("title") //"FPVCombat Announcer"
-	state := locale.Label("sessionActive")
-	if !session.Active {
-		state = locale.Label("sessionStopped")
+
+	state := ""
+	switch {
+	case session.IsRegistration():
+		elapsed := time.Since(session.Timestamps.RegStarted)
+		state = fmt.Sprintf("[R %02d:%02d] %c C %c B %c E", int(elapsed.Minutes()), int(elapsed.Seconds())%60, tcell.RuneRArrow, tcell.RuneRArrow, tcell.RuneRArrow)
+	case session.IsCountdown():
+		timer := time.Since(session.Timestamps.RegEnded)
+		if config.DurationCountdown > 0 {
+			timer = time.Duration(config.DurationCountdown+2)*time.Second - timer // adding 2 seconds to make it more sync with voice over
+			if int(timer.Seconds()) > config.DurationCountdown {
+				timer = time.Duration(config.DurationCountdown) * time.Second
+			}
+		}
+
+		state = fmt.Sprintf("[R] %c [C 00:%02d] %c B %c E", tcell.RuneRArrow, int(timer.Seconds()), tcell.RuneRArrow, tcell.RuneRArrow)
+	case session.IsBattle():
+		timer := time.Since(session.Timestamps.BatStarted)
+		if config.DurationBattle > 0 {
+			timer = time.Duration(config.DurationBattle)*time.Minute - timer
+		}
+		timerFormatted := fmt.Sprintf("%02d:%02d", int(timer.Minutes()), int(timer.Seconds())%60)
+		state = fmt.Sprintf("R %c C %c [B %s] %c E", tcell.RuneRArrow, tcell.RuneRArrow, timerFormatted, tcell.RuneRArrow)
+	case session.IsEnded():
+		state = fmt.Sprintf("R %c C %c B %c [E]", tcell.RuneRArrow, tcell.RuneRArrow, tcell.RuneRArrow)
 	}
+
 	header := fmt.Sprintf("%s%s%s", title, strings.Repeat(" ", tWidth-2-len([]rune(title))-len([]rune(state))), strings.ToUpper(state))
 
 	configLines := []string{
@@ -47,7 +71,8 @@ func printTable() {
 
 	bullet := " " + string(tcell.RuneBullet) + " "
 	keys := "[ESC/Q] " + locale.Label("keysQuit") +
-		bullet + "[Space] " + locale.Label("keysToggleSession") +
+		bullet + "[Space] " + locale.Label("keysAdvance") +
+		bullet + "[R] " + locale.Label("keysRestart") +
 		bullet + "[C] " + locale.Label("keysToggleCheers") +
 		bullet + "[L] " + locale.Label("keysToggleLives") +
 		bullet + "[X] " + locale.Label("keysToggleConfig")

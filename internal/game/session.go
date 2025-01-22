@@ -25,10 +25,17 @@ type ScoreConfig struct {
 	Score int     `json:"score"`
 }
 
+type SessionTimestamps struct {
+	RegStarted time.Time `json:"regStarted"`
+	RegEnded   time.Time `json:"regEnded"`
+	BatStarted time.Time `json:"batStarted"`
+	BatEnded   time.Time `json:"batEnded"`
+}
+
 type Session struct {
-	Active  bool      `json:"active"`
-	Players []*Player `json:"players"`
-	Hits    []Hit     `json:"hits"`
+	Timestamps SessionTimestamps `json:"timestamps"`
+	Players    []*Player         `json:"players"`
+	Hits       []Hit             `json:"hits"`
 
 	ScoreHits    []ScoreConfig `json:"-"`
 	ScoreDamages []ScoreConfig `json:"-"`
@@ -38,17 +45,25 @@ type Session struct {
 func NewSession(scoreHits, scoreDamages []ScoreConfig) Session {
 	return Session{
 		Players:      []*Player{},
-		Active:       true,
 		ScoreHits:    scoreHits,
 		ScoreDamages: scoreDamages,
 		Hits:         []Hit{},
+		Timestamps: SessionTimestamps{
+			RegStarted: time.Now(),
+			RegEnded:   time.Time{},
+			BatStarted: time.Time{},
+			BatEnded:   time.Time{},
+		},
 	}
 }
 
+func (g *Session) Reset() {
+	g.Players = g.Players[0:0]
+	g.Victim = nil
+	g.Hits = g.Hits[0:0]
+}
+
 func (g *Session) Beacon(event *csp.Beacon) (player *Player, new bool) {
-	if !g.Active {
-		return
-	}
 	player, new = g.Player(event.ID)
 	player.Name = strings.TrimSpace(event.Name)
 	player.Description = strings.TrimSpace(event.Description)
@@ -57,9 +72,6 @@ func (g *Session) Beacon(event *csp.Beacon) (player *Player, new bool) {
 }
 
 func (g *Session) HitRequest(event *csp.HitRequest) {
-	if !g.Active {
-		return
-	}
 	victim, _ := g.Player(event.ID)
 	victim.Lives = event.Lives - 1
 	victim.Damage++
@@ -74,9 +86,6 @@ func (g *Session) HitRequest(event *csp.HitRequest) {
 }
 
 func (g *Session) HitResponse(event *csp.HitResponse) (victim *Player) {
-	if !g.Active {
-		return nil
-	}
 	attacker, _ := g.Player(event.ID)
 	if g.Victim != nil {
 		attacker.Hits++
@@ -93,9 +102,6 @@ func (g *Session) HitResponse(event *csp.HitResponse) (victim *Player) {
 // UpdateScores adjusts scores for last hit
 // Expected to be called once either from inside HitResponse or from outside (unclaimed hit)
 func (g *Session) UpdateScores() {
-	if !g.Active {
-		return
-	}
 	if len(g.Hits) == 0 {
 		return
 	}
@@ -144,7 +150,7 @@ func (g *Session) Player(id byte) (player *Player, isNew bool) {
 			return p, false
 		}
 	}
-	if !g.Active {
+	if g.IsEnded() {
 		return nil, false
 	}
 	player = &Player{
@@ -158,20 +164,80 @@ func (g *Session) Player(id byte) (player *Player, isNew bool) {
 	return player, true
 }
 
-func (g *Session) Start() {
-	if g.Active {
-		return
+// Registration(1,0,0,0) -> Countdown(1,1,0,0) -> Battle(1,1,0) -> End(1,1,1,1)
+func (g *Session) Advance() {
+	switch {
+	case g.IsRegistration():
+		g.Timestamps.RegEnded = time.Now() // into countdown
+	case g.IsCountdown():
+		g.Timestamps.BatStarted = time.Now() // into battle
+	case g.IsBattle():
+		g.Timestamps.BatEnded = time.Now() // into end
 	}
-	g.Players = g.Players[0:0]
-	g.Victim = nil
-	g.Hits = g.Hits[0:0]
-	g.Active = true
 }
 
-func (g *Session) Stop() {
-	g.Active = false
+func (g *Session) IsRegistration() bool {
+	return !g.Timestamps.RegStarted.IsZero() && g.Timestamps.RegEnded.IsZero()
 }
 
-func (g *Session) IsActive() bool {
-	return g.Active
+func (g *Session) IsCountdown() bool {
+	return !g.Timestamps.RegEnded.IsZero() && g.Timestamps.BatStarted.IsZero()
+}
+
+func (g *Session) IsBattle() bool {
+	return !g.Timestamps.BatStarted.IsZero() && g.Timestamps.BatEnded.IsZero()
+}
+
+func (g *Session) IsEnded() bool {
+	return !g.Timestamps.BatStarted.IsZero() && !g.Timestamps.BatEnded.IsZero()
+}
+
+func (st *SessionTimestamps) UpdateFromJSON(data map[string]interface{}) error {
+	regStarted, err := handleTimeField(data, "regStarted")
+	if err != nil && err != ErrMissingField {
+		return err
+	}
+	if err == nil {
+		st.RegStarted = regStarted
+	}
+
+	regEnded, err := handleTimeField(data, "regEnded")
+	if err != nil && err != ErrMissingField {
+		return err
+	}
+	if err == nil {
+		st.RegEnded = regEnded
+	}
+
+	batStarted, err := handleTimeField(data, "batStarted")
+	if err != nil && err != ErrMissingField {
+		return err
+	}
+	if err == nil {
+		st.BatStarted = batStarted
+	}
+
+	batEnded, err := handleTimeField(data, "batEnded")
+	if err != nil && err != ErrMissingField {
+		return err
+	}
+	if err == nil {
+		st.BatEnded = batEnded
+	}
+
+	return nil
+}
+
+var ErrMissingField = fmt.Errorf("missing field")
+
+func handleTimeField(data map[string]interface{}, key string) (time.Time, error) {
+	obj, ok := data[key]
+	if !ok {
+		return time.Time{}, ErrMissingField
+	}
+	value, err := time.Parse(time.RFC3339, obj.(string))
+	if err != nil {
+		return time.Time{}, err
+	}
+	return value, nil
 }

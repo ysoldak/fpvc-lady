@@ -24,21 +24,24 @@ COMMANDS:
    help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
-   --source value        Source of CSP messages: serial, log, demo. (default: "serial") [$SOURCE]
-   --serial-port value   Port name where HC12 is connected to; by default the system will try find the port automatically. (default: "auto") [$SERIAL_PORT]
-   --http-port value     HTTP server port number (default: 8080) [$HTTP_PORT]
-   --log-file value      Path to the log file: save events to (when --source=serial) or read events from (when --source=log). (default: "fpvc-lady.log") [$LOG_FILE]
-   --log-socket value    File path to log web socket communication. [$LOG_SOCKET]
-   --log-from value      Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]] [$LOG_FROM]
-   --demo-speed value    Number of hits, in average, per minute (default: 10) [$DEMO_SPEED]
-   --locale value        Locale to use: de, en, ru, etc. (default: "en")
-   --speak value         Text-to-speech command: system, google, none or any other command to convert text to speech. (default: "system") [$SPEAK]
-   --speak-lives         Speak lives. (default: false) [$SPEAK_LIVES]
-   --speak-cheers        Speak cheers. (default: false) [$SPEAK_CHEERS]
-   --score-hit value     How much a hit is worth. Fomat: [minID[-maxID]:]score,... (default: "A1-E9:3,F1-FF:1")
-   --score-damage value  How much damage costs you. Fomat: [minID[-maxID]:]score,... (default: "-1")
-   --help, -h            show help
-   --version, -v         print the version
+   --source value              Source of CSP messages: serial, log, demo. (default: "serial")
+   --serial-port value         Port name where HC12 is connected to; by default the system will try find the port automatically. (default: "auto")
+   --http-port value           HTTP server port number (default: 8080)
+   --log-file value            Path to the log file: save events to (when --source=serial) or read events from (when --source=log). (default: "fpvc-lady.log")
+   --log-socket value          File path to log web socket communication.
+   --log-from value            Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]]
+   --demo-speed value          Number of hits, in average, per minute (default: 10)
+   --locale value              Locale to use: de, en, ru, etc. (default: "en")
+   --speak value               Text-to-speech command: system, google, none or any other command to convert text to speech. (default: "system")
+   --speak-lives               Speak lives. (default: false)
+   --speak-cheers              Speak cheers. (default: false)
+   --score-hit value           How much a hit is worth. Fomat: [minID[-maxID]:]score,... (default: "A1-E9:3,F1-FF:1")
+   --score-damage value        How much damage costs you. Fomat: [minID[-maxID]:]score,... (default: "-1")
+   --auto-start                Start the battle automatically upon first hit. (default: true)
+   --duration-battle value     Duration of the battle phase, minutes; 0 means no limit (default: 0)
+   --duration-countdown value  Duration of the countdown phase, seconds; 0 means no countdown (default: 0)
+   --help, -h                  show help
+   --version, -v               print the version
 ```
 
 ### Mac

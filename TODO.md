@@ -19,7 +19,6 @@
   - mac???
 
 ## Serious stuff (Championships, etc)
-- Match timer, see https://github.com/ysoldak/fpvc-lady/issues/4
 - Adaptable weights based on history? It shall worth more to kill someone who performs better than others historically
 
 
@@ -28,6 +27,7 @@
 ## Serious stuff (Championships, etc)
 - Sort table according to kills and deaths, with configurable weights (use --score-hit and --score-damage)
 - Different weights for different players? Like static target worth less than a real player -- possible now
+- Match timer, see https://github.com/ysoldak/fpvc-lady/issues/4
 
 ## CUI (Console UI)
 - Using tcell https://github.com/gdamore/tcell

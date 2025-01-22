@@ -14,60 +14,43 @@ type SocketMessage struct {
 	Type    string      `json:"type"`
 	Seq     string      `json:"seq"`
 	Payload interface{} `json:"payload"`
+	Error   string      `json:"error"`
 }
 
 func handleSocketMessage(message string) {
-	switch message {
-	case "table":
-		response := ""
-		for _, line := range sessionTable() {
-			response += fmt.Sprintln(line)
-		}
-		wsOutCh <- response
-	case "start":
-		session.Start()
-		screen.Clear()
-		printTable()
-	case "stop":
-		session.Stop()
-		printTable()
-	default:
-		var msg SocketMessage
-		err := json.Unmarshal([]byte(message), &msg)
-		if err != nil {
-			fmt.Println("Error parsing websocket message:", err)
-			return
-		}
-		switch msg.Type {
-		case SocketMessageTypeConfig:
-			if msg.Payload != nil {
-				newConfig, err := NewConfigFromMap(msg.Payload.(map[string]interface{}))
-				if err != nil {
-					fmt.Println("Invalid config data", msg.Payload)
-					return
-				}
+	var msg SocketMessage
+	err := json.Unmarshal([]byte(message), &msg)
+	if err != nil {
+		fmt.Println("Error parsing websocket message:", err)
+		return
+	}
+	switch msg.Type {
+	case SocketMessageTypeConfig:
+		response := SocketMessage{Type: SocketMessageTypeConfig, Seq: msg.Seq}
+		if msg.Payload != nil {
+			newConfig, err := NewConfigFromMap(msg.Payload.(map[string]interface{}))
+			if err != nil {
+				response.Error = fmt.Errorf("invalid config data, %w", err).Error()
+			} else {
 				applyConfig(newConfig)
 			}
-			sendSocket(SocketMessage{Type: SocketMessageTypeConfig, Seq: msg.Seq, Payload: config})
-		case SocketMessageTypeSession:
-			if msg.Payload != nil {
-				m := msg.Payload.(map[string]interface{})
-				if m["active"] != nil {
-					if m["active"].(bool) {
-						session.Start()
-						screen.Clear()
-						printTable()
-					} else {
-						session.Stop()
-						printTable()
-					}
-				} else {
-					fmt.Println("Invalid session data, can send only 'active' field", msg.Payload)
-					return
+		}
+		response.Payload = config
+		sendSocket(response)
+	case SocketMessageTypeSession:
+		response := SocketMessage{Type: SocketMessageTypeSession, Seq: msg.Seq}
+		if msg.Payload != nil {
+			m := msg.Payload.(map[string]interface{})
+			ts, ok := m["timestamps"]
+			if ok {
+				err := session.Timestamps.UpdateFromJSON(ts.(map[string]interface{}))
+				if err != nil {
+					response.Error = fmt.Errorf("invalid session data, failed to parse timestamps: %w", err).Error()
 				}
 			}
-			sendSocket(SocketMessage{Type: SocketMessageTypeSession, Seq: msg.Seq, Payload: session})
 		}
+		response.Payload = session
+		sendSocket(response)
 	}
 }
 
