@@ -1,7 +1,12 @@
 import lookupPlayer from './lookupPlayer'
 
-export function hitMatrix(hits) {
+export function hitMatrix(hits, msgs) {
   let matrix = {}
+  msgs[0].forEach((msg, i) => {
+    if (!(msg.id in matrix)) {
+      matrix[msg.id] = { attacked: {} }
+    }
+  })
   hits.forEach(hit => {
     if (hit.attackerId && hit.victimId) {
       let attackerId = hit.attackerId
@@ -50,6 +55,6 @@ export function hitMatrixFormatted(matrix, msgs) {
 
 export default function displayMatrix(hits, msgs) {
   if (hits && hits.length > 0) {
-    return hitMatrixFormatted(hitMatrix(hits), msgs)
+    return hitMatrixFormatted(hitMatrix(hits, msgs), msgs)
   }
 }
