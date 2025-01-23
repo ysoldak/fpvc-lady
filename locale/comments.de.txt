@@ -1,9 +1,12 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
-launch=Die Lady ist bereit.
-session_start=Das Match beginnt.
-session_stop=Das Match ist vorbei.
+launch=Die Lady ist bereit!
+registration_open=Piloten, Akkus anstecken und bereit machen!
 joined={player} ist beigetreten.
+battle_countdown=Das Match startet in.
+battle_start=Lasst die Spiele beginnen!
 hit={victim} wurde getroffen.
 hit_by={victim} wurde von {attacker} getroffen.
 lives_left={lives} Leben übrig.
+battle_minutes={minutes} Minuten Übrig.
+battle_end=Das Match ist vorbei. Kampf einstellen und Landen. Jetzt Landen.
