@@ -80,7 +80,7 @@ function Main(props) {
               hidden={tab !== 0}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabStats ladyUp={props.ladyUp} lang={props.config.lang} rows={rows} />
+              <MainTabStats ladyUp={props.ladyUp} lang={props.config.lang} rows={rows} hits={props.hits} />
             </div>   
             <div
               role="tabpanel"

@@ -78,6 +78,7 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
+  const [hits, setHits] = useState([])
   const [showLady, setShowLady] = useState(false)
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
   const [ladyClicks, setLadyClicks] = useState(0)
@@ -98,6 +99,7 @@ function App() {
         JSONmsg = JSON.parse(lastMessage?.data)
         if (JSONmsg?.payload?.players?.length > 0) {
           setMsgs([JSONmsg?.payload?.players, ...msgs])
+          setHits(JSONmsg?.payload?.hits)
         }
       }
       catch {
@@ -190,6 +192,7 @@ function App() {
                   isAdmin={isAdmin}
                   ladyUp={ladyUp}
                   msgs={msgs}
+                  hits={hits}
                 />)
           }
         </Container>

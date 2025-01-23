@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useState, useEffect } from 'react'
 
 import '../../App.scss'
 
@@ -18,8 +19,21 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Chip from '@mui/material/Chip'
 
 function MainTblStats(props) {
+
+  const [lastAttackerId, setLastAttackerId] = useState(null)
+  const [lastVictimId, setLastVictimrId] = useState(null)
+
+  useEffect(() => {
+    let lastHit = props.hits[props.hits.length-1]
+    if (lastHit.attackerId && lastHit.victimId) {
+      setLastAttackerId(lastHit.attackerId.toString(16).toUpperCase())
+      setLastVictimrId(lastHit.victimId.toString(16).toUpperCase())
+    }
+  }, [props.hits])
+
   return (
     <div>
       <Box sx={{ p: 1 }}>
@@ -51,8 +65,14 @@ function MainTblStats(props) {
                             {row.playerName}&nbsp;<span className="fpvcm-label">({row.playerId})</span>
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.playerDesc}</TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell">{row.hits}</TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell">{row.damage}</TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell">
+                            {(lastAttackerId && lastAttackerId === row.playerId) && <Chip label={row.hits} size="small" color="success" />}
+                            {(!lastAttackerId || lastAttackerId !== row.playerId) && row.hits}
+                          </TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell">
+                            {(lastVictimId && lastVictimId === row.playerId) && <Chip label={row.damage} size="small" color="error" />}
+                            {(!lastVictimId || lastVictimId !== row.playerId) && row.damage}
+                          </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
                         </TableRow>
