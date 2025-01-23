@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/gdamore/tcell/v2"
@@ -22,7 +23,7 @@ var locale *Locale
 
 var screen tcell.Screen
 
-var lastHitTime = time.Time{}
+var lastHitTime = time.Time{} // time of the last (unclaimed) hit
 
 var config Config
 
@@ -89,7 +90,9 @@ func commentAction(cc *cli.Context) (err error) {
 	fmt.Println("Listening to combat events...")
 	fmt.Println()
 
-	speaker.Say(locale.Comment("launch"), 1)
+	speaker.Say(locale.Comment("launch"), 100)
+
+	speaker.Say(locale.Comment("registration_open"), 100)
 
 	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
 	screen, err = tcell.NewScreen()
@@ -112,12 +115,17 @@ func commentAction(cc *cli.Context) (err error) {
 				switch ev.Key() {
 				case tcell.KeyRune:
 					switch {
-					case ev.Rune() == ' ':
-						if session.Active {
-							session.Stop()
-						} else {
-							session.Start()
-							screen.Clear()
+					case ev.Rune() == ' ': // advance session
+						session.Advance()
+						sendSocket(SocketMessage{Type: SocketMessageTypeSession, Payload: session})
+					case ev.Rune() == 'r' || ev.Rune() == 'R': // restart session
+						if session.IsEnded() {
+							session.Timestamps = game.SessionTimestamps{
+								RegStarted: time.Now(),
+								RegEnded:   time.Time{},
+								BatStarted: time.Time{},
+								BatEnded:   time.Time{},
+							}
 						}
 					case ev.Rune() == 'x' || ev.Rune() == 'X':
 						screen.Clear()
@@ -141,7 +149,8 @@ func commentAction(cc *cli.Context) (err error) {
 		}
 	}()
 
-	ticker := time.NewTicker(10 * time.Millisecond)
+	every10ms := time.NewTicker(10 * time.Millisecond)
+	every1s := time.NewTicker(1 * time.Second)
 loop:
 	for {
 		select {
@@ -149,8 +158,10 @@ loop:
 			handleCombatMessage(message)
 		case message := <-wsInCh:
 			handleSocketMessage(message)
-		case <-ticker.C:
-			handleTicker()
+		case <-every10ms.C:
+			handleUnclaimedHit()
+		case <-every1s.C:
+			handleEverySecond()
 		case <-quit:
 			screen.Fini()
 			break loop
@@ -165,11 +176,75 @@ loop:
 	return nil
 }
 
-func handleTicker() {
+func handleUnclaimedHit() {
 	if !lastHitTime.IsZero() && time.Since(lastHitTime) > 200*time.Millisecond { // unclaimed hit
 		session.UpdateScores()
 		sayHit(session.Victim, nil)
 		session.Victim = nil
 		lastHitTime = time.Time{}
 	}
+}
+
+var countingDown bool
+
+func handleEverySecond() {
+
+	if session.IsRegistration() && time.Since(session.Timestamps.RegStarted) < 1*time.Second {
+		session.Reset()
+		screen.Clear()
+		speaker.Say(locale.Comment("registration_open"), 100)
+	}
+
+	// Return fast if session is ended
+	if session.IsEnded() {
+		if time.Since(session.Timestamps.BatEnded) < 1*time.Second {
+			speaker.Say(locale.Comment("battle_end"), 100)
+		}
+		return
+	}
+
+	if session.IsBattle() && time.Since(session.Timestamps.BatStarted) < 1*time.Second && len(session.Hits) == 0 { // battle just started and no hits yet, if it was auto-started, then we already have spoken the start
+		speaker.Say(locale.Comment("battle_start"), 100)
+	}
+
+	if session.IsCountdown() && !countingDown {
+		countingDown = true
+		go func() {
+			if config.DurationCountdown > 0 {
+				speaker.Say(locale.Comment("battle_countdown"), 100)
+				for i := config.DurationCountdown; i > 0 && !session.IsBattle(); i-- { // countdown may be force-cancelled if battle start set from outside (ws or space press)
+					speaker.Say(fmt.Sprintf("%d.", i), 100)
+					time.Sleep(1 * time.Second)
+				}
+			}
+			if !session.IsBattle() {
+				session.Advance()
+			}
+			countingDown = false
+		}()
+	}
+
+	// Handle battle of limited duration
+	if config.DurationBattle > 0 && session.IsBattle() {
+		sinceBattleStart := time.Since(session.Timestamps.BatStarted)
+		battleDuration := time.Duration(config.DurationBattle) * time.Minute
+		if sinceBattleStart > battleDuration { // battle is over
+			session.Advance()
+		} else {
+			durationLeft := battleDuration - sinceBattleStart
+			if 0 < durationLeft && durationLeft <= 10*time.Second { // last 10 seconds
+				speaker.Say(fmt.Sprintf("%d.", int(durationLeft.Seconds())), 1)
+			} else { // every minute
+				if int(sinceBattleStart.Seconds())%60 == 0 {
+					timeLeft := config.DurationBattle - int(sinceBattleStart.Minutes())
+					timeLeftStr := fmt.Sprintf("%d", timeLeft)
+					phrase := strings.Replace(locale.Comment("battle_minutes"), "{minutes}", timeLeftStr, 1)
+					speaker.Say(phrase, 1)
+				}
+			}
+		}
+	}
+
+	// Refresh screen
+	printTable()
 }

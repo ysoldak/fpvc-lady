@@ -25,7 +25,8 @@ configScoreDamage=Очки за повреждения
 configScoreHit=Очки за попадания
 
 keysQuit=выход
-keysToggleSession=сессия
+keysAdvance=переход
+keysRestart=заново
 keysToggleLives=жизни
 keysToggleCheers=поздравления
 keysToggleConfig=конфигурация

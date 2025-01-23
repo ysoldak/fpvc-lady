@@ -1,9 +1,12 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
 launch=The Lady is ready!
-session_start=Session started.
-session_stop=Session stopped.
+registration_open=Pilots, start your engines and be ready.
 joined={player} joined.
+battle_countdown=Battle starts in.
+battle_start=Let the battle begin!
 hit={victim} was hit.
 hit_by={victim} was hit by {attacker}.
 lives_left={lives} lives left.
+battle_minutes={minutes} minutes left.
+battle_end=End of battle. Land now. Land now.

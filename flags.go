@@ -26,6 +26,11 @@ const (
 
 	flagScoreHit    = "score-hit"
 	flagScoreDamage = "score-damage"
+
+	flagAutoStart = "auto-start"
+
+	flagDurationBattle    = "duration-battle"
+	flagDurationCountdown = "duration-countdown"
 )
 
 const (
@@ -37,49 +42,42 @@ func getFlags() []cli.Flag {
 		&cli.StringFlag{
 			Name:     flagSource,
 			Usage:    "Source of CSP messages: serial, log, demo.",
-			EnvVars:  []string{"SOURCE"},
 			Required: false,
 			Value:    "serial",
 		},
 		&cli.StringFlag{
 			Name:     flagSerialPort,
 			Usage:    "Port name where HC12 is connected to; by default the system will try find the port automatically.",
-			EnvVars:  []string{"SERIAL_PORT"},
 			Required: false,
 			Value:    "auto",
 		},
 		&cli.IntFlag{
-			Name:    flagHttpPort,
-			Usage:   "HTTP server port number",
-			EnvVars: []string{"HTTP_PORT"},
-			Value:   8080,
+			Name:  flagHttpPort,
+			Usage: "HTTP server port number",
+			Value: 8080,
 		},
 		&cli.StringFlag{
 			Name:     flagLogFile,
 			Usage:    "Path to the log file: save events to (when --source=serial) or read events from (when --source=log).",
-			EnvVars:  []string{"LOG_FILE"},
 			Required: false,
 			Value:    defaultLogFilePath,
 		},
 		&cli.StringFlag{
 			Name:     flagLogSocket,
 			Usage:    "File path to log web socket communication.",
-			EnvVars:  []string{"LOG_SOCKET"},
 			Required: false,
 			Value:    "",
 		},
 		&cli.StringFlag{
 			Name:     flagLogFrom,
 			Usage:    "Datetime to start read events from. Format: YYYY/MM/DD[ HH:mm:SS[.SSSSSS]]",
-			EnvVars:  []string{"LOG_FROM"},
 			Required: false,
 			Value:    "",
 		},
 		&cli.IntFlag{
-			Name:    flagDemoSpeed,
-			Usage:   "Number of hits, in average, per minute",
-			EnvVars: []string{"DEMO_SPEED"},
-			Value:   10, // 10 is good speed for demo to end soon and all phrases to be spoken; 20 simulates very intence combat, speaker may have to drop phrases
+			Name:  flagDemoSpeed,
+			Usage: "Number of hits, in average, per minute",
+			Value: 10, // 10 is good speed for demo to end soon and all phrases to be spoken; 20 simulates very intence combat, speaker may have to drop phrases
 		},
 		&cli.StringFlag{
 			Name:     flagLocale,
@@ -90,21 +88,18 @@ func getFlags() []cli.Flag {
 		&cli.StringFlag{
 			Name:     flagSpeakCommand,
 			Usage:    "Text-to-speech command: system, google, none or any other command to convert text to speech.",
-			EnvVars:  []string{"SPEAK"},
 			Required: false,
 			Value:    "system",
 		},
 		&cli.BoolFlag{
 			Name:     flagSpeakLives,
 			Usage:    "Speak lives.",
-			EnvVars:  []string{"SPEAK_LIVES"},
 			Required: false,
 			Value:    false,
 		},
 		&cli.BoolFlag{
 			Name:     flagSpeakCheers,
 			Usage:    "Speak cheers.",
-			EnvVars:  []string{"SPEAK_CHEERS"},
 			Required: false,
 			Value:    false,
 		},
@@ -119,6 +114,22 @@ func getFlags() []cli.Flag {
 			Usage:    "How much damage costs you. Fomat: [minID[-maxID]:]score,...",
 			Required: false,
 			Value:    "-1",
+		},
+		&cli.BoolFlag{
+			Name:     flagAutoStart,
+			Usage:    "Start the battle automatically upon first hit.",
+			Required: false,
+			Value:    true,
+		},
+		&cli.IntFlag{
+			Name:  flagDurationBattle,
+			Usage: "Duration of the battle phase, minutes; 0 means no limit",
+			Value: 0,
+		},
+		&cli.IntFlag{
+			Name:  flagDurationCountdown,
+			Usage: "Duration of the countdown phase, seconds; 0 means no countdown",
+			Value: 0,
 		},
 	}
 }
