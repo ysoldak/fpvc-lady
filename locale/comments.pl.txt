@@ -1,12 +1,12 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
 launch=Lejdi do usług!
-registration_open=Pilots, start your engines.
+registration_open=Piloci, grzejcie silniki.
 joined=Dołącza {player}.
-battle_countdown=Battle starts in.
+battle_countdown=Runda zaczyna się za.
 battle_start=Zaczynamy rundę.
 hit={victim} trafiony.
 hit_by={victim} oberwał od {attacker}.
 lives_left=Pozostało {lives} żyć.
-battle_minutes={minutes} minutes left.
+battle_minutes=Zostało {minutes} minut.
 battle_end=Runda zakończona.
