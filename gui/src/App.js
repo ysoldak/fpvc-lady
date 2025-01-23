@@ -78,6 +78,7 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
+  const [log, setLog] = useState([])
   const [hits, setHits] = useState([])
   const [showLady, setShowLady] = useState(false)
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
@@ -99,8 +100,12 @@ function App() {
         JSONmsg = JSON.parse(lastMessage?.data)
         if (JSONmsg?.payload?.players?.length > 0) {
           setMsgs([JSONmsg?.payload?.players, ...msgs])
-          setHits(JSONmsg?.payload?.hits)
-        }
+          setHits(JSONmsg?.payload?.hits)          
+          let tmpInsLog = []
+          JSONmsg?.payload?.players?.forEach((pl) => {tmpInsLog.push(JSON.stringify(pl))})
+          tmpInsLog.push('------------------')
+          setLog([...tmpInsLog, ...log])
+        }    
       }
       catch {
         console.error('Unable to parse JSON data coming from the server:', lastMessage?.data)
@@ -191,6 +196,7 @@ function App() {
                   sendMessage={sendMessage}
                   isAdmin={isAdmin}
                   ladyUp={ladyUp}
+                  log={log}
                   msgs={msgs}
                   hits={hits}
                 />)

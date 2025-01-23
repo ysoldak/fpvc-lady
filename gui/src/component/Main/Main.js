@@ -92,7 +92,7 @@ function Main(props) {
               hidden={tab !== 1}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabScoreLog msgs={props.msgs} lang={props.config.lang} rows={rows} />
+              <MainTabScoreLog msgs={props.msgs} lang={props.config.lang} rows={rows} log={props.log} />
             </div>
             <div
               role="tabpanel"

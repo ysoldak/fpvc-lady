@@ -6,6 +6,7 @@ import txt from '../../locale/locale'
 import { exportData } from '../../utils/exportData'
 import formatDateTime from '../../utils/formatDateTime'
 import lookupPlayer from '../../utils/lookupPlayer'
+import displayMatrix from '../../utils/hitMatrix'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
@@ -21,16 +22,25 @@ function MainTabHitLog(props) {
           <CardContent className="fpvcm-card fpvcm-disp-log">
             <div display="block" style={{whiteSpace: "nowrap"}}>
               <pre>
-              {props.hits?.map((hit, i) => {
-                return (
-                  <span key={i}>
-                    {formatDateTime(hit.timestamp)}:&nbsp;
-                    {lookupPlayer(hit?.victimId, props.msgs)}&nbsp;({hit?.victimId?.toString(16).toUpperCase()})&nbsp;
-                    {txt('logHitsInfo', props.lang)}&nbsp;
-                    {lookupPlayer(hit?.attackerId, props.msgs)}&nbsp;({hit?.attackerId?.toString(16).toUpperCase()})&nbsp;
-                    <br />
-                  </span>)
-              })}
+                * * * HIT MATRIX * * *
+                <br />
+                <br />
+                {displayMatrix(props.hits, props.msgs)}
+                <br />
+                <br />
+                * * * {txt('logHits', props.lang).toUpperCase()} * * *
+                <br />
+                <br />
+                {props.hits?.map((hit, i) => {
+                  return (
+                    <span key={i}>
+                      {formatDateTime(hit.timestamp)}:&nbsp;
+                      {lookupPlayer(hit?.victimId, props.msgs)}&nbsp;({hit?.victimId?.toString(16).toUpperCase()})&nbsp;
+                      {txt('logHitsInfo', props.lang)}&nbsp;
+                      {lookupPlayer(hit?.attackerId, props.msgs)}&nbsp;({hit?.attackerId?.toString(16).toUpperCase()})&nbsp;
+                      <br />
+                    </span>)
+                })}
               </pre>
             </div>
           </CardContent>

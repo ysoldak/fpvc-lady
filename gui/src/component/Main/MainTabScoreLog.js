@@ -18,15 +18,9 @@ function MainTabLog(props) {
         <Card variant="outlined" className="fpvcm-card-wrapper">
           <CardContent className="fpvcm-card fpvcm-disp-log">
             <div display="block" style={{whiteSpace: "nowrap"}}>
-              {props.msgs?.map((msg, i) => {
-                return (
-                  <pre key={i}>
-                    {msg.map((pl, i) => {
-                      return (<span key={i}>{JSON.stringify(pl)}<br /></span>)
-                    })}
-                    <br />
-                  </pre>)
-              })}
+              <pre>
+                {props.log.map((logLine, i) => <span key={i}>{logLine}<br /></span>)}
+              </pre>
             </div>
           </CardContent>
         </Card>

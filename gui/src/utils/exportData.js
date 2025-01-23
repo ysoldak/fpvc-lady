@@ -1,5 +1,6 @@
 import txt from '../locale/locale'
 import formatDateTime from './formatDateTime'
+import displayMatrix from './hitMatrix'
 import lookupPlayer from './lookupPlayer'
 
 export function exportData(full, stats, lang, rows, msgs, hits) {
@@ -32,7 +33,10 @@ export function exportData(full, stats, lang, rows, msgs, hits) {
     data += txt('totalHits', lang) + ': ' + rows.reduce((total, row) => total += parseInt(row.hits), 0)
   }
   else if (!stats && hits.length > 0 && msgs.length > 0) {
-    data = hits.map(hit => {
+    data = '* * * HIT MATRIX * * *\n\n\n'
+    data += displayMatrix(hits, msgs)
+    data += '\n\n* * * ' + txt('logHits', lang).toUpperCase() + ' * * *\n\n\n'
+    data += hits.map(hit => {
       let retval = ''
       retval += formatDateTime(hit.timestamp) + ': '
       retval += lookupPlayer(hit?.victimId, msgs) + ' (' + hit?.victimId?.toString(16).toUpperCase() + ') '
