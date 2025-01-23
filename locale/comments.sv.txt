@@ -1,9 +1,12 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
 launch=The Lady är redo!
-session_start=Startad.
-session_stop=Färdig.
+registration_open=Piloter, var redo.
 joined={player} gick med.
+battle_countdown=Vi börjar i.
+battle_start=Låt oss börja.
 hit={victim} träffades.
 hit_by={victim} träffades av {attacker}.
 lives_left={lives} liv kvar.
+battle_minutes={minutes} minuter kvar.
+battle_end=Färdig. Landa nu. Landa nu.

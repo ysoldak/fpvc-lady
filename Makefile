@@ -81,6 +81,11 @@ demo-mac-sv:
 demo-score-hit-damage:
 	go run $(SRC) --source demo --score-hit A1-C9:3,D1-D9:5,F1-F9:1 --score-damage -1
 
+# Press Space after all 5 players registered to start the countdown
+# Wait until the battle automatically ends after 2 minutes
+demo-countdown:
+	go run $(SRC) --source demo --auto-start=false --duration-countdown 10 --duration-battle 2
+
 # Replay a log file
 replay:
 	go run $(SRC) --source log --log-file fpvc-lady.log

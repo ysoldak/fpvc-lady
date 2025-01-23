@@ -25,7 +25,8 @@ configScoreDamage=Score Damage
 configScoreHit=Score Hit
 
 keysQuit=quit
-keysToggleSession=session
+keysAdvance=advance
+keysRestart=restart
 keysToggleLives=lives
 keysToggleCheers=cheers
 keysToggleConfig=config

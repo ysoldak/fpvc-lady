@@ -7,26 +7,32 @@ import (
 )
 
 type Config struct {
-	Source       string `json:"-"`
-	LogSocket    string `json:"logSocket"`
-	Locale       string `json:"locale"`
-	SpeakCommand string `json:"speakCommand"`
-	SpeakLives   bool   `json:"speakLives"`
-	SpeakCheers  bool   `json:"speakCheers"`
-	ScoreHit     string `json:"scoreHits"`
-	ScoreDamage  string `json:"scoreDamages"`
+	Source            string `json:"-"`
+	LogSocket         string `json:"logSocket"`
+	Locale            string `json:"locale"`
+	SpeakCommand      string `json:"speakCommand"`
+	SpeakLives        bool   `json:"speakLives"`
+	SpeakCheers       bool   `json:"speakCheers"`
+	ScoreHit          string `json:"scoreHits"`
+	ScoreDamage       string `json:"scoreDamages"`
+	AutoStart         bool   `json:"autoStart"`
+	DurationBattle    int    `json:"durationBattle"`
+	DurationCountdown int    `json:"durationCountdown"`
 }
 
 func NewConfigFromContext(cc *cli.Context) (config Config) {
 	return Config{
-		Source:       cc.String(flagSource),
-		LogSocket:    cc.String(flagLogSocket),
-		Locale:       cc.String(flagLocale),
-		SpeakCommand: cc.String(flagSpeakCommand),
-		SpeakCheers:  cc.Bool(flagSpeakCheers),
-		SpeakLives:   cc.Bool(flagSpeakLives),
-		ScoreHit:     cc.String(flagScoreHit),
-		ScoreDamage:  cc.String(flagScoreDamage),
+		Source:            cc.String(flagSource),
+		LogSocket:         cc.String(flagLogSocket),
+		Locale:            cc.String(flagLocale),
+		SpeakCommand:      cc.String(flagSpeakCommand),
+		SpeakCheers:       cc.Bool(flagSpeakCheers),
+		SpeakLives:        cc.Bool(flagSpeakLives),
+		ScoreHit:          cc.String(flagScoreHit),
+		ScoreDamage:       cc.String(flagScoreDamage),
+		AutoStart:         cc.Bool(flagAutoStart),
+		DurationBattle:    cc.Int(flagDurationBattle),
+		DurationCountdown: cc.Int(flagDurationCountdown),
 	}
 }
 

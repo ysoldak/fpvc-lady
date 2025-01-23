@@ -1,9 +1,12 @@
 # THIS FILE IS GENERATED, DO NOT EDIT
 
 launch=Леди к вашим услугам!
-session_start=Начали.
-session_stop=Кончили.
+registration_open=Пилоты, готовность номер один.
 joined={player} подключился.
+battle_countdown=Бой начнется через.
+battle_start=Поехали!
 hit={victim} повреждение.
 hit_by={victim} повреждение от {attacker}.
 lives_left=Осталось {lives} жизней.
+battle_minutes=Осталось {minutes} минут.
+battle_end=Бой окончен. Все на базу. Все на базу.
