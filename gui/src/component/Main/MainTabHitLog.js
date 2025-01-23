@@ -5,6 +5,7 @@ import '../../App.scss'
 import txt from '../../locale/locale'
 import { exportData } from '../../utils/exportData'
 import formatDateTime from '../../utils/formatDateTime'
+import lookupPlayer from '../../utils/lookupPlayer'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
@@ -19,12 +20,18 @@ function MainTabHitLog(props) {
         <Card variant="outlined" className="fpvcm-card-wrapper">
           <CardContent className="fpvcm-card fpvcm-disp-log">
             <div display="block" style={{whiteSpace: "nowrap"}}>
+              <pre>
               {props.hits?.map((hit, i) => {
                 return (
-                  <pre key={i}>
-                    {hit?.victimId?.toString(16).toUpperCase()} {txt('logHitsInfo', props.lang)} {hit?.attackerId?.toString(16).toUpperCase()}, {formatDateTime(hit.timestamp)}<br />
-                  </pre>)
+                  <span key={i}>
+                    {formatDateTime(hit.timestamp)}:&nbsp;
+                    {lookupPlayer(hit?.victimId, props.msgs)}&nbsp;({hit?.victimId?.toString(16).toUpperCase()})&nbsp;
+                    {txt('logHitsInfo', props.lang)}&nbsp;
+                    {lookupPlayer(hit?.attackerId, props.msgs)}&nbsp;({hit?.attackerId?.toString(16).toUpperCase()})&nbsp;
+                    <br />
+                  </span>)
               })}
+              </pre>
             </div>
           </CardContent>
         </Card>
@@ -32,12 +39,7 @@ function MainTabHitLog(props) {
       <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
           <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(false, false, props.lang, props.rows, props.msgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
-              {txt('exportLast', props.lang)}
-            </Button>
-          </Grid>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs, props.hits)} style={{minWidth: '100%', overflow: 'hidden'}}> 
               {txt('exportAll', props.lang)}
             </Button>
           </Grid>

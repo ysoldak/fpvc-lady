@@ -34,12 +34,12 @@ function MainTabLog(props) {
       <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
           <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(false, false, props.lang, props.rows, props.msgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+            <Button variant="contained" size="small" onClick={() => exportData(false, false, props.lang, props.rows, props.msgs, [])} style={{minWidth: '100%', overflow: 'hidden'}}> 
               {txt('exportLast', props.lang)}
             </Button>
           </Grid>
           <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs, [])} style={{minWidth: '100%', overflow: 'hidden'}}> 
               {txt('exportAll', props.lang)}
             </Button>
           </Grid>
