@@ -1,4 +1,5 @@
 import txt from '../locale/locale'
+import formatDateTime from './formatDateTime'
 
 export function exportData(full, stats, lang, rows, msgs) {
   let filename = 'fpvcombat_session_'
@@ -13,15 +14,17 @@ export function exportData(full, stats, lang, rows, msgs) {
     data += txt('hits', lang).substring(0, 12).padStart(12, ' ') + ' | '
     data += txt('damage', lang).substring(0, 12).padStart(12, ' ') + ' | '
     data += txt('lives', lang).substring(0, 12).padStart(12, ' ') + ' | '
-    data += txt('score', lang).substring(0, 12).padStart(12, ' ') + ' \n'
-    data += '---------------- | -------------------- || ------------ | ------------ | ------------ | ------------ \n'
+    data += txt('score', lang).substring(0, 12).padStart(12, ' ') + ' | '
+    data += txt('updated', lang).substring(0, 12).padEnd(12, ' ') + ' \n'
+    data += '---------------- | -------------------- || ------------ | ------------ | ------------ | ------------ | ---------------------- \n'
     rows.forEach((row) => {
       data += (row.playerName.substring(0, 11) + ' (' + row.playerId + ')').padEnd(16, ' ') + ' | '
       data += row.playerDesc.substring(0, 20).padEnd(20, ' ') + ' || '
       data += row.hits.toString().substring(0, 12).padStart(12, ' ') + ' | '
       data += row.damage.toString().substring(0, 12).padStart(12, ' ') + ' | '
       data += row.lives.toString().substring(0, 12).padStart(12, ' ') + ' | '
-      data += row.score.toString().substring(0, 12).padStart(12, ' ') + ' \n'
+      data += row.score.toString().substring(0, 12).padStart(12, ' ') + ' | '
+      data += formatDateTime(row.updated.toString()).substring(0, 19).padEnd(22, ' ') + ' \n'
     })
     data += '\n'
     data += txt('totalHits', lang) + ': ' + rows.reduce((total, row) => total += parseInt(row.hits), 0)

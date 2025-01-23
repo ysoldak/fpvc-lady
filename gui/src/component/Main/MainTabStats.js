@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import '../../App.scss'
 
 import txt from '../../locale/locale'
+import formatDateTime from '../../utils/formatDateTime'
 import { exportData } from '../../utils/exportData'
 
 import Box from '@mui/material/Box'
@@ -28,7 +29,7 @@ function MainTblStats(props) {
 
   useEffect(() => {
     let lastHit = props.hits[props.hits.length-1]
-    if (lastHit.attackerId && lastHit.victimId) {
+    if (lastHit?.attackerId && lastHit?.victimId) {
       setLastAttackerId(lastHit.attackerId.toString(16).toUpperCase())
       setLastVictimrId(lastHit.victimId.toString(16).toUpperCase())
     }
@@ -42,7 +43,7 @@ function MainTblStats(props) {
             {!props.ladyUp && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
             {props.ladyUp && (
               <>
-                <TableContainer component={Paper} style={{maxWidth: 750}}>
+                <TableContainer component={Paper} style={{maxWidth: 950}}>
                   <Table size="small" className="fpvcm-table-bg" >
                     <TableHead>
                       <TableRow>
@@ -52,6 +53,7 @@ function MainTblStats(props) {
                         <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.lang)}</TableCell>
                         <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('lives', props.lang)}</TableCell>
                         <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.lang)}</TableCell>
+                        <TableCell className="fpvcm-table-header-cell hide-narrow">{txt('updated', props.lang)}</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -66,15 +68,24 @@ function MainTblStats(props) {
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.playerDesc}</TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">
-                            {(lastAttackerId && lastAttackerId === row.playerId) && <Chip label={row.hits} size="small" color="success" />}
-                            {(!lastAttackerId || lastAttackerId !== row.playerId) && row.hits}
+                            <Chip
+                              label={row.hits}
+                              size="small"
+                              style={{color: 'white'}}
+                              color={lastAttackerId && lastAttackerId === row.playerId ? "success" : "default"}
+                            />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">
-                            {(lastVictimId && lastVictimId === row.playerId) && <Chip label={row.damage} size="small" color="error" />}
-                            {(!lastVictimId || lastVictimId !== row.playerId) && row.damage}
+                            <Chip
+                              label={row.damage}
+                              size="small"
+                              style={{color: 'white'}}
+                              color={lastVictimId && lastVictimId === row.playerId ? "error" : "default"}
+                            />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
+                          <TableCell className="fpvcm-table-cell hide-narrow"><span className="fpvcm-text-muted">{formatDateTime(row.updated)}</span></TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

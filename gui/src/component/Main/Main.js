@@ -32,6 +32,7 @@ function Main(props) {
     hits,
     damage,
     lives,
+    updated,
     score = 0
   ) {
     return {
@@ -41,6 +42,7 @@ function Main(props) {
       hits,
       damage,
       lives,
+      updated,
       score: props.config.useLocalScore ? ((hits * props.config.hitPoints) + (damage * props.config.damagePoints)) : score
     }
   }
@@ -54,7 +56,7 @@ function Main(props) {
   React.useEffect(() => {
     if (props.msgs.length > 0) {
       let rows = props.msgs[0].map((msg, i) => {
-        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.score)
+        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.updated, msg.score)
       })
       setRows(rows.sort(comparePoints))
     }
@@ -70,7 +72,8 @@ function Main(props) {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={tab} onChange={switchTab} sx={{color: 'red'}}>
                 <Tab label="Stats" id="fpvcmTab0"  />
-                <Tab label="Log" id="fpvcmTab1" />
+                <Tab label={txt('logScore', props.config.lang)} id="fpvcmTab1" />
+                <Tab label={txt('logHits', props.config.lang)} id="fpvcmTab2" />
                 {props.loading && <Loading lang={props.config.lang} />}
               </Tabs>
             </Box>
@@ -86,6 +89,14 @@ function Main(props) {
               role="tabpanel"
               index={1}
               hidden={tab !== 1}
+              id={`fpvcmTab${tab}`}
+            >
+              <MainTabLog msgs={props.msgs} lang={props.config.lang} rows={rows} />
+            </div>
+            <div
+              role="tabpanel"
+              index={2}
+              hidden={tab !== 2}
               id={`fpvcmTab${tab}`}
             >
               <MainTabLog msgs={props.msgs} lang={props.config.lang} rows={rows} />
