@@ -72,7 +72,7 @@ function MainTblStats(props) {
                               label={row.hits}
                               size="small"
                               style={{color: 'white'}}
-                              color={lastAttackerId && lastAttackerId === row.playerId ? "success" : "default"}
+                              color={lastAttackerId && lastAttackerId === row.playerId && row.hits > 0 ? "success" : "default"}
                             />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">
@@ -80,7 +80,7 @@ function MainTblStats(props) {
                               label={row.damage}
                               size="small"
                               style={{color: 'white'}}
-                              color={lastVictimId && lastVictimId === row.playerId ? "error" : "default"}
+                              color={lastVictimId && lastVictimId === row.playerId && row.damage > 0 ? "error" : "default"}
                             />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>

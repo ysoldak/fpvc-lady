@@ -5,7 +5,8 @@ import '../../App.scss'
 import txt from '../../locale/locale'
 
 import Loading from '../Loading'
-import MainTabLog from './MainTabLog'
+import MainTabScoreLog from './MainTabScoreLog'
+import MainTabHitLog from './MainTabHitLog'
 import MainTabStats from './MainTabStats'
 
 import Box from '@mui/material/Box'
@@ -91,7 +92,7 @@ function Main(props) {
               hidden={tab !== 1}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabLog msgs={props.msgs} lang={props.config.lang} rows={rows} />
+              <MainTabScoreLog msgs={props.msgs} lang={props.config.lang} rows={rows} />
             </div>
             <div
               role="tabpanel"
@@ -99,7 +100,7 @@ function Main(props) {
               hidden={tab !== 2}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabLog msgs={props.msgs} lang={props.config.lang} rows={rows} />
+              <MainTabHitLog msgs={props.msgs} lang={props.config.lang} hits={props.hits} />
             </div>
           </Box>
         </Grid>

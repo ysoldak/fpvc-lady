@@ -14,6 +14,7 @@
   "lives": "Leben",
   "logScore": "Punktlog",
   "logHits": "Trefferlog",
+  "logHitsInfo": "was hit by",
   "updated": "Updated time",
   "damage": "Schaden",
   "score": "Punktzahl",

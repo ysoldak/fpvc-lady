@@ -14,6 +14,7 @@
   "lives": "Lives",
   "logScore": "Score log",
   "logHits": "Hits log",
+  "logHitsInfo": "was hit by",
   "updated": "Updated time",
   "damage": "Damage",
   "score": "Score",
