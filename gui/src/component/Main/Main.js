@@ -5,7 +5,8 @@ import '../../App.scss'
 import txt from '../../locale/locale'
 
 import Loading from '../Loading'
-import MainTabLog from './MainTabLog'
+import MainTabScoreLog from './MainTabScoreLog'
+import MainTabHitLog from './MainTabHitLog'
 import MainTabStats from './MainTabStats'
 
 import Box from '@mui/material/Box'
@@ -32,6 +33,7 @@ function Main(props) {
     hits,
     damage,
     lives,
+    updated,
     score = 0
   ) {
     return {
@@ -41,6 +43,7 @@ function Main(props) {
       hits,
       damage,
       lives,
+      updated,
       score: props.config.useLocalScore ? ((hits * props.config.hitPoints) + (damage * props.config.damagePoints)) : score
     }
   }
@@ -52,20 +55,9 @@ function Main(props) {
   }
 
   React.useEffect(() => {
-    if (props.jsonMsgs.length > 0 && props.useJsonMsgs) {
-      let rows = props.jsonMsgs[0].map((msg, i) => {
-        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.score)
-      })
-      setRows(rows.sort(comparePoints))
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.jsonMsgs])
-
-  React.useEffect(() => {
-    if (props.msgs.length > 0 && !props.useJsonMsgs) {
-      let rows = props.msgs[0].split('\n').filter((e, i) => i > 1 && e.length > 0).map((msg, i) => {
-        let line = msg.split(/\|\s*/).map(e => e.trim()).filter(e => e.length > 0)
-        return createData(line[1], line[0], line[2], line[4], line[5], line[6])
+    if (props.msgs.length > 0) {
+      let rows = props.msgs[0].map((msg, i) => {
+        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.updated, msg.score)
       })
       setRows(rows.sort(comparePoints))
     }
@@ -81,7 +73,8 @@ function Main(props) {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={tab} onChange={switchTab} sx={{color: 'red'}}>
                 <Tab label="Stats" id="fpvcmTab0"  />
-                <Tab label="Log" id="fpvcmTab1" />
+                <Tab label={txt('logScore', props.config.lang)} id="fpvcmTab1" />
+                <Tab label={txt('logHits', props.config.lang)} id="fpvcmTab2" />
                 {props.loading && <Loading lang={props.config.lang} />}
               </Tabs>
             </Box>
@@ -91,7 +84,7 @@ function Main(props) {
               hidden={tab !== 0}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabStats ladyUp={props.ladyUp} lang={props.config.lang} rows={rows} />
+              <MainTabStats ladyUp={props.ladyUp} lang={props.config.lang} rows={rows} hits={props.hits} />
             </div>   
             <div
               role="tabpanel"
@@ -99,7 +92,15 @@ function Main(props) {
               hidden={tab !== 1}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabLog msgs={props.msgs} useJsonMsgs={props.useJsonMsgs} lang={props.config.lang} rows={rows} jsonMsgs={props.jsonMsgs} />
+              <MainTabScoreLog msgs={props.msgs} lang={props.config.lang} rows={rows} log={props.log} />
+            </div>
+            <div
+              role="tabpanel"
+              index={2}
+              hidden={tab !== 2}
+              id={`fpvcmTab${tab}`}
+            >
+              <MainTabHitLog msgs={props.msgs} lang={props.config.lang} hits={props.hits} />
             </div>
           </Box>
         </Grid>

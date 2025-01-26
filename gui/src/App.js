@@ -56,14 +56,20 @@ const countDownMarks = (lang) =>  [
 
 const initSettings =  {
   "lang": "en",
+  "ladyLocale": "en",
+  "ladyLogSocker": "fpvc-lady.socket.log",
+  "ladySpeakCommand": "say -v Milena",
+  "speakCheers": false,
+  "speakLives": false,
   "useLocalScore": false,
   "defaultRoundTime": 240,
   "defaultCountDown": 30,
+  "hitAddresses": "A1-E9",
+  "hitTargetAddresses": "F1-FF",
   "hitPoints": 5,
+  "hitTargetPoints": 1,
   "damagePoints": -1
 }
-
-const useJsonMsgs = true
 
 function App() {
 
@@ -72,8 +78,8 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [msgs, setMsgs] = useState([])
-  const [jsonMsgs, setJsonMsgs] = useState([])
-  const [poll, setPoll] = useState(null)
+  const [log, setLog] = useState([])
+  const [hits, setHits] = useState([])
   const [showLady, setShowLady] = useState(false)
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
   const [ladyClicks, setLadyClicks] = useState(0)
@@ -93,14 +99,16 @@ function App() {
       try {
         JSONmsg = JSON.parse(lastMessage?.data)
         if (JSONmsg?.payload?.players?.length > 0) {
-          setJsonMsgs([JSONmsg?.payload?.players, ...jsonMsgs])
-        }
+          setMsgs([JSONmsg?.payload?.players, ...msgs])
+          setHits(JSONmsg?.payload?.hits)          
+          let tmpInsLog = []
+          JSONmsg?.payload?.players?.forEach((pl) => {tmpInsLog.push(JSON.stringify(pl))})
+          tmpInsLog.push('------------------')
+          setLog([...tmpInsLog, ...log])
+        }    
       }
       catch {
-        if (lastMessage.data !== msgs[0]) {
-          setLadyUp(true)
-          setMsgs([lastMessage.data, ...msgs])
-        }
+        console.error('Unable to parse JSON data coming from the server:', lastMessage?.data)
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,17 +121,10 @@ function App() {
     else if (readyState === 1) {
       setLoading(false)
       setLadyUp(true)
-      if (!poll) {
-        setPoll(setInterval(function () {
-          sendMessage("table")
-        }, 1500))
-      }
     }
     else {
-      clearInterval(poll)
       setLoading(false)
       setLadyUp(false)
-      setPoll(null)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readyState])
@@ -163,45 +164,45 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-    <div className="fpvcm">
-      <CssBaseline />
-      <header className="fpvcm-header">
-        <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
-        <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
-        <div className="fpvcm-header_text">
-          &nbsp;Manager
-          <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
-        </div>
-        {isAdmin && <div className="fpvcm-settings-icon">
-          <SettingsIcon onClick={toggleSettings} />
-        </div>}
-      </header>
-      <Container maxWidth="false" className="fpvcm-container">
-        {showLady
-          ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
-          :  showConfig
-            ? (<Options
-                config={config}
-                setConfig={setConfig}
-                roundTimeMarks={roundTimeMarks}
-                countDownMarks={countDownMarks}
-                toggleSettings={toggleSettings}
-              />)
-            : (<Main
-                config={config}
-                loading={loading}
-                countDownMarks={countDownMarks(config.lang)}
-                roundTimeMarks={roundTimeMarks}
-                sendMessage={sendMessage}
-                useJsonMsgs={useJsonMsgs}
-                isAdmin={isAdmin}
-                ladyUp={ladyUp}
-                jsonMsgs={jsonMsgs}
-                msgs={msgs}
-              />)
-        }
-      </Container>
-    </div>
+      <div className="fpvcm">
+        <CssBaseline />
+        <header className="fpvcm-header">
+          <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
+          <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
+          <div className="fpvcm-header_text">
+            &nbsp;Manager
+            <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
+          </div>
+          {isAdmin && <div className="fpvcm-settings-icon">
+            <SettingsIcon onClick={toggleSettings} />
+          </div>}
+        </header>
+        <Container maxWidth="false" className="fpvcm-container">
+          {showLady
+            ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
+            :  showConfig
+              ? (<Options
+                  config={config}
+                  setConfig={setConfig}
+                  roundTimeMarks={roundTimeMarks}
+                  countDownMarks={countDownMarks}
+                  toggleSettings={toggleSettings}
+                />)
+              : (<Main
+                  config={config}
+                  loading={loading}
+                  countDownMarks={countDownMarks(config.lang)}
+                  roundTimeMarks={roundTimeMarks}
+                  sendMessage={sendMessage}
+                  isAdmin={isAdmin}
+                  ladyUp={ladyUp}
+                  log={log}
+                  msgs={msgs}
+                  hits={hits}
+                />)
+          }
+        </Container>
+      </div>
     </ThemeProvider>
   );
 }
