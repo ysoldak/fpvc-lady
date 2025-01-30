@@ -21,7 +21,6 @@ func handleSocketMessage(message string) {
 	var msg SocketMessage
 	err := json.Unmarshal([]byte(message), &msg)
 	if err != nil {
-		fmt.Println("Error parsing websocket message:", err)
 		return
 	}
 	switch msg.Type {
