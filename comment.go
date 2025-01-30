@@ -46,7 +46,8 @@ func commentAction(cc *cli.Context) (err error) {
 	logFromDate := cc.String(flagLogFrom)
 	switch {
 	case source == "serial" || source == "auto":
-		serial, err := utils.NewSerial(source)
+		port := cc.String(flagSerialPort)
+		serial, err := utils.NewSerial(port)
 		if err != nil {
 			return err
 		}
