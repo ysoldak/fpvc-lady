@@ -78,7 +78,6 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [gameSession, setGameSession] = useState('regStarted')
-  const [gameSessionTimestamps, setGameSessionTimestamps] = useState({})
   const [msgs, setMsgs] = useState([])
   const [log, setLog] = useState([])
   const [hits, setHits] = useState([])
@@ -121,7 +120,7 @@ function App() {
     sendMessage(JSON.stringify(msg))
   }
 
-  function getCurrentConfir() {
+  function getCurrentConfig() {
     sendMessage(JSON.stringify({
       type: "config",
       seq: "1",
@@ -143,7 +142,6 @@ function App() {
           setLog([...tmpInsLog, ...log])
         }
         if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
-          setGameSessionTimestamps(JSONmsg?.payload?.timestamps)
           setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
         }
       }
@@ -161,6 +159,7 @@ function App() {
         seq: "1",
         payload: null
       }))
+      getCurrentConfig()
     }
     if (readyState === 0) {
       setLoading(true)
