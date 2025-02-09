@@ -77,6 +77,8 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
+  const [gameSession, setGameSession] = useState('regStarted')
+  const [gameSessionTimestamps, setGameSessionTimestamps] = useState({})
   const [msgs, setMsgs] = useState([])
   const [log, setLog] = useState([])
   const [hits, setHits] = useState([])
@@ -93,6 +95,40 @@ function App() {
     },
   )
 
+  const advanceSession = () => {
+    const sessOrder = ["regStarted", "regEnded", "batStarted", "batEnded"]
+    if (!gameSession || sessOrder.indexOf(gameSession) < 0 || sessOrder.indexOf(gameSession) + 1 === sessOrder.length) {
+      return sessOrder[0]
+    }
+    return sessOrder[sessOrder.indexOf(gameSession) + 1]
+  }
+
+  function sendNewSession(sess) {
+    let now = new Date()
+    let msg = {
+      type: "session",
+      seq: "1",
+      payload: {
+        timestamps: {
+          regStarted: "0001-01-01T00:00:00Z",
+          regEnded: "0001-01-01T00:00:00Z",
+          batStarted: "0001-01-01T00:00:00Z",
+          batEnded: "0001-01-01T00:00:00Z",
+        }
+      }
+    }
+    msg.payload.timestamps[sess] = now.toISOString()
+    sendMessage(JSON.stringify(msg))
+  }
+
+  function getCurrentConfir() {
+    sendMessage(JSON.stringify({
+      type: "config",
+      seq: "1",
+      payload: null
+    }))
+  }
+
   useEffect(() => {
     if (lastMessage && lastMessage.data?.length > 0) {
       let JSONmsg = {}
@@ -105,16 +141,27 @@ function App() {
           JSONmsg?.payload?.players?.forEach((pl) => {tmpInsLog.push(JSON.stringify(pl))})
           tmpInsLog.push('------------------')
           setLog([...tmpInsLog, ...log])
-        }    
+        }
+        if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
+          setGameSessionTimestamps(JSONmsg?.payload?.timestamps)
+          setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
+        }
       }
-      catch {
-        console.error('Unable to parse JSON data coming from the server:', lastMessage?.data)
+      catch (e) {
+        console.error('Unable to parse JSON data coming from the server:', lastMessage?.data, e)
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastMessage])
 
   useEffect(() => {
+    if (!lastMessage) {
+      sendMessage(JSON.stringify({
+        type: "session",
+        seq: "1",
+        payload: null
+      }))
+    }
     if (readyState === 0) {
       setLoading(true)
     }
@@ -140,6 +187,27 @@ function App() {
 
   function toggleSettings() {
     setShowConfig(!showConfig)
+  }
+
+  function detectGameSession(sessTimeStamps) {
+    const timeStampLegal = timeStamp => timeStamp.substring(0, 4) !== '0001' 
+    const isRS = 'regStarted' in sessTimeStamps && timeStampLegal(sessTimeStamps.regStarted)
+    const isRE = 'regEnded' in sessTimeStamps && timeStampLegal(sessTimeStamps.regEnded)
+    const isBS = 'batStarted' in sessTimeStamps && timeStampLegal(sessTimeStamps.batStarted)
+    const isBE = 'batEnded' in sessTimeStamps && timeStampLegal(sessTimeStamps.batEnded)
+    if (isRE && isBS && isBE) {
+      return "batEnded"
+    }
+    if (isRE && isBS) {
+      return "batStarted"
+    }
+    if (isRE) {
+      return "regEnded"
+    }
+    if (isRS) {
+      return "regStarted"
+    }
+    return "regStarted"
   }
 
   function toggleLady() {
@@ -192,8 +260,10 @@ function App() {
                   config={config}
                   loading={loading}
                   countDownMarks={countDownMarks(config.lang)}
+                  advanceSession={advanceSession}
                   roundTimeMarks={roundTimeMarks}
-                  sendMessage={sendMessage}
+                  sendNewSession={sendNewSession}
+                  gameSession={gameSession}
                   isAdmin={isAdmin}
                   ladyUp={ladyUp}
                   log={log}

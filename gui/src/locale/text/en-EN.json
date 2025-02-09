@@ -45,5 +45,14 @@
   "optionsExit": "Exit",
   "exportStats": "Export stats",
   "exportLast": "Export last",
-  "exportAll": "Export all"
+  "exportAll": "Export all",
+  "sessCurrent": "Game state",
+  "sess_regStarted": "Registration",
+  "sess_regEnded": "Countdown",
+  "sess_batStarted": "Battle round",
+  "sess_batEnded": "Battle round end",
+  "sessGoTo_regStarted": "Start registration",
+  "sessGoTo_regEnded": "Commence countdown",
+  "sessGoTo_batStarted": "Countdown...",
+  "sessGoTo_batEnded": "End battle"
 }

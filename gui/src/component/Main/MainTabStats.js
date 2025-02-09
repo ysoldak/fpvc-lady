@@ -40,7 +40,7 @@ function MainTblStats(props) {
       <Box sx={{ p: 1 }}>
         <Card variant="outlined" className="fpvcm-card-wrapper">
           <CardContent className="fpvcm-card fpvcm-disp-stats">
-            {!props.ladyUp && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
+            {(!props.ladyUp && !props.loading) && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
             {props.ladyUp && (
               <>
                 <TableContainer component={Paper} style={{maxWidth: 950}}>
@@ -97,6 +97,15 @@ function MainTblStats(props) {
                 </Typography>
               </>
             )}
+          </CardContent>
+        </Card>
+      </Box>
+      <Box sx={{ p: 1 }}>
+        <Card variant="outlined" className="fpvcm-card-wrapper">
+          <CardContent className="fpvcm-config fpvcm-disp-config">
+                <Typography display="block" style={{fontWeight: 'normal', paddingTop: '10px'}}>
+                {txt('sessCurrent', props.lang)}: <span className="fpvcm-label">{txt('sess_' + props.gameSession, props.lang)}</span>
+                </Typography>
           </CardContent>
         </Card>
       </Box>

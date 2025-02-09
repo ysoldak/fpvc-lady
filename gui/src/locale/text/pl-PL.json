@@ -45,5 +45,14 @@
   "optionsExit": "Wyjście",
   "exportStats": "Pobierz tabelę",
   "exportLast": "Pobierz ostatnie",
-  "exportAll": "Pobierz wszystko"
+  "exportAll": "Pobierz wszystko",
+  "sessCurrent": "Stan gry",
+  "sess_regStarted": "Rejestracja",
+  "sess_regEnded": "Odliczanie",
+  "sess_batStarted": "Runda",
+  "sess_batEnded": "Koniec rundy",
+  "sessGoTo_regStarted": "Rozpocznij rejestrację",
+  "sessGoTo_regEnded": "Zacznij odliczanie",
+  "sessGoTo_batStarted": "Odliczanie...",
+  "sessGoTo_batEnded": "Zakończ rundę"
 }
