@@ -75,6 +75,7 @@ function Main(props) {
                 hits={props.hits}
                 gameSession={props.gameSession}
                 loading={props.loading}
+                config={props.config}
               />
             </div>   
             <div

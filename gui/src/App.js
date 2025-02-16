@@ -220,7 +220,11 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log(config)
+    if (!config.ladySettingsSynced) {
+      setTimeout(() => {
+        getCurrentConfig()
+      }, 1000)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config])
 
