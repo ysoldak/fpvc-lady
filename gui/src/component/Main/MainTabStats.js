@@ -64,15 +64,15 @@ function MainTblStats(props) {
                           style={{color: 'white'}}
                         >
                           <TableCell component="th" scope="row" className="fpvcm-table-cell">
-                            {row.playerName}&nbsp;<span className="fpvcm-label">({row.playerId})</span>
+                            {row.name}&nbsp;<span className="fpvcm-label">({row.id})</span>
                           </TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.playerDesc}</TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.description}</TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">
                             <Chip
                               label={row.hits}
                               size="small"
                               style={{color: 'white'}}
-                              color={lastAttackerId && lastAttackerId === row.playerId && row.hits > 0 ? "success" : "default"}
+                              color={lastAttackerId && lastAttackerId === row.id && row.hits > 0 ? "success" : "default"}
                             />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">
@@ -80,7 +80,7 @@ function MainTblStats(props) {
                               label={row.damage}
                               size="small"
                               style={{color: 'white'}}
-                              color={lastVictimId && lastVictimId === row.playerId && row.damage > 0 ? "error" : "default"}
+                              color={lastVictimId && lastVictimId === row.id && row.damage > 0 ? "error" : "default"}
                             />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>

@@ -1,45 +1,64 @@
 import * as React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { txt, langs } from '../locale/locale.js'
-
-import { setCookie } from '../utils/cookieHandler'
+import { roundTimeMarks, countDownMarks, ladyLocales } from '../utils/settingsVals'
 
 import Box from '@mui/material/Box/index.js'
 import Grid from '@mui/material/Unstable_Grid2/index.js'
+import Switch from '@mui/material/Switch'
 import Select from '@mui/material/Select/index.js'
 import Button from '@mui/material/Button/index.js'
-import Switch from '@mui/material/Switch'
 import MenuItem from '@mui/material/MenuItem/index.js'
 import TextField from '@mui/material/TextField/index.js'
 
 function Options(props) {
 
   const [formConfig, setFormConfig] = useState(props.config)
+  const [typing, setTyping] = useState(false)
+  const [typingTimeout, setTypingTimeout] = useState(null)
 
   function handleChange(e) {
     let newFormConfig = {...formConfig}
-    if (e.target.name === 'useLocalScore') {
-      newFormConfig[e.target.name] = !e.target.checked
+    if (e.target.type && e.target.type?.toString() === 'checkbox') {
+      newFormConfig[e.target.name] = e.target.checked
     }
     else {
       newFormConfig[e.target.name] = e.target.value
     }
-    setCookie('fpvcm_config', JSON.stringify(newFormConfig), 120)
-    setFormConfig({...newFormConfig})
-    props.setConfig({...newFormConfig})
+    setFormConfig({...newFormConfig, ladySettingsSynced: false})
+    if (e.target.type && e.target.type?.toString() === 'text') {
+      setTyping(true)
+      if (typingTimeout) {
+        clearTimeout(typingTimeout)
+        setTypingTimeout(null)
+      }
+      setTypingTimeout(setTimeout(() => {
+        props.setConfig({...newFormConfig, ladySettingsSynced: false})
+        setTyping(false)
+      }, 500))
+    }
+    else {
+      props.setConfig({...newFormConfig, ladySettingsSynced: false})
+    }
   }
+
+  useEffect(() => {
+    if (!typing) {
+      props.sendConfig(formConfig)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formConfig, typing])
 
   return (
     <Box className="fpvcm-container_box">
+
       <Grid container spacing={4} style={{marginTop: '12px'}}>
-        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLanguage', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
           <Select
-            labelId="language-select-label"
-            id="language-select"
             name="lang"
             value={formConfig.lang}
             onChange={handleChange}
@@ -49,94 +68,265 @@ function Options(props) {
           </Select>
         </Grid>
       </Grid>
-      {/*<Grid container spacing={4}>
-        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
-          <span className="fpvcm-input-label">{txt('optionsDefaultRoundTime', props.config.lang)}:</span>
+
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsLadyLanguage', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
           <Select
-            labelId="roundtime-select-label"
-            id="roundtime-select"
-            name="defaultRoundTime"
-            value={formConfig.defaultRoundTime}
+            name="ladyLocale"
+            value={formConfig.ladyLocale}
             onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp || formConfig.useCustomLadyLocale}
             style={{minWidth: '50%'}}
           >
-            {props.roundTimeMarks.map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
+            {Object.keys(ladyLocales).map((i) => <MenuItem value={ladyLocales[i].value} key={i}>{ladyLocales[i].label}</MenuItem>)}
           </Select>
         </Grid>
       </Grid>
+      
       <Grid container spacing={4}>
-        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
-          <span className="fpvcm-input-label">{txt('optionsDefaultCountdown', props.config.lang)}:</span>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsLadyUseCustomLanguage', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
-          <Select
-            labelId="countdown-select-label"
-            id="countdown-select"
-            name="defaultCountDown"
-            value={formConfig.defaultCountDown}
-            onChange={handleChange}
+        <Grid xl={1} lg={1} md={1} sm={1} xs={1} style={{paddingTop: '25px'}}>
+          <Switch
+            name="useCustomLadyLocale"
+            variant="outlined"
+            data={{toggle: true}}
+            checked={formConfig.useCustomLadyLocale}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            onClick={handleChange}
             style={{minWidth: '50%'}}
-          >
-            {props.countDownMarks(props.config.lang).map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
-          </Select>
+          />
         </Grid>
-      </Grid>*/}
+        {formConfig.useCustomLadyLocale && 
+          <Grid xl={2} lg={2} md={2} sm={2} xs={2}>
+            <TextField
+              name="customLadyLocale"
+              variant="outlined"
+              type="text"
+              value={formConfig.customLadyLocale}
+              onChange={handleChange}
+              disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+              style={{minWidth: '50%'}}
+            />
+          </Grid>
+        }
+      </Grid>
+      
       <Grid container spacing={4}>
-        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
-          <span className="fpvcm-input-label">{txt('optionsUseServerScore', props.config.lang)}:</span>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsLadyAutoStart', props.config.lang)}:</span>
         </Grid>
         <Grid xl={4} lg={4} md={6} sm={6} xs={6} style={{paddingTop: '25px'}}>
           <Switch
-            id="hitpoints-select"
-            name="useLocalScore"
+            name="ladyAutoStart"
             variant="outlined"
             data={{toggle: true}}
-            checked={!formConfig.useLocalScore}
+            checked={formConfig.ladyAutoStart}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
             onClick={handleChange}
             style={{minWidth: '50%'}}
           />
         </Grid>
       </Grid>
-      {formConfig.useLocalScore && (
-        <Grid container spacing={4}>
-          <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
-            <span className="fpvcm-input-label">{txt('optionsHitPoints', props.config.lang)}:</span>
-          </Grid>
-          <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
-            <TextField
-              id="hitpoints-select"
-              name="hitPoints"
-              variant="outlined"
-              type="number"
-              value={formConfig.hitPoints}
-              onChange={handleChange}
-              style={{minWidth: '50%'}}
-            />
-          </Grid>
-        </Grid>)
-      }
-      {formConfig.useLocalScore && (
-        <Grid container spacing={4}>
-          <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
-            <span className="fpvcm-input-label">{txt('optionsDamagePoints', props.config.lang)}:</span>
-          </Grid>
-          <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
-            <TextField
-              id="hitpoints-select"
-              name="damagePoints"
-              variant="outlined"
-              type="number"
-              value={formConfig.damagePoints}
-              onChange={handleChange}
-              style={{minWidth: '50%'}}
-            />
-          </Grid>
-        </Grid>)
-      }
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsLadySpeakCheers', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6} style={{paddingTop: '25px'}}>
+          <Switch
+            name="ladySpeakCheers"
+            variant="outlined"
+            data={{toggle: true}}
+            checked={formConfig.ladySpeakCheers}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            onClick={handleChange}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsLadySpeakLives', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6} style={{paddingTop: '25px'}}>
+          <Switch
+            name="ladySpeakLives"
+            variant="outlined"
+            data={{toggle: true}}
+            checked={formConfig.ladySpeakLives}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            onClick={handleChange}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      
+      
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsRoundTime', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
+          <Select
+            id="roundtime-select"
+            name="ladyDurationBattle"
+            value={formConfig.ladyDurationBattle}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          >
+            {roundTimeMarks.map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
+          </Select>
+        </Grid>
+      </Grid>
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsCountdown', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
+          <Select
+            name="ladyDurationCountdown"
+            value={formConfig.ladyDurationCountdown}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          >
+            {countDownMarks(props.config.lang).map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
+          </Select>
+        </Grid>
+      </Grid>
+    
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsHitPoints', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <TextField
+            name="hitPoints"
+            variant="outlined"
+            type="number"
+            value={formConfig.hitPoints}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsHitTargetPoints', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <TextField
+            name="hitTargetPoints"
+            variant="outlined"
+            type="number"
+            value={formConfig.hitTargetPoints}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsDamagePoints', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <TextField
+            name="ladyScoreDamages"
+            variant="outlined"
+            type="number"
+            value={formConfig.ladyScoreDamages}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsHitAddressesRange', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <TextField
+            name="hitAddressesRange"
+            variant="outlined"
+            type="text"
+            value={formConfig.hitAddressesRange}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsHitTargetAddressesRange', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <TextField
+            name="hitTargetAddressesRange"
+            variant="outlined"
+            type="text"
+            value={formConfig.hitTargetAddressesRange}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsLadySpeakCommand', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <TextField
+            name="ladySpeakCommand"
+            variant="outlined"
+            type="text"
+            placeholder="say -v Milena"
+            value={formConfig.ladySpeakCommand}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+      
+      <Grid container spacing={4}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+          <span className="fpvcm-input-label">{txt('optionsLadyLogSocket', props.config.lang)}:</span>
+        </Grid>
+        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+          <TextField
+            name="ladyLogSocket"
+            variant="outlined"
+            type="text"
+            placeholder="fpvc-lady.socket.log"
+            value={formConfig.ladyLogSocket}
+            onChange={handleChange}
+            disabled={!props.config.ladySettingsSynced || !props.ladyUp}
+            style={{minWidth: '50%'}}
+          />
+        </Grid>
+      </Grid>
+
       <Grid container spacing={4} style={{marginTop: '36px'}}>
-        <Grid xl={3} lg={3} md={5} sm={5} xs={5}>
+        <Grid xl={4} lg={4} md={5} sm={5} xs={5}>
           &nbsp;
         </Grid>
         <Grid xl={4} lg={4} md={6} sm={6} xs={6}>

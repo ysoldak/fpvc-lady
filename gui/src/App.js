@@ -1,30 +1,27 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
+import useWebSocket from "react-use-websocket"
 
-import { getCookie } from './utils/cookieHandler'
+import { ladyLocales } from './utils/settingsVals'
 
 import logo from './img/FPV-Combat-Logo-light-grey.png'
 import ladyBW from './img/lady_bw.jpeg'
 import './App.scss'
-
-import txt from './locale/locale'
 
 import Main from './component/Main/Main'
 import Options from './component/Options'
 
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
-import SettingsIcon from '@mui/icons-material/Settings'
-
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 
-import useWebSocket from "react-use-websocket"
+import SettingsIcon from '@mui/icons-material/Settings'
 
 const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
 const appRevision = process.env.REACT_APP_REVISION
-
 const wsUrlDev = process.env.REACT_APP_MOCK_WS_URL
+
 const wsUrl = "ws://" + window.location.host + "/ws"
 
 const theme = createTheme({
@@ -35,40 +32,25 @@ const theme = createTheme({
   },
 })
 
-const roundTimeMarks = [
-  { value: 120, label: '2' },
-  { value: 180, label: '3' },
-  { value: 240, label: '4' },
-  { value: 300, label: '5' },
-  { value: 360, label: '6' },
-  { value: 420, label: '7' },
-  { value: 480, label: '8' },
-  { value: 540, label: '9' },
-  { value: 600, label: '10' },
-]
-
-const countDownMarks = (lang) =>  [
-  { value: 10, label: '10 ' + txt('sec', lang) },
-  { value: 30, label: '30 ' + txt('sec', lang) },
-  { value: 60, label: '1 ' + txt('min', lang) },
-  { value: 120, label: '2 ' + txt('min', lang) },
-]
-
 const initSettings =  {
-  "lang": "en",
-  "ladyLocale": "en",
-  "ladyLogSocker": "fpvc-lady.socket.log",
-  "ladySpeakCommand": "say -v Milena",
-  "speakCheers": false,
-  "speakLives": false,
-  "useLocalScore": false,
-  "defaultRoundTime": 240,
-  "defaultCountDown": 30,
-  "hitAddresses": "A1-E9",
-  "hitTargetAddresses": "F1-FF",
-  "hitPoints": 5,
-  "hitTargetPoints": 1,
-  "damagePoints": -1
+  lang: "en",
+  hitAddressesRange: "A1-EF",
+  hitTargetAddressesRange: "F1-FF",
+  hitPoints: 5,
+  hitTargetPoints: 3,
+  useCustomLadyLocale: false,
+  customLadyLocale: '',
+  ladySettingsSynced: false,
+  ladyLocale: "en",
+  ladyLogSocket: "fpvc-lady.socket.log",
+  ladyScoreHits: "",
+  ladyScoreDamages: -1,
+  ladySpeakCommand: "system",
+  ladySpeakCheers: false,
+  ladySpeakLives: false,
+  ladyAutoStart: false,
+  ladyDurationBattle: 4,
+  ladyDurationCountdown: 10,
 }
 
 function App() {
@@ -102,6 +84,23 @@ function App() {
     return sessOrder[sessOrder.indexOf(gameSession) + 1]
   }
 
+  const ladyConfigDict = (config) => {
+    let retval = {}
+    for (const [key, val] of Object.entries(config)) {
+      retval['lady' + key[0].toUpperCase() + key.slice(1)] = val
+    }
+    return retval
+  }
+
+  const isCustomLadyLocale = (l) => {
+    Object.keys(ladyLocales).forEach(ladyLocale => {
+      if (ladyLocale.value === l.toString()) {
+        return true
+      }
+    })
+    return false
+  }
+
   function sendNewSession(sess) {
     let now = new Date()
     let msg = {
@@ -128,6 +127,40 @@ function App() {
     }))
   }
 
+  function sendConfig(cfg) {
+    sendMessage(JSON.stringify({
+      type: "config",
+      seq: "1",
+      payload: {
+        locale: config.useCustomLadyLocale ? config.customLadyLocale: config.ladyLocale,
+        logSocket: config.ladyLogSocket,
+        scoreHits: config.hitAddressesRange + ':' + config.hitPoints + ',' + config.hitTargetAddressesRange + ':' + config.hitTargetPoints,
+        scoreDamages: config.ladyScoreDamages,
+        speakCommand: config.ladySpeakCommand,
+        speakCheers: config.ladySpeakCheers,
+        speakLives: config.ladySpeakLives,
+        autoStart: config.ladyAutoStart,
+        durationBattle: config.ladyDurationBattle,
+        durationCountdown: config.ladyDurationCountdown
+      }
+    }))
+  }
+
+  function storeCurrentConfig(ladyConfig) {
+    const scoreHits = ladyConfig.ladyScoreHits.split(',')
+    setConfig({
+      ...initSettings,
+      ...ladyConfig,
+      hitPoints: scoreHits[0].split(':')[1],
+      hitTargetPoints: scoreHits[1].split(':')[1],
+      hitAddressesRange: scoreHits[0].split(':')[0],
+      hitTargetAddressesRange: scoreHits[1].split(':')[0],
+      useCustomLadyLocale: isCustomLadyLocale(ladyConfig.ladyLocale),
+      customLadyLocale: ladyConfig.ladyLocale.toString(),
+      ladySettingsSynced: true
+    })
+  }
+
   useEffect(() => {
     if (lastMessage && lastMessage.data?.length > 0) {
       let JSONmsg = {}
@@ -143,6 +176,9 @@ function App() {
         }
         if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
           setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
+        }
+        if (JSONmsg?.type?.toString() === 'config' && Object.keys(JSONmsg.payload).length > 0) {
+          storeCurrentConfig({...ladyConfigDict(JSONmsg.payload)})
         }
       }
       catch (e) {
@@ -177,12 +213,16 @@ function App() {
 
   useEffect(() => {
     setIsAdmin(window.location.host.indexOf('localhost') > -1 || window.location.host.indexOf('127.0.0.1') > -1)
-    let storedConfig = getCookie('fpvcm_config')
-    if (storedConfig) {
-      setConfig(JSON.parse(storedConfig))
+    if (!config.ladySettingsSynced) {
+      getCurrentConfig()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    console.log(config)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config])
 
   function toggleSettings() {
     setShowConfig(!showConfig)
@@ -251,16 +291,14 @@ function App() {
               ? (<Options
                   config={config}
                   setConfig={setConfig}
-                  roundTimeMarks={roundTimeMarks}
-                  countDownMarks={countDownMarks}
+                  sendConfig={sendConfig}
+                  ladyUp={ladyUp}
                   toggleSettings={toggleSettings}
                 />)
               : (<Main
                   config={config}
                   loading={loading}
-                  countDownMarks={countDownMarks(config.lang)}
                   advanceSession={advanceSession}
-                  roundTimeMarks={roundTimeMarks}
                   sendNewSession={sendNewSession}
                   gameSession={gameSession}
                   isAdmin={isAdmin}

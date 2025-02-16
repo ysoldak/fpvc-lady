@@ -23,28 +23,6 @@ function Main(props) {
     setTab(tab)
   }
 
-  function createData(
-    playerName,
-    playerId,
-    playerDesc,
-    hits,
-    damage,
-    lives,
-    updated,
-    score = 0
-  ) {
-    return {
-      playerName,
-      playerId,
-      playerDesc,
-      hits,
-      damage,
-      lives,
-      updated,
-      score: props.config.useLocalScore ? ((hits * props.config.hitPoints) + (damage * props.config.damagePoints)) : score
-    }
-  }
-
   function comparePoints(a, b) {
     if (parseInt(a.score) < parseInt(b.score)) { return 1 }
     if (parseInt(a.score) > parseInt(b.score)) { return -1 }
@@ -53,8 +31,17 @@ function Main(props) {
 
   React.useEffect(() => {
     if (props.msgs.length > 0) {
-      let rows = props.msgs[0].map((msg, i) => {
-        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.updated, msg.score)
+      let rows = props.msgs[0].map((msg) => {
+        return ({
+          id: msg.id.toString(16).toUpperCase(),
+          name: msg.name,
+          description: msg.description,
+          hits: msg.hits,
+          damage: msg.damage,
+          lives: msg.lives,
+          updated: msg.updated,
+          score: msg.score
+        })
       })
       setRows(rows.sort(comparePoints))
     }
