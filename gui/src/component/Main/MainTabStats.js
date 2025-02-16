@@ -104,7 +104,7 @@ function MainTblStats(props) {
         <Card variant="outlined" className="fpvcm-card-wrapper">
           <CardContent className="fpvcm-config fpvcm-disp-config">
                 <Typography display="block" style={{fontWeight: 'normal', paddingTop: '10px'}}>
-                {txt('sessCurrent', props.lang)}: <span className="fpvcm-label">{txt('sess_' + props.gameSession, props.lang)}</span>
+                {(props.ladyUp && !props.loading) && (<span>{txt('sessCurrent', props.lang)}: <span className="fpvcm-label">{txt('sess_' + props.gameSession, props.lang)}</span></span>)}
                 </Typography>
           </CardContent>
         </Card>
