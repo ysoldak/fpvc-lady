@@ -52,45 +52,42 @@ function Options(props) {
 
   return (
     <Box className="fpvcm-container_box">
-
-      <Grid container spacing={4} style={{marginTop: '12px'}}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2} style={{marginTop: '12px'}}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLanguage', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <Select
             name="lang"
             value={formConfig.lang}
             onChange={handleChange}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           >
             {Object.keys(langs).map((lang) => <MenuItem value={lang} key={lang}>{langs[lang].name}</MenuItem>)}
           </Select>
         </Grid>
       </Grid>
-
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLadyLanguage', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <Select
             name="ladyLocale"
             value={formConfig.ladyLocale}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp || formConfig.useCustomLadyLocale}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           >
             {Object.keys(ladyLocales).map((i) => <MenuItem value={ladyLocales[i].value} key={i}>{ladyLocales[i].label}</MenuItem>)}
           </Select>
         </Grid>
       </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLadyUseCustomLanguage', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={1} lg={1} md={1} sm={1} xs={1} style={{paddingTop: '25px'}}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6} style={{paddingTop: '12px', minHeight: '75px'}}>
           <Switch
             name="useCustomLadyLocale"
             variant="outlined"
@@ -98,11 +95,8 @@ function Options(props) {
             checked={formConfig.useCustomLadyLocale}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
             onClick={handleChange}
-            style={{minWidth: '50%'}}
           />
-        </Grid>
-        {formConfig.useCustomLadyLocale && 
-          <Grid xl={2} lg={2} md={2} sm={2} xs={2}>
+          {formConfig.useCustomLadyLocale && 
             <TextField
               name="customLadyLocale"
               variant="outlined"
@@ -112,15 +106,14 @@ function Options(props) {
               disabled={!props.config.ladySettingsSynced || !props.ladyUp}
               style={{minWidth: '50%'}}
             />
-          </Grid>
-        }
+          }
+        </Grid>
       </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLadyAutoStart', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6} style={{paddingTop: '25px'}}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6} style={{paddingTop: '12px', minHeight: '75px'}}>
           <Switch
             name="ladyAutoStart"
             variant="outlined"
@@ -132,12 +125,11 @@ function Options(props) {
           />
         </Grid>
       </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLadySpeakCheers', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6} style={{paddingTop: '25px'}}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6} style={{paddingTop: '12px', minHeight: '75px'}}>
           <Switch
             name="ladySpeakCheers"
             variant="outlined"
@@ -149,12 +141,11 @@ function Options(props) {
           />
         </Grid>
       </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLadySpeakLives', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6} style={{paddingTop: '25px'}}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6} style={{paddingTop: '12px', minHeight: '75px'}}>
           <Switch
             name="ladySpeakLives"
             variant="outlined"
@@ -166,49 +157,42 @@ function Options(props) {
           />
         </Grid>
       </Grid>
-      
-      
-      
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsRoundTime', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <Select
             id="roundtime-select"
             name="ladyDurationBattle"
             value={formConfig.ladyDurationBattle}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           >
             {roundTimeMarks.map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
           </Select>
         </Grid>
-      </Grid>
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsCountdown', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={7} sm={7} xs={7}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <Select
             name="ladyDurationCountdown"
             value={formConfig.ladyDurationCountdown}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           >
             {countDownMarks(props.config.lang).map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
           </Select>
         </Grid>
       </Grid>
-    
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsHitPoints', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <TextField
             name="hitPoints"
             variant="outlined"
@@ -216,16 +200,13 @@ function Options(props) {
             value={formConfig.hitPoints}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           />
         </Grid>
-      </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsHitTargetPoints', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <TextField
             name="hitTargetPoints"
             variant="outlined"
@@ -233,16 +214,15 @@ function Options(props) {
             value={formConfig.hitTargetPoints}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           />
         </Grid>
       </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsDamagePoints', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <TextField
             name="ladyScoreDamages"
             variant="outlined"
@@ -250,16 +230,13 @@ function Options(props) {
             value={formConfig.ladyScoreDamages}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           />
         </Grid>
-      </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsHitAddressesRange', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <TextField
             name="hitAddressesRange"
             variant="outlined"
@@ -267,16 +244,15 @@ function Options(props) {
             value={formConfig.hitAddressesRange}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           />
         </Grid>
       </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsHitTargetAddressesRange', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <TextField
             name="hitTargetAddressesRange"
             variant="outlined"
@@ -284,16 +260,13 @@ function Options(props) {
             value={formConfig.hitTargetAddressesRange}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           />
         </Grid>
-      </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+        <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLadySpeakCommand', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <TextField
             name="ladySpeakCommand"
             variant="outlined"
@@ -302,16 +275,15 @@ function Options(props) {
             value={formConfig.ladySpeakCommand}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           />
         </Grid>
       </Grid>
-      
-      <Grid container spacing={4}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
+      <Grid container spacing={2}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
           <span className="fpvcm-input-label">{txt('optionsLadyLogSocket', props.config.lang)}:</span>
         </Grid>
-        <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
+        <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <TextField
             name="ladyLogSocket"
             variant="outlined"
@@ -320,13 +292,12 @@ function Options(props) {
             value={formConfig.ladyLogSocket}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
-            style={{minWidth: '50%'}}
+            style={{minWidth: '75%'}}
           />
         </Grid>
       </Grid>
-
       <Grid container spacing={4} style={{marginTop: '36px'}}>
-        <Grid xl={4} lg={4} md={5} sm={5} xs={5}>
+        <Grid xl={3} lg={3} md={5} sm={5} xs={5}>
           &nbsp;
         </Grid>
         <Grid xl={4} lg={4} md={6} sm={6} xs={6}>
