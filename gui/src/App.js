@@ -10,12 +10,18 @@ import './App.scss'
 
 import Main from './component/Main/Main'
 import Options from './component/Options'
-
-import CssBaseline from '@mui/material/CssBaseline'
-import Container from '@mui/material/Container'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
+import ConfirmModal from './component/ConfirmModal'
 
 import SettingsIcon from '@mui/icons-material/Settings'
+
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import Grid from '@mui/material/Unstable_Grid2/index.js'
+import CssBaseline from '@mui/material/CssBaseline'
+import Button from '@mui/material/Button/index.js'
+import Container from '@mui/material/Container'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
+import Modal from '@mui/material/Modal'
 
 const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
@@ -60,6 +66,7 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [gameSession, setGameSession] = useState('regStarted')
+  const [confirmModal, setConfirmModal] = useState({show: false, title: '', contents: '', callBack: null})
   const [msgs, setMsgs] = useState([])
   const [log, setLog] = useState([])
   const [hits, setHits] = useState([])
@@ -127,7 +134,7 @@ function App() {
     }))
   }
 
-  function sendConfig(cfg) {
+  function sendConfig() {
     sendMessage(JSON.stringify({
       type: "config",
       seq: "1",
@@ -150,6 +157,7 @@ function App() {
     const scoreHits = ladyConfig.ladyScoreHits.split(',')
     setConfig({
       ...initSettings,
+      ...config,
       ...ladyConfig,
       hitPoints: scoreHits[0].split(':')[1],
       hitTargetPoints: scoreHits[1].split(':')[1],
@@ -159,6 +167,10 @@ function App() {
       customLadyLocale: ladyConfig.ladyLocale.toString(),
       ladySettingsSynced: true
     })
+  }
+
+  function clearLog() {
+    setLog([])
   }
 
   useEffect(() => {
@@ -171,7 +183,7 @@ function App() {
           setHits(JSONmsg?.payload?.hits)          
           let tmpInsLog = []
           JSONmsg?.payload?.players?.forEach((pl) => {tmpInsLog.push(JSON.stringify(pl))})
-          tmpInsLog.push('------------------')
+          tmpInsLog.push(''.padStart(130, '-'))
           setLog([...tmpInsLog, ...log])
         }
         if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
@@ -212,14 +224,6 @@ function App() {
   }, [readyState])
 
   useEffect(() => {
-    setIsAdmin(window.location.host.indexOf('localhost') > -1 || window.location.host.indexOf('127.0.0.1') > -1)
-    if (!config.ladySettingsSynced) {
-      getCurrentConfig()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
     if (!config.ladySettingsSynced) {
       setTimeout(() => {
         getCurrentConfig()
@@ -227,6 +231,19 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config])
+
+  useEffect(() => {
+    setLog(['SESSION CHANGE: ' + gameSession, ''.padStart(130, '-'), ...log])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameSession])
+
+  useEffect(() => {
+    setIsAdmin(window.location.host.indexOf('localhost') > -1 || window.location.host.indexOf('127.0.0.1') > -1)
+    if (!config.ladySettingsSynced) {
+      getCurrentConfig()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function toggleSettings() {
     setShowConfig(!showConfig)
@@ -288,6 +305,11 @@ function App() {
             <SettingsIcon onClick={toggleSettings} />
           </div>}
         </header>
+        <ConfirmModal
+          confirmModal={confirmModal}
+          setConfirmModal={setConfirmModal}
+          lang={config.lang}
+        />
         <Container maxWidth="false" className="fpvcm-container">
           {showLady
             ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
@@ -304,7 +326,9 @@ function App() {
                   loading={loading}
                   advanceSession={advanceSession}
                   sendNewSession={sendNewSession}
+                  setConfirmModal={setConfirmModal}
                   gameSession={gameSession}
+                  clearLog={clearLog}
                   isAdmin={isAdmin}
                   ladyUp={ladyUp}
                   log={log}

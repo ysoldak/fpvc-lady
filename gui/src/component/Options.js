@@ -45,7 +45,7 @@ function Options(props) {
 
   useEffect(() => {
     if (!typing) {
-      props.sendConfig(formConfig)
+      props.sendConfig()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formConfig, typing])
@@ -170,7 +170,7 @@ function Options(props) {
             disabled={!props.config.ladySettingsSynced || !props.ladyUp}
             style={{minWidth: '75%'}}
           >
-            {roundTimeMarks.map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
+            {roundTimeMarks(props.config.lang).map((mark) => <MenuItem value={mark.value} key={mark.value}>{mark.label}</MenuItem>)}
           </Select>
         </Grid>
         <Grid xl={2} lg={2} md={5} sm={5} xs={5} className="fpvcm-option-label" style={{marginTop: '6px', textAlign: 'right'}}>
@@ -310,11 +310,6 @@ function Options(props) {
         <Grid xl={3} lg={2} md={5} sm={5} xs={5}>
           &nbsp;
         </Grid>
-        {/*<Grid xl={4} lg={4} md={6} sm={6} xs={6}>
-          <Button variant="contained" color="secondary" size="small" style={{minWidth: '100%'}} disabled>
-            {txt('optionsResetPin', props.config.lang)}
-          </Button>
-        </Grid>*/}
       </Grid>
     </Box>
   );

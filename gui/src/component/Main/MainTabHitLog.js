@@ -8,6 +8,8 @@ import formatDateTime from '../../utils/formatDateTime'
 import lookupPlayer from '../../utils/lookupPlayer'
 import displayMatrix from '../../utils/hitMatrix'
 
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
+
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 import Card from '@mui/material/Card'
@@ -48,8 +50,9 @@ function MainTabHitLog(props) {
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs, props.hits)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
+            <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs, props.hits, false)} className="fpvcm-export-btn"> 
+              <FileDownloadIcon />
               {txt('exportAll', props.lang)}
             </Button>
           </Grid>

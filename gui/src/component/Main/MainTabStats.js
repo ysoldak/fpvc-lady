@@ -14,11 +14,13 @@ import AvTimerIcon from '@mui/icons-material/AvTimer'
 import TimerIcon from '@mui/icons-material/Timer'
 import CrisisAlertIcon from '@mui/icons-material/CrisisAlert'
 import AirplanemodeInactiveIcon from '@mui/icons-material/AirplanemodeInactive'
+import FileDownloadIcon from '@mui/icons-material/FileDownload'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Table from '@mui/material/Table'
@@ -46,66 +48,64 @@ function MainTblStats(props) {
   return (
     <div>
       <Box sx={{ p: 1 }}>
-        <Card variant="outlined" className="fpvcm-card-wrapper">
-          <CardContent className="fpvcm-card fpvcm-disp-stats">
-            {(!props.ladyUp && !props.loading) && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
-            {props.ladyUp && (
-              <>
-                <TableContainer component={Paper} style={{maxWidth: 950}}>
-                  <Table size="small" className="fpvcm-table-bg" >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell className="fpvcm-table-header-cell">{txt('player', props.lang)}</TableCell>
-                        <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('desc', props.lang)}</TableCell>
-                        <TableCell align="right" className="fpvcm-table-header-cell">{txt('hits', props.lang)}</TableCell>
-                        <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.lang)}</TableCell>
-                        <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('lives', props.lang)}</TableCell>
-                        <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.lang)}</TableCell>
-                        <TableCell className="fpvcm-table-header-cell hide-narrow">{txt('updated', props.lang)}</TableCell>
+        <Container className="fpvcm-card-disp-stats-wrapper">
+          {(!props.ladyUp && !props.loading) && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
+          {props.ladyUp && (
+            <>
+              <TableContainer component={Paper} style={{maxWidth: '100%'}}>
+                <Table size="small" className="fpvcm-table-bg" >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="fpvcm-table-header-cell">{txt('player', props.lang)}</TableCell>
+                      <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('desc', props.lang)}</TableCell>
+                      <TableCell align="right" className="fpvcm-table-header-cell">{txt('hits', props.lang)}</TableCell>
+                      <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.lang)}</TableCell>
+                      <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('lives', props.lang)}</TableCell>
+                      <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.lang)}</TableCell>
+                      <TableCell className="fpvcm-table-header-cell hide-narrow">{txt('updated', props.lang)}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {props.rows.map((row, i) => (
+                      <TableRow
+                        key={i}
+                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        style={{color: 'white'}}
+                      >
+                        <TableCell component="th" scope="row" className="fpvcm-table-cell">
+                          {row.name}&nbsp;<span className="fpvcm-label">({row.id})</span>
+                        </TableCell>
+                        <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.description}</TableCell>
+                        <TableCell align="right" className="fpvcm-table-cell">
+                          <Chip
+                            label={row.hits}
+                            size="small"
+                            style={{color: 'white'}}
+                            color={lastAttackerId && lastAttackerId === row.id && row.hits > 0 ? "success" : "default"}
+                          />
+                        </TableCell>
+                        <TableCell align="right" className="fpvcm-table-cell">
+                          <Chip
+                            label={row.damage}
+                            size="small"
+                            style={{color: 'white'}}
+                            color={lastVictimId && lastVictimId === row.id && row.damage > 0 ? "error" : "default"}
+                          />
+                        </TableCell>
+                        <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
+                        <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
+                        <TableCell className="fpvcm-table-cell hide-narrow"><span className="fpvcm-text-muted">{formatDateTime(row.updated)}</span></TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {props.rows.map((row, i) => (
-                        <TableRow
-                          key={i}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          style={{color: 'white'}}
-                        >
-                          <TableCell component="th" scope="row" className="fpvcm-table-cell">
-                            {row.name}&nbsp;<span className="fpvcm-label">({row.id})</span>
-                          </TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.description}</TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell">
-                            <Chip
-                              label={row.hits}
-                              size="small"
-                              style={{color: 'white'}}
-                              color={lastAttackerId && lastAttackerId === row.id && row.hits > 0 ? "success" : "default"}
-                            />
-                          </TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell">
-                            <Chip
-                              label={row.damage}
-                              size="small"
-                              style={{color: 'white'}}
-                              color={lastVictimId && lastVictimId === row.id && row.damage > 0 ? "error" : "default"}
-                            />
-                          </TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
-                          <TableCell className="fpvcm-table-cell hide-narrow"><span className="fpvcm-text-muted">{formatDateTime(row.updated)}</span></TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <Typography display="block" style={{fontWeight: 'bold', paddingTop: '12px'}}>
-                  {txt('totalHits', props.lang)}: <span className="fpvcm-label">{props.rows.reduce((total, row) => total += parseInt(row.hits), 0)}</span><br />
-                </Typography>
-              </>
-            )}
-          </CardContent>
-        </Card>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Typography display="block" style={{fontWeight: 'bold', paddingTop: '12px'}}>
+                {txt('totalHits', props.lang)}: <span style={{color: 'white'}}>{props.rows.reduce((total, row) => total += parseInt(row.hits), 0)}</span><br />
+              </Typography>
+            </>
+          )}
+        </Container>
       </Box>
       <Box sx={{ p: 1 }}>
         <Card variant="outlined" className="fpvcm-card-wrapper">
@@ -125,12 +125,12 @@ function MainTblStats(props) {
                 &nbsp;<span style={{color: 'white'}}>{props.config.ladyDurationCountdown + ' ' + txt('sec', props.lang)}</span>
                 &nbsp;&nbsp;
                 <CrisisAlertIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
-                &nbsp;<span style={{color: 'white'}}>{props.config.hitPoints + ' (' + props.config.hitTargetPoints + ')'}</span>
+                &nbsp;<span style={{color: 'white'}}>{props.config.hitPoints}</span>&nbsp;/&nbsp;<span style={{color: 'white'}}>{props.config.hitTargetPoints}</span>
                 &nbsp;&nbsp;
                 <AirplanemodeInactiveIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
                 &nbsp;<span style={{color: 'white'}}>{props.config.ladyScoreDamages}</span>
                 &nbsp;&nbsp;&nbsp;&nbsp;
-                Speak:&nbsp;
+                {txt('speak', props.lang)}:&nbsp;
                 {props.config.ladySpeakLives && <FavoriteIcon fontSize="small" style={{position: 'relative', top: '4px', color: 'red'}} />}
                 {!props.config.ladySpeakLives && <FavoriteBorderIcon fontSize="small" style={{position: 'relative', top: '4px', color: '#124012'}} />}
                 &nbsp;<SignLanguageIcon fontSize="small" style={{position: 'relative', top: '4px', color: props.config.ladySpeakCheers ? 'yellow' : '#124012'}} />
@@ -141,8 +141,9 @@ function MainTblStats(props) {
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px'}}>
-            <Button variant="contained" size="small" onClick={() => exportData(false, true, props.lang, props.rows, props.msgs, props.hits)} style={{minWidth: '100%', overflow: 'hidden'}}> 
+          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
+            <Button variant="contained" size="small" onClick={() => exportData(false, true, props.lang, props.rows, props.msgs, props.hits, false)} className="fpvcm-export-btn"> 
+              <FileDownloadIcon />
               {txt('exportStats', props.lang)}
             </Button>
           </Grid>

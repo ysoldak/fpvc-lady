@@ -3,7 +3,23 @@ import formatDateTime from './formatDateTime'
 import displayMatrix from './hitMatrix'
 import lookupPlayer from './lookupPlayer'
 
-export function exportData(full, stats, lang, rows, msgs, hits) {
+export function formatLine(JSONline) {
+  try {
+    let retval = formatDateTime(JSONline.updated.toString()).substring(0, 19).padEnd(22, ' ') + ' | '
+    retval += (JSONline.name.substring(0, 11) + ' (' + JSONline.id + ')').padEnd(16, ' ') + ' | '
+    retval += JSONline.description.substring(0, 20).padEnd(20, ' ') + ' || '
+    retval += JSONline.hits.toString().substring(0, 12).padStart(7, ' ') + ' hits | '
+    retval += JSONline.damage.toString().substring(0, 12).padStart(8, ' ') + ' damage | '
+    retval += JSONline.lives.toString().substring(0, 12).padStart(6, ' ') + ' lives | '
+    retval += JSONline.score.toString().substring(0, 12).padStart(6, ' ') + ' score '
+    return retval
+  }
+  catch {
+    return JSONline.toString()
+  }
+}
+
+export function exportData(full, stats, lang, rows, msgs, hits, formatted=false) {
   let filename = 'fpvcombat_session_'
   filename += stats ? 'stats_' : ''
   filename += hits.length > 0 ? 'hits_' : ''
@@ -46,7 +62,9 @@ export function exportData(full, stats, lang, rows, msgs, hits) {
     }).join('\n')
   }
   else if (!stats && msgs.length > 0) {
-    data = full ? msgs.map(m => JSON.stringify(m)).join('\n\n') : msgs[0].map(p => JSON.stringify(p)).join('\n')
+    data = full
+      ? msgs.map(m => formatted ? m.map(l => formatLine(l)).join('\n') : JSON.stringify(m)).join('\n\n')
+      : msgs[0].map(p => formatted ? formatLine(p) : JSON.stringify(p)).join('\n')
   }
   var file = new Blob([data], {type: type})
   if (window.navigator.msSaveOrOpenBlob) // IE10+
