@@ -15,13 +15,8 @@ import ConfirmModal from './component/ConfirmModal'
 import SettingsIcon from '@mui/icons-material/Settings'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
-import Grid from '@mui/material/Unstable_Grid2/index.js'
 import CssBaseline from '@mui/material/CssBaseline'
-import Button from '@mui/material/Button/index.js'
 import Container from '@mui/material/Container'
-import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
-import Modal from '@mui/material/Modal'
 
 const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
