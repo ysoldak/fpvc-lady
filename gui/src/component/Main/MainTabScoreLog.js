@@ -19,7 +19,7 @@ import Button from '@mui/material/Button'
 
 function MainTabLog(props) {
 
-  const [formatted, setFormatted] = useState(false)
+  const [formatted, setFormatted] = useState(true)
 
   function formatLogLine(line) {
     try {
