@@ -102,6 +102,12 @@
     color: #6ecc67 !important;
   }
 
+  .fpvcm-log-format-switch {
+    position: absolute;
+    top: -36px;
+    right: 8px;
+  }
+
 }
 
 @media (max-width:679px) {
@@ -167,6 +173,13 @@
   
   .fpvcm-table-cell {
     font-size: 0.6em !important;
+  }
+
+  .fpvcm-log-format-switch {
+    position: relative;
+    max-width: 125px;
+    font-size: 0.75em;
+    left: CALC(100% - 135px)
   }
   
 }

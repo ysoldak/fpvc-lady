@@ -31,7 +31,6 @@ function MainTabLog(props) {
   }
 
   function clearLogs(confirmed=false) {
-    console.log(confirmed)
     if (!confirmed) {
       props.setConfirmModal({
         show: true,
@@ -46,7 +45,7 @@ function MainTabLog(props) {
 
   return (
     <div style={{position: 'relative'}}>
-      <div style={{position: 'absolute', top: '-36px', right: '8px'}}>
+      <div className="fpvcm-log-format-switch">
       {txt('formatted', props.lang)}:&nbsp;
         <Switch
           name="formatLogs"
@@ -67,20 +66,20 @@ function MainTabLog(props) {
         </Card>
       </Box>
       <Box sx={{ p: 1 }}>
-        <Grid container spacing={4} style={{marginLeft: '0px'}}>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
+        <Grid container spacing={2} style={{marginLeft: '0px'}}>
+          <Grid xl={4} lg={4} md={4} sm={4} xs={12} style={{paddingTop: '22px', fontSize: '0.75em'}}>
             <Button variant="contained" size="small" onClick={() => exportData(false, false, props.lang, props.rows, props.msgs, [], formatted)} className="fpvcm-export-btn"> 
               <FileDownloadIcon />
               {txt('exportLast', props.lang)}
             </Button>
           </Grid>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
+          <Grid xl={4} lg={4} md={4} sm={4} xs={12} style={{paddingTop: '22px', fontSize: '0.75em'}}>
             <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs, [], formatted)} className="fpvcm-export-btn"> 
               <FileDownloadIcon />
               {txt('exportAll', props.lang)}
             </Button>
           </Grid>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
+          <Grid xl={4} lg={4} md={4} sm={4} xs={12} style={{paddingTop: '22px', fontSize: '0.75em'}}>
             <Button variant="contained" size="small" onClick={() => clearLogs(false)} className="fpvcm-export-btn"> 
               <ClearIcon />
               {txt('clearLog', props.lang)}
