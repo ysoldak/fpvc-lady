@@ -5,5 +5,5 @@ var oldPath = './build/'
 
 fs.move(oldPath, pjson.buildDir, function (err) {
   if (err) throw err
-  console.log('Successfully moved build directory.')
+  console.debug('Successfully moved build directory.')
 })

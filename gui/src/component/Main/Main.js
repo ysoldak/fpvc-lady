@@ -18,34 +18,9 @@ import Tabs from '@mui/material/Tabs'
 function Main(props) {
   const [tab, setTab] = React.useState(0)
   const [rows, setRows] = React.useState([])
-  const [game, setGame] = React.useState('stop')
 
   const switchTab = (evt, tab) => {
     setTab(tab)
-  }
-
-  const gameToggle = () => (game === 'stop' ? 'start' : 'stop')
-
-  function createData(
-    playerName,
-    playerId,
-    playerDesc,
-    hits,
-    damage,
-    lives,
-    updated,
-    score = 0
-  ) {
-    return {
-      playerName,
-      playerId,
-      playerDesc,
-      hits,
-      damage,
-      lives,
-      updated,
-      score: props.config.useLocalScore ? ((hits * props.config.hitPoints) + (damage * props.config.damagePoints)) : score
-    }
   }
 
   function comparePoints(a, b) {
@@ -56,8 +31,17 @@ function Main(props) {
 
   React.useEffect(() => {
     if (props.msgs.length > 0) {
-      let rows = props.msgs[0].map((msg, i) => {
-        return createData(msg.name, msg.id.toString(16).toUpperCase(), msg.description, msg.hits, msg.damage, msg.lives, msg.updated, msg.score)
+      let rows = props.msgs[0].map((msg) => {
+        return ({
+          id: msg.id.toString(16).toUpperCase(),
+          name: msg.name,
+          description: msg.description,
+          hits: msg.hits,
+          damage: msg.damage,
+          lives: msg.lives,
+          updated: msg.updated,
+          score: msg.score
+        })
       })
       setRows(rows.sort(comparePoints))
     }
@@ -84,7 +68,15 @@ function Main(props) {
               hidden={tab !== 0}
               id={`fpvcmTab${tab}`}
             >
-              <MainTabStats ladyUp={props.ladyUp} lang={props.config.lang} rows={rows} hits={props.hits} />
+              <MainTabStats
+                ladyUp={props.ladyUp}
+                lang={props.config.lang}
+                rows={rows}
+                hits={props.hits}
+                gameSession={props.gameSession}
+                loading={props.loading}
+                config={props.config}
+              />
             </div>   
             <div
               role="tabpanel"
@@ -108,8 +100,13 @@ function Main(props) {
       {(props.isAdmin && props.ladyUp) && (
         <Grid container spacing={4}>
           <Grid xl={7} lg={7} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px'}}>
-            <Button variant="contained" size="large" onClick={() => {props.sendMessage(gameToggle()); setGame(gameToggle());}}>
-              {txt(gameToggle(), props.config.lang)}
+            <Button
+              variant="contained"
+              size="large"
+              onClick={() => {props.sendNewSession(props.advanceSession());}}
+              disabled={props.gameSession === 'regEnded'}
+            >
+              {txt('sessGoTo_' + props.advanceSession(), props.config.lang)}
             </Button>
           </Grid>
         </Grid>

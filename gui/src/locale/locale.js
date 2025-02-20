@@ -12,7 +12,7 @@ function txt(label, lang) {
   if (langs.hasOwnProperty(lang) && langs[lang].text.hasOwnProperty(label)) {
     return langs[lang].text[label]
   }
-  else if (langs.hasOwnProperty(lang) && !lang[lang].text.hasOwnProperty(label) && lang.en.text.hasOwnProperty(label)) {
+  else if (langs.hasOwnProperty(lang) && !langs[lang].text.hasOwnProperty(label) && langs.en.text.hasOwnProperty(label)) {
     return langs.en.text[label]
   }
   else {

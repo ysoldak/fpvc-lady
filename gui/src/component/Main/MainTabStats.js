@@ -7,6 +7,14 @@ import txt from '../../locale/locale'
 import formatDateTime from '../../utils/formatDateTime'
 import { exportData } from '../../utils/exportData'
 
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import SignLanguageIcon from '@mui/icons-material/SignLanguage'
+import AvTimerIcon from '@mui/icons-material/AvTimer'
+import TimerIcon from '@mui/icons-material/Timer'
+import CrisisAlertIcon from '@mui/icons-material/CrisisAlert'
+import AirplanemodeInactiveIcon from '@mui/icons-material/AirplanemodeInactive'
+
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 import Card from '@mui/material/Card'
@@ -40,7 +48,7 @@ function MainTblStats(props) {
       <Box sx={{ p: 1 }}>
         <Card variant="outlined" className="fpvcm-card-wrapper">
           <CardContent className="fpvcm-card fpvcm-disp-stats">
-            {!props.ladyUp && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
+            {(!props.ladyUp && !props.loading) && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
             {props.ladyUp && (
               <>
                 <TableContainer component={Paper} style={{maxWidth: 950}}>
@@ -64,15 +72,15 @@ function MainTblStats(props) {
                           style={{color: 'white'}}
                         >
                           <TableCell component="th" scope="row" className="fpvcm-table-cell">
-                            {row.playerName}&nbsp;<span className="fpvcm-label">({row.playerId})</span>
+                            {row.name}&nbsp;<span className="fpvcm-label">({row.id})</span>
                           </TableCell>
-                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.playerDesc}</TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.description}</TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">
                             <Chip
                               label={row.hits}
                               size="small"
                               style={{color: 'white'}}
-                              color={lastAttackerId && lastAttackerId === row.playerId && row.hits > 0 ? "success" : "default"}
+                              color={lastAttackerId && lastAttackerId === row.id && row.hits > 0 ? "success" : "default"}
                             />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell">
@@ -80,7 +88,7 @@ function MainTblStats(props) {
                               label={row.damage}
                               size="small"
                               style={{color: 'white'}}
-                              color={lastVictimId && lastVictimId === row.playerId && row.damage > 0 ? "error" : "default"}
+                              color={lastVictimId && lastVictimId === row.id && row.damage > 0 ? "error" : "default"}
                             />
                           </TableCell>
                           <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
@@ -92,11 +100,42 @@ function MainTblStats(props) {
                   </Table>
                 </TableContainer>
                 <Typography display="block" style={{fontWeight: 'bold', paddingTop: '12px'}}>
-                  {props.game?.roundStatus === 'on' && (<>{txt('roundPending', props.lang)}<br /></>)}
                   {txt('totalHits', props.lang)}: <span className="fpvcm-label">{props.rows.reduce((total, row) => total += parseInt(row.hits), 0)}</span><br />
                 </Typography>
               </>
             )}
+          </CardContent>
+        </Card>
+      </Box>
+      <Box sx={{ p: 1 }}>
+        <Card variant="outlined" className="fpvcm-card-wrapper">
+          <CardContent className="fpvcm-config fpvcm-disp-config" style={{position: 'relative'}}>
+            <div style={{fontWeight: 'normal', position: 'absolute', paddingTop: '10px'}}>
+              <Typography>
+                {(props.ladyUp && !props.loading) && (<span>{txt('sessCurrent', props.lang)}:&nbsp;
+                  <span className="fpvcm-label">{txt('sess_' + props.gameSession, props.lang)}</span></span>)}
+              </Typography> 
+            </div>
+            <div style={{fontSize: '0.85em', position: 'absolute', right: '8px', top: '6px'}}>
+              {props.config.ladySettingsSynced && (<>
+                <TimerIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.ladyDurationBattle + ' ' + txt('min', props.lang)}</span>
+                &nbsp;&nbsp;
+                <AvTimerIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.ladyDurationCountdown + ' ' + txt('sec', props.lang)}</span>
+                &nbsp;&nbsp;
+                <CrisisAlertIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.hitPoints + ' (' + props.config.hitTargetPoints + ')'}</span>
+                &nbsp;&nbsp;
+                <AirplanemodeInactiveIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.ladyScoreDamages}</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                Speak:&nbsp;
+                {props.config.ladySpeakLives && <FavoriteIcon fontSize="small" style={{position: 'relative', top: '4px', color: 'red'}} />}
+                {!props.config.ladySpeakLives && <FavoriteBorderIcon fontSize="small" style={{position: 'relative', top: '4px', color: '#124012'}} />}
+                &nbsp;<SignLanguageIcon fontSize="small" style={{position: 'relative', top: '4px', color: props.config.ladySpeakCheers ? 'yellow' : '#124012'}} />
+              </>)}
+            </div>
           </CardContent>
         </Card>
       </Box>

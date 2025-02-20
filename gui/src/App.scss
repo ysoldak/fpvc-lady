@@ -189,6 +189,15 @@
   color: #009400 !important;
 }
 
+.fpvcm-config {
+  background-color: #000;
+  padding: 2px !important;
+  padding-left: 8px !important;
+  overflow: hidden;
+  height: 46px;
+  color: #009400 !important;
+}
+
 .fpvcm-disp-stats {
   font-size: 1.2em;
 }
@@ -196,6 +205,15 @@
 .fpvcm-disp-stats p {
   color: white !important;
 }
+
+.fpvcm-disp-config {
+  font-size: 1em;
+}
+
+.fpvcm-disp-config p {
+  color: white !important;
+}
+
 
 .fpvcm-disp-log {
   font-size: 0.8em;
@@ -233,6 +251,11 @@
 .Mui-selected {
   color: white !important;
   background-color: #00b50f !important;
+}
+
+.Mui-disabled {
+  color: #808080 !important;
+  -webkit-text-fill-color: #808080 !important;
 }
 
 .MuiTab-root {
