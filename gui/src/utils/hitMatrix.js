@@ -1,6 +1,6 @@
 import lookupPlayer from './lookupPlayer'
 
-export function hitMatrix(hits, msgs) {
+function hitMatrix(hits, msgs) {
   let matrix = {}
   msgs[0].forEach((msg, i) => {
     if (!(msg.id in matrix)) {
@@ -26,35 +26,42 @@ export function hitMatrix(hits, msgs) {
   return matrix
 }
 
-export function hitMatrixFormatted(matrix, msgs) {
+function hitMatrixFormatted(matrix, msgs, tableRows=false) {
   let orderedIds = []
-  let retval = '                | '
+  let retvalRows = []
+  let topRow = {playersCol: ''}
+  let retvalStr = '                | '
   for (let attackerId in matrix) {
-    retval += (lookupPlayer(attackerId, msgs) + ' (' + parseInt(attackerId).toString(16).toUpperCase() + ')').substring(0, 16).padEnd(15, ' ') + ' | '
+    retvalStr += (lookupPlayer(attackerId, msgs) + ' (' + parseInt(attackerId).toString(16).toUpperCase() + ')').substring(0, 16).padEnd(15, ' ') + ' | '
+    topRow[attackerId] = lookupPlayer(attackerId, msgs) + ' (' + parseInt(attackerId).toString(16).toUpperCase() + ')'
     orderedIds.push(attackerId)
   }
-  retval += '\n'
-  retval += '------------------'
+  retvalRows.push(topRow)
+  retvalStr += '\n'
+  retvalStr += '------------------'
   // eslint-disable-next-line no-unused-vars
   for (let attackerId in matrix) {
-    retval += '------------------'
+    retvalStr += '------------------'
   }
-  retval += '\n'
+  retvalStr += '\n'
   for (let attackerId in matrix) {
-    retval += (lookupPlayer(attackerId, msgs) + ' (' + parseInt(attackerId).toString(16).toUpperCase() + ')').substring(0, 16).padStart(15, ' ') + ' | '
+    let nextRow = {playersCol: lookupPlayer(attackerId, msgs) + ' (' + parseInt(attackerId).toString(16).toUpperCase() + ')'}
+    retvalStr += (lookupPlayer(attackerId, msgs) + ' (' + parseInt(attackerId).toString(16).toUpperCase() + ')').substring(0, 16).padStart(15, ' ') + ' | '
     for (let i in orderedIds) {
       let val = orderedIds[i] in matrix[attackerId].attacked ? matrix[attackerId].attacked[orderedIds[i]] : 0
-      retval += parseInt(attackerId) === parseInt(orderedIds[i]) ? '       -        | ' : val.toString().padStart(15, ' ') + ' | '
+      retvalStr += parseInt(attackerId) === parseInt(orderedIds[i]) ? '       -        | ' : val.toString().padStart(15, ' ') + ' | '
+      nextRow[orderedIds[i]] = parseInt(attackerId) === parseInt(orderedIds[i]) ? null : val.toString()
     }
-    retval += '\n'
+    retvalRows.push(nextRow)
+    retvalStr += '\n'
   }
-  retval += '\n'
-  retval += '\n'
-  return retval
+  retvalStr += '\n'
+  retvalStr += '\n'
+  return tableRows ? retvalRows : retvalStr
 }
 
-export default function displayMatrix(hits, msgs) {
+export default function displayMatrix(hits, msgs, tableRows=false) {
   if (hits && hits.length > 0) {
-    return hitMatrixFormatted(hitMatrix(hits, msgs), msgs)
+    return hitMatrixFormatted(hitMatrix(hits, msgs), msgs, tableRows)
   }
 }

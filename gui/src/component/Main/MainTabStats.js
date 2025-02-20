@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import '../../App.scss'
 
 import txt from '../../locale/locale'
 import formatDateTime from '../../utils/formatDateTime'
 import { exportData } from '../../utils/exportData'
+import displayMatrix from '../../utils/hitMatrix'
 
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
@@ -19,6 +20,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
 import Card from '@mui/material/Card'
+import Switch from '@mui/material/Switch'
 import CardContent from '@mui/material/CardContent'
 import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
@@ -36,6 +38,12 @@ function MainTblStats(props) {
 
   const [lastAttackerId, setLastAttackerId] = useState(null)
   const [lastVictimId, setLastVictimrId] = useState(null)
+  const [showMatrix, setShowMatrix] = useState(false)
+
+  const hitTableRows = useMemo(
+    () => displayMatrix(props.hits, props.msgs, true),
+    [props.hits, props.msgs]
+  )
 
   useEffect(() => {
     let lastHit = props.hits[props.hits.length-1]
@@ -51,59 +59,99 @@ function MainTblStats(props) {
         <Container className="fpvcm-card-disp-stats-wrapper">
           {(!props.ladyUp && !props.loading) && (<span style={{color: "red", fontWeight: "bold"}}>{txt('ladyNotOn', props.lang)}</span>)}
           {props.ladyUp && (
-            <>
-              <TableContainer component={Paper} style={{maxWidth: '100%'}}>
-                <Table size="small" className="fpvcm-table-bg" >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell className="fpvcm-table-header-cell">{txt('player', props.lang)}</TableCell>
-                      <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('desc', props.lang)}</TableCell>
-                      <TableCell align="right" className="fpvcm-table-header-cell">{txt('hits', props.lang)}</TableCell>
-                      <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.lang)}</TableCell>
-                      <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('lives', props.lang)}</TableCell>
-                      <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.lang)}</TableCell>
-                      <TableCell className="fpvcm-table-header-cell hide-narrow">{txt('updated', props.lang)}</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {props.rows.map((row, i) => (
-                      <TableRow
-                        key={i}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        style={{color: 'white'}}
-                      >
-                        <TableCell component="th" scope="row" className="fpvcm-table-cell">
-                          {row.name}&nbsp;<span className="fpvcm-label">({row.id})</span>
-                        </TableCell>
-                        <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.description}</TableCell>
-                        <TableCell align="right" className="fpvcm-table-cell">
-                          <Chip
-                            label={row.hits}
-                            size="small"
-                            style={{color: 'white'}}
-                            color={lastAttackerId && lastAttackerId === row.id && row.hits > 0 ? "success" : "default"}
-                          />
-                        </TableCell>
-                        <TableCell align="right" className="fpvcm-table-cell">
-                          <Chip
-                            label={row.damage}
-                            size="small"
-                            style={{color: 'white'}}
-                            color={lastVictimId && lastVictimId === row.id && row.damage > 0 ? "error" : "default"}
-                          />
-                        </TableCell>
-                        <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
-                        <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
-                        <TableCell className="fpvcm-table-cell hide-narrow"><span className="fpvcm-text-muted">{formatDateTime(row.updated)}</span></TableCell>
+            <div style={{position: 'relative'}}>
+              <div className="fpvcm-stats-matrix-switch">
+                Hit Matrix:&nbsp;
+                  <Switch
+                    name="formatLogs"
+                    variant="outlined"
+                    checked={showMatrix}
+                    onClick={() => setShowMatrix(!showMatrix)}
+                />
+              </div>
+              {!showMatrix && (
+                <TableContainer component={Paper} style={{maxWidth: '100%'}}>
+                  <Table size="small" className="fpvcm-table-bg" >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell className="fpvcm-table-header-cell">{txt('player', props.lang)}</TableCell>
+                        <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('desc', props.lang)}</TableCell>
+                        <TableCell align="right" className="fpvcm-table-header-cell">{txt('hits', props.lang)}</TableCell>
+                        <TableCell align="right" className="fpvcm-table-header-cell">{txt('damage', props.lang)}</TableCell>
+                        <TableCell align="right" className="fpvcm-table-header-cell hide-narrow">{txt('lives', props.lang)}</TableCell>
+                        <TableCell align="right" className="fpvcm-table-header-cell">{txt('score', props.lang)}</TableCell>
+                        <TableCell className="fpvcm-table-header-cell hide-narrow">{txt('updated', props.lang)}</TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                      {props.rows.map((row, i) => (
+                        <TableRow
+                          key={i}
+                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          style={{color: 'white'}}
+                        >
+                          <TableCell component="th" scope="row" className="fpvcm-table-cell">
+                            {row.name}&nbsp;<span className="fpvcm-label">({row.id})</span>
+                          </TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.description}</TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell">
+                            <Chip
+                              label={row.hits}
+                              size="small"
+                              style={{color: 'white'}}
+                              color={lastAttackerId && lastAttackerId === row.id && row.hits > 0 ? "success" : "default"}
+                            />
+                          </TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell">
+                            <Chip
+                              label={row.damage}
+                              size="small"
+                              style={{color: 'white'}}
+                              color={lastVictimId && lastVictimId === row.id && row.damage > 0 ? "error" : "default"}
+                            />
+                          </TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell hide-narrow">{row.lives}</TableCell>
+                          <TableCell align="right" className="fpvcm-table-cell">{row.score}</TableCell>
+                          <TableCell className="fpvcm-table-cell hide-narrow"><span className="fpvcm-text-muted">{formatDateTime(row.updated)}</span></TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>)
+              }
+              {showMatrix && (
+                <TableContainer component={Paper} style={{maxWidth: '100%'}}>
+                  <Table size="small" className="fpvcm-table-bg" >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell className="fpvcm-table-header-cell">{hitTableRows && hitTableRows[0].playersCol}</TableCell>
+                        {(hitTableRows && hitTableRows[0]) && Object.keys(hitTableRows[0]).map((id) => {
+                          return id !== 'playersCol' ? <TableCell key={id} align="center" className="fpvcm-table-header-cell">{hitTableRows[0][id]}</TableCell> : null
+                        })}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {hitTableRows && hitTableRows.slice(1).map((row, i) => {
+                        return (
+                          <TableRow
+                            key={i}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                            style={{color: 'white'}}
+                          >
+                            <TableCell component="th" scope="row" className="fpvcm-table-header-cell" align="right">{row.playersCol}</TableCell>
+                            {Object.keys(row).map((id) => {
+                              return id !== 'playersCol' ? <TableCell key={id} component="th" scope="row" align="center" className="fpvcm-table-cell">{row[id] || <span className="fpvcm-label">-</span>}</TableCell> : null
+                            })}
+                          </TableRow>)
+                      })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>)
+              }
               <Typography display="block" style={{fontWeight: 'bold', paddingTop: '12px'}}>
                 {txt('totalHits', props.lang)}: <span style={{color: 'white'}}>{props.rows.reduce((total, row) => total += parseInt(row.hits), 0)}</span><br />
               </Typography>
-            </>
+            </div>
           )}
         </Container>
       </Box>

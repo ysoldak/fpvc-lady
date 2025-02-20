@@ -57,7 +57,7 @@ export function exportData(full, stats, lang, rows, msgs, hits, formatted=false)
   }
   else if (!stats && hits.length > 0 && msgs.length > 0) {
     data = '* * * HIT MATRIX * * *\n\n\n'
-    data += displayMatrix(hits, msgs)
+    data += displayMatrix(hits, msgs, false)
     data += '\n\n* * * ' + txt('logHits', lang).toUpperCase() + ' * * *\n\n\n'
     data += hits.map(hit => {
       let retval = ''

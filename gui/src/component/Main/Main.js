@@ -74,6 +74,7 @@ function Main(props) {
                 ladyUp={props.ladyUp}
                 lang={props.config.lang}
                 rows={rows}
+                msgs={props.msgs}
                 hits={props.hits}
                 gameSession={props.gameSession}
                 loading={props.loading}

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useMemo } from 'react'
 
 import '../../App.scss'
 
@@ -17,6 +17,12 @@ import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
 
 function MainTabHitLog(props) {
+
+  const matrix = useMemo(
+    () => displayMatrix(props.hits, props.msgs, false),
+    [props.hits, props.msgs]
+  )
+
   return (
     <div>
       <Box sx={{ p: 1 }}>
@@ -27,7 +33,7 @@ function MainTabHitLog(props) {
                 * * * HIT MATRIX * * *
                 <br />
                 <br />
-                {displayMatrix(props.hits, props.msgs)}
+                {matrix}
                 <br />
                 <br />
                 * * * {txt('logHits', props.lang).toUpperCase()} * * *

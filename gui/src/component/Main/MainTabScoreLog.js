@@ -46,13 +46,13 @@ function MainTabLog(props) {
   return (
     <div style={{position: 'relative'}}>
       <div className="fpvcm-log-format-switch">
-      {txt('formatted', props.lang)}:&nbsp;
-        <Switch
-          name="formatLogs"
-          variant="outlined"
-          checked={formatted}
-          onClick={() => setFormatted(!formatted)}
-      />
+        {txt('formatted', props.lang)}:&nbsp;
+          <Switch
+            name="formatLogs"
+            variant="outlined"
+            checked={formatted}
+            onClick={() => setFormatted(!formatted)}
+        />
       </div>
       <Box sx={{ p: 1 }}>
         <Card variant="outlined" className="fpvcm-card-wrapper">
