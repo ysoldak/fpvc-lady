@@ -62,11 +62,12 @@ function MainTblStats(props) {
             <div style={{position: 'relative'}}>
               <div className="fpvcm-stats-matrix-switch">
                 Hit Matrix:&nbsp;
-                  <Switch
-                    name="formatLogs"
-                    variant="outlined"
-                    checked={showMatrix}
-                    onClick={() => setShowMatrix(!showMatrix)}
+                <Switch
+                  name="formatLogs"
+                  variant="outlined"
+                  checked={showMatrix && props.hits.length > 0}
+                  disabled={props.hits.length < 1}
+                  onClick={() => setShowMatrix(!showMatrix)}
                 />
               </div>
               {!showMatrix && (
@@ -119,7 +120,7 @@ function MainTblStats(props) {
                   </Table>
                 </TableContainer>)
               }
-              {showMatrix && (
+              {(showMatrix && props.hits.length > 0) && (
                 <TableContainer component={Paper} style={{maxWidth: '100%'}}>
                   <Table size="small" className="fpvcm-table-bg" >
                     <TableHead>
