@@ -189,6 +189,38 @@ function MainTblStats(props) {
         </Card>
       </Box>
       <Box sx={{ p: 1 }}>
+        <Card variant="outlined" className="fpvcm-card-wrapper">
+          <CardContent className="fpvcm-config fpvcm-disp-config" style={{position: 'relative'}}>
+            <div style={{fontWeight: 'normal', position: 'absolute', paddingTop: '10px'}}>
+              <Typography>
+                {(props.ladyUp && !props.loading) && (<span>{txt('sessCurrent', props.lang)}:&nbsp;
+                  <span className="fpvcm-label">{txt('sess_' + props.gameSession, props.lang)}</span></span>)}
+              </Typography> 
+            </div>
+            <div style={{fontSize: '0.85em', position: 'absolute', right: '8px', top: '6px'}}>
+              {props.config.ladySettingsSynced && (<>
+                <TimerIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.ladyDurationBattle + ' ' + txt('min', props.lang)}</span>
+                &nbsp;&nbsp;
+                <AvTimerIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.ladyDurationCountdown + ' ' + txt('sec', props.lang)}</span>
+                &nbsp;&nbsp;
+                <CrisisAlertIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.hitPoints + ' (' + props.config.hitTargetPoints + ')'}</span>
+                &nbsp;&nbsp;
+                <AirplanemodeInactiveIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
+                &nbsp;<span style={{color: 'white'}}>{props.config.ladyScoreDamages}</span>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                Speak:&nbsp;
+                {props.config.ladySpeakLives && <FavoriteIcon fontSize="small" style={{position: 'relative', top: '4px', color: 'red'}} />}
+                {!props.config.ladySpeakLives && <FavoriteBorderIcon fontSize="small" style={{position: 'relative', top: '4px', color: '#124012'}} />}
+                &nbsp;<SignLanguageIcon fontSize="small" style={{position: 'relative', top: '4px', color: props.config.ladySpeakCheers ? 'yellow' : '#124012'}} />
+              </>)}
+            </div>
+          </CardContent>
+        </Card>
+      </Box>
+      <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
           <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
             <Button variant="contained" size="small" onClick={() => exportData(false, true, props.lang, props.rows, props.msgs, props.hits, false)} className="fpvcm-export-btn"> 

@@ -240,6 +240,15 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (!config.ladySettingsSynced) {
+      setTimeout(() => {
+        getCurrentConfig()
+      }, 1000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config])
+
   function toggleSettings() {
     setShowConfig(!showConfig)
   }
