@@ -5,7 +5,8 @@ import useWebSocket from "react-use-websocket"
 import { ladyLocales } from './utils/settingsVals'
 
 import logo from './img/FPV-Combat-Logo-light-grey.png'
-import ladyBW from './img/lady_bw.jpeg'
+import ladyBW from './img/lady_bw_base64.js'
+import ladyLoading from './img/lady_loading_base64.js'
 import './App.scss'
 
 import Main from './component/Main/Main'
@@ -327,6 +328,7 @@ function App() {
                 />)
               : (<Main
                   config={config}
+                  ladyLoading={ladyLoading}
                   loading={loading}
                   advanceSession={advanceSession}
                   sendNewSession={sendNewSession}

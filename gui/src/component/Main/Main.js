@@ -18,7 +18,7 @@ import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 
 function Main(props) {
-  
+
   const [tab, setTab] = React.useState(0)
   const [rows, setRows] = React.useState([])
 
@@ -62,7 +62,7 @@ function Main(props) {
                 <Tab label="Stats" id="fpvcmTab0"  />
                 <Tab label={txt('logHits', props.config.lang)} id="fpvcmTab1" />
                 <Tab label={txt('logScore', props.config.lang)} id="fpvcmTab2" />
-                {props.loading && <Loading lang={props.config.lang} />}
+                {props.loading && <Loading lang={props.config.lang} ladyLoading={props.ladyLoading} />}
               </Tabs>
             </Box>
             <div
