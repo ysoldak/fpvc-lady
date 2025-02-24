@@ -185,7 +185,7 @@ function App() {
         if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
           setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
         }
-        if (JSONmsg?.type?.toString() === 'config' && Object.keys(JSONmsg.payload).length > 0) {
+        if (JSONmsg?.type?.toString() === 'config' && Object.keys(JSONmsg.payload).length > 0 && !config.ladySettingsSynced) {
           storeCurrentConfig({...ladyConfigDict(JSONmsg.payload)})
         }
       }

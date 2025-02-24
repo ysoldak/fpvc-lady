@@ -44,7 +44,7 @@ function Options(props) {
   }
 
   useEffect(() => {
-    if (!typing) {
+    if (!typing && !props.config.ladySettingsSynced) {
       props.sendConfig()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
