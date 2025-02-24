@@ -183,7 +183,9 @@ function App() {
           setLog([...tmpInsLog, ...log])
         }
         if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
-          setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
+          if (gameSession !== detectGameSession(JSONmsg?.payload?.timestamps)) {
+            setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
+          }
         }
         if (JSONmsg?.type?.toString() === 'config' && Object.keys(JSONmsg.payload).length > 0 && !config.ladySettingsSynced) {
           storeCurrentConfig({...ladyConfigDict(JSONmsg.payload)})
