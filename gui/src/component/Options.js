@@ -44,6 +44,10 @@ function Options(props) {
   }
 
   useEffect(() => {
+    setFormConfig(props.config)
+  }, [props.config])
+
+  useEffect(() => {
     if (!typing && !props.config.ladySettingsSynced) {
       props.sendConfig()
     }

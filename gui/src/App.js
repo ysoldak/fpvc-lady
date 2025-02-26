@@ -200,7 +200,7 @@ function App() {
         }
       }
     }
-    msg.payload.timestamps[sess] = now.toISOString()
+    msg.payload.timestamps[sess || 'regStarted'] = now.toISOString()
     sendMessage(JSON.stringify(msg))
   }
 
@@ -212,7 +212,7 @@ function App() {
     }))
   }
 
-  function sendConfig() {
+  function sendConfig(insertVals = {}, refreshLadyConfig = false) {
     sendMessage(JSON.stringify({
       type: "config",
       seq: "1",
@@ -226,9 +226,14 @@ function App() {
         speakLives: config.ladySpeakLives,
         autoStart: config.ladyAutoStart,
         durationBattle: config.ladyDurationBattle,
-        durationCountdown: config.ladyDurationCountdown
+        durationCountdown: config.ladyDurationCountdown,
+        ...insertVals
       }
     }))
+    if (refreshLadyConfig) {
+      setConfig({...config, ladySettingsSynced: false})
+      getCurrentConfig()
+    }
   }
 
   function storeCurrentConfig(ladyConfig) {
@@ -304,7 +309,7 @@ function App() {
           <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
           <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
           <div className="fpvcm-header_text">&nbsp;Manager</div>
-          <HeaderMenu isAdmin={isAdmin} config={config} toggleSettings={toggleSettings} />
+          <HeaderMenu isAdmin={isAdmin} config={config} toggleSettings={toggleSettings} sendConfig={sendConfig} />
         </header>
         <ConfirmModal
           confirmModal={confirmModal}

@@ -9,10 +9,12 @@ import MainTabScoreLog from './MainTabScoreLog'
 import MainTabHitLog from './MainTabHitLog'
 import MainTabStats from './MainTabStats'
 
-import FilterTiltShiftIcon from '@mui/icons-material/FilterTiltShift'
+import IconAdvance from '../svg/IconAdvance.js'
+import IconRestart from '../svg/IconRestart.js'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Unstable_Grid2'
+import ButtonGroup from '@mui/material/ButtonGroup'
 import Button from '@mui/material/Button'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
@@ -55,7 +57,7 @@ function Main(props) {
     <Box className="fpvcm-container_box">
       <br />
       <Grid container spacing={4}>
-        <Grid xl={7} lg={7} md={11} sm={11} xs={11}>
+        <Grid xl={8} lg={10} md={12} sm={12} xs={12}>
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
               <Tabs value={tab} onChange={switchTab} sx={{color: 'red'}}>
@@ -103,17 +105,28 @@ function Main(props) {
       </Grid>
       {(props.isAdmin && props.ladyUp) && (
         <Grid container spacing={4}>
-          <Grid xl={7} lg={7} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px', paddingLeft: '24px', maxWidth: '90%'}}>
-            <Button
-              variant="contained"
-              size="large"
-              style={{width: '45%'}}
-              onClick={() => {props.sendNewSession(props.advanceSession());}}
-              disabled={props.gameSession === 'regEnded'}
-            >
-              <FilterTiltShiftIcon />&nbsp;
-              {txt('sessGoTo_' + props.advanceSession(), props.config.lang)}
-            </Button>
+          <Grid xl={8} lg={10} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px', paddingLeft: '24px', maxWidth: '90%'}}>
+            <ButtonGroup style={{ width: '45%'}}>
+              <Button
+                variant="contained"
+                size="large"
+                style={{width: '75%'}}
+                onClick={() => {props.sendNewSession(props.advanceSession());}}
+                disabled={props.gameSession === 'regEnded'}
+              >
+                <IconAdvance />&nbsp;&nbsp;
+                {txt('sessGoTo_' + props.advanceSession(), props.config.lang)}
+              </Button>
+              <Button
+                variant="contained"
+                size="large"
+                style={{width: '25%'}}
+                onClick={() => {props.sendNewSession(null);}}
+                disabled={props.gameSession === 'regEnded'}
+              >
+                <IconRestart />
+              </Button>
+            </ButtonGroup>
           </Grid>
         </Grid>
       )}
