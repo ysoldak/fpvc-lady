@@ -22,6 +22,10 @@ function Options(props) {
     let newFormConfig = {...formConfig}
     if (e.target.type && e.target.type?.toString() === 'checkbox') {
       newFormConfig[e.target.name] = e.target.checked
+      if (e.target.name === 'useCustomLadyLocale') {
+        newFormConfig.ladyLocale = e.target.checked ? '' : 'en'
+        newFormConfig.customLadyLocale = e.target.checked ? '' : 'en'
+      }
     }
     else {
       newFormConfig[e.target.name] = e.target.value
@@ -78,12 +82,12 @@ function Options(props) {
         <Grid xl={3} lg={3} md={6} sm={6} xs={6}>
           <Select
             name="ladyLocale"
-            value={formConfig.ladyLocale}
+            value={formConfig.useCustomLadyLocale ? '' : props.config.ladyLocale}
             onChange={handleChange}
             disabled={!props.config.ladySettingsSynced || !props.ladyUp || formConfig.useCustomLadyLocale}
             style={{minWidth: '75%'}}
           >
-            {Object.keys(ladyLocales).map((i) => <MenuItem value={ladyLocales[i].value} key={i}>{ladyLocales[i].label}</MenuItem>)}
+            {ladyLocales.map((i) => <MenuItem value={i.value} key={i.label}>{i.label}</MenuItem>)}
           </Select>
         </Grid>
       </Grid>

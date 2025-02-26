@@ -95,12 +95,12 @@ function App() {
   }
 
   const isCustomLadyLocale = (l) => {
-    Object.keys(ladyLocales).forEach(ladyLocale => {
-      if (ladyLocale.value === l.toString()) {
-        return true
+    for (let ladyLocale in Object.keys(ladyLocales)) {
+      if (ladyLocales[ladyLocale].value === l.toString()) {
+        return false
       }
-    })
-    return false
+    }
+    return true
   }
 
   useEffect(() => {
