@@ -12,8 +12,7 @@ import './App.scss'
 import Main from './component/Main/Main'
 import Options from './component/Options'
 import ConfirmModal from './component/ConfirmModal'
-
-import SettingsIcon from '@mui/icons-material/Settings'
+import HeaderMenu from './component/HeaderMenu'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -104,71 +103,6 @@ function App() {
     return false
   }
 
-  function sendNewSession(sess) {
-    let now = new Date()
-    let msg = {
-      type: "session",
-      seq: "1",
-      payload: {
-        timestamps: {
-          regStarted: "0001-01-01T00:00:00Z",
-          regEnded: "0001-01-01T00:00:00Z",
-          batStarted: "0001-01-01T00:00:00Z",
-          batEnded: "0001-01-01T00:00:00Z",
-        }
-      }
-    }
-    msg.payload.timestamps[sess] = now.toISOString()
-    sendMessage(JSON.stringify(msg))
-  }
-
-  function getCurrentConfig() {
-    sendMessage(JSON.stringify({
-      type: "config",
-      seq: "1",
-      payload: null
-    }))
-  }
-
-  function sendConfig() {
-    sendMessage(JSON.stringify({
-      type: "config",
-      seq: "1",
-      payload: {
-        locale: config.useCustomLadyLocale ? config.customLadyLocale: config.ladyLocale,
-        logSocket: config.ladyLogSocket,
-        scoreHits: config.hitAddressesRange + ':' + config.hitPoints + ',' + config.hitTargetAddressesRange + ':' + config.hitTargetPoints,
-        scoreDamages: config.ladyScoreDamages,
-        speakCommand: config.ladySpeakCommand,
-        speakCheers: config.ladySpeakCheers,
-        speakLives: config.ladySpeakLives,
-        autoStart: config.ladyAutoStart,
-        durationBattle: config.ladyDurationBattle,
-        durationCountdown: config.ladyDurationCountdown
-      }
-    }))
-  }
-
-  function storeCurrentConfig(ladyConfig) {
-    const scoreHits = ladyConfig.ladyScoreHits.split(',')
-    setConfig({
-      ...initSettings,
-      ...config,
-      ...ladyConfig,
-      hitPoints: scoreHits[0].split(':')[1],
-      hitTargetPoints: scoreHits[1].split(':')[1],
-      hitAddressesRange: scoreHits[0].split(':')[0],
-      hitTargetAddressesRange: scoreHits[1].split(':')[0],
-      useCustomLadyLocale: isCustomLadyLocale(ladyConfig.ladyLocale),
-      customLadyLocale: ladyConfig.ladyLocale.toString(),
-      ladySettingsSynced: true
-    })
-  }
-
-  function clearLog() {
-    setLog([])
-  }
-
   useEffect(() => {
     if (lastMessage && lastMessage.data?.length > 0) {
       let JSONmsg = {}
@@ -252,8 +186,73 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config])
 
+  function sendNewSession(sess) {
+    let now = new Date()
+    let msg = {
+      type: "session",
+      seq: "1",
+      payload: {
+        timestamps: {
+          regStarted: "0001-01-01T00:00:00Z",
+          regEnded: "0001-01-01T00:00:00Z",
+          batStarted: "0001-01-01T00:00:00Z",
+          batEnded: "0001-01-01T00:00:00Z",
+        }
+      }
+    }
+    msg.payload.timestamps[sess] = now.toISOString()
+    sendMessage(JSON.stringify(msg))
+  }
+
+  function getCurrentConfig() {
+    sendMessage(JSON.stringify({
+      type: "config",
+      seq: "1",
+      payload: null
+    }))
+  }
+
+  function sendConfig() {
+    sendMessage(JSON.stringify({
+      type: "config",
+      seq: "1",
+      payload: {
+        locale: config.useCustomLadyLocale ? config.customLadyLocale: config.ladyLocale,
+        logSocket: config.ladyLogSocket,
+        scoreHits: config.hitAddressesRange + ':' + config.hitPoints + ',' + config.hitTargetAddressesRange + ':' + config.hitTargetPoints,
+        scoreDamages: config.ladyScoreDamages,
+        speakCommand: config.ladySpeakCommand,
+        speakCheers: config.ladySpeakCheers,
+        speakLives: config.ladySpeakLives,
+        autoStart: config.ladyAutoStart,
+        durationBattle: config.ladyDurationBattle,
+        durationCountdown: config.ladyDurationCountdown
+      }
+    }))
+  }
+
+  function storeCurrentConfig(ladyConfig) {
+    const scoreHits = ladyConfig.ladyScoreHits.split(',')
+    setConfig({
+      ...initSettings,
+      ...config,
+      ...ladyConfig,
+      hitPoints: scoreHits[0].split(':')[1],
+      hitTargetPoints: scoreHits[1].split(':')[1],
+      hitAddressesRange: scoreHits[0].split(':')[0],
+      hitTargetAddressesRange: scoreHits[1].split(':')[0],
+      useCustomLadyLocale: isCustomLadyLocale(ladyConfig.ladyLocale),
+      customLadyLocale: ladyConfig.ladyLocale.toString(),
+      ladySettingsSynced: true
+    })
+  }
+
   function toggleSettings() {
     setShowConfig(!showConfig)
+  }
+
+  function clearLog() {
+    setLog([])
   }
 
   function detectGameSession(sessTimeStamps) {
@@ -305,9 +304,7 @@ function App() {
           <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
           <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
           <div className="fpvcm-header_text">&nbsp;Manager</div>
-          {isAdmin && <div className="fpvcm-settings-icon">
-            <SettingsIcon onClick={toggleSettings} />
-          </div>}
+          <HeaderMenu isAdmin={isAdmin} config={config} toggleSettings={toggleSettings} />
         </header>
         <ConfirmModal
           confirmModal={confirmModal}

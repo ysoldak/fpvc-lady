@@ -165,7 +165,7 @@ function MainTblStats(props) {
                   <span className="fpvcm-label">{txt('sess_' + props.gameSession, props.lang)}</span></span>)}
               </Typography> 
             </div>
-            <div style={{fontSize: '0.85em', position: 'absolute', right: '8px', top: '6px'}}>
+            <div style={{fontSize: '0.85em', position: 'absolute', right: '8px', top: '6px'}} className="hide-narrow">
               {props.config.ladySettingsSynced && (<>
                 <TimerIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
                 &nbsp;<span style={{color: 'white'}}>{props.config.ladyDurationBattle + ' ' + txt('min', props.lang)}</span>
@@ -178,11 +178,6 @@ function MainTblStats(props) {
                 &nbsp;&nbsp;
                 <AirplanemodeInactiveIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
                 &nbsp;<span style={{color: 'white'}}>{props.config.ladyScoreDamages}</span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                {txt('speak', props.lang)}:&nbsp;
-                {props.config.ladySpeakLives && <FavoriteIcon fontSize="small" style={{position: 'relative', top: '4px', color: 'red'}} />}
-                {!props.config.ladySpeakLives && <FavoriteBorderIcon fontSize="small" style={{position: 'relative', top: '4px', color: '#124012'}} />}
-                &nbsp;<SignLanguageIcon fontSize="small" style={{position: 'relative', top: '4px', color: props.config.ladySpeakCheers ? 'yellow' : '#124012'}} />
               </>)}
             </div>
           </CardContent>

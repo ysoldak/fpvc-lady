@@ -12,6 +12,7 @@
   background-color: #333;
   overflow: hidden;
   padding: 0px !important;
+  padding-bottom: 40px !important;
 
   &_box {
     background-color: 333;
@@ -26,11 +27,14 @@
   }
 }
 
-.fpvcm-settings-icon {
-  width: 20px;
-  height: 20px;
+.fpvcm-top-settings {
   position: absolute;
   cursor: pointer;
+
+  &_element {
+    display: inline;
+    cursor: pointer;
+  }
 }
 
 .fpvcm-header {
@@ -114,9 +118,16 @@
     top: 6px;
   }
 
-  .fpvcm-settings-icon {
+  .fpvcm-top-settings {
     right: 12px;
     top: 12px;
+
+    &_label {
+      font-size: 0.6em;
+      position: relative;
+      margin-right: 10px;
+      bottom: 7px;
+    }
   }
 
   .MuiSlider-markLabel {
@@ -175,7 +186,7 @@
     top: 6px;
   }
 
-  .fpvcm-settings-icon {
+  .fpvcm-top-settings {
     right: 12px;
     top: 6px;
   }
