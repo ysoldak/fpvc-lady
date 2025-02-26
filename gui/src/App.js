@@ -20,7 +20,7 @@ import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
 
 const appVersion = process.env.REACT_APP_VERSION
-const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
+const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA === 'true'
 const appRevision = process.env.REACT_APP_REVISION
 const wsUrlDev = process.env.REACT_APP_MOCK_WS_URL
 
