@@ -304,10 +304,7 @@ function App() {
         <header className="fpvcm-header">
           <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
           <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
-          <div className="fpvcm-header_text">
-            &nbsp;Manager
-            <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
-          </div>
+          <div className="fpvcm-header_text">&nbsp;Manager</div>
           {isAdmin && <div className="fpvcm-settings-icon">
             <SettingsIcon onClick={toggleSettings} />
           </div>}
@@ -345,6 +342,12 @@ function App() {
                 />)
           }
         </Container>
+        <footer className="fpvcm-footer">
+          FPV Combat Manager
+          <span className="fpvcm-footer_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <a href="https://www.fpv-combat.com" target="_blank" rel="noreferrer" className="fpvcm-footer_link">FPV-Combat.com</a>
+        </footer>
       </div>
     </ThemeProvider>
   );

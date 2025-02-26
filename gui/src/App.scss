@@ -44,6 +44,35 @@
   color: white;
 }
 
+.fpvcm-footer {
+  position: fixed;
+  background-color: #121212;
+  bottom: 0px;
+  z-index: 1;
+  width: 100%;
+  text-align: left;
+  margin-top: 20px;
+  padding: 8px;
+  font-size: 0.75em;
+  text-align: center;
+  color: #6ecc67;
+
+  &_version {
+    color: #2b8f33;
+    font-size: 0.95em;
+    font-weight: bold;
+  }
+
+  &_link {
+    color: #6ecc67;
+    text-decoration: none;
+  }
+
+  &_link:hover {
+    text-decoration: underline;
+  }
+}
+
 @media (max-width:800px) {
   .hide-narrow {
     display: none !important
@@ -71,13 +100,6 @@
     &_text {
       position: relative;
       bottom: -4px;
-    }
-
-    &_version {
-      padding-lefT: 8px;
-      color: #00b50f;
-      font-size: 0.6em;
-      font-weight: bold;
     }
 
     &_logo {
@@ -137,16 +159,13 @@
       bottom: -4px;
     }
 
-    &_version {
-      padding-lefT: 8px;
-      color: #00b50f;
-      font-size: 0.9em;
-      font-weight: bold;
-    }
-
     &_logo {
       max-height: 26px;
     }
+  }
+
+  .fpvcm-footer {
+    font-size: 0.6em;
   }
 
   .fpvcm-input-label {
