@@ -118,8 +118,8 @@ function Main(props) {
       </Grid>
       {(props.isAdmin && props.ladyUp) && (
         <Grid container spacing={4}>
-          <Grid xl={8} lg={10} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px', paddingLeft: '24px', maxWidth: '90%'}}>
-            <ButtonGroup style={{ width: '45%'}}>
+          <Grid xl={9} lg={10} md={12} sm={12} xs={12} style={{textAlign: 'center', paddingTop: '22px', paddingLeft: '24px', maxWidth: '90%'}}>
+            <ButtonGroup className="fpvcm-main-btn">
               <Button
                 variant="contained"
                 size="large"

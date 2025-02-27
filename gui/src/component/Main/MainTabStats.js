@@ -162,7 +162,7 @@ function MainTblStats(props) {
                   <span className="fpvcm-label">{txt('sess_' + props.gameSession, props.lang)}</span></span>)}
               </Typography> 
             </div>
-            <div style={{fontSize: '0.85em', position: 'absolute', right: '8px', top: '6px'}} className="hide-narrow">
+            <div style={{fontSize: '0.85em', position: 'absolute', right: '8px', top: '6px'}} className="hide-narrow-max">
               {props.config.ladySettingsSynced && (<>
                 <TimerIcon fontSize="small" style={{position: 'relative', top: '4px'}} />
                 &nbsp;<span style={{color: 'white'}}>{props.config.ladyDurationBattle + ' ' + txt('min', props.lang)}</span>
@@ -182,7 +182,7 @@ function MainTblStats(props) {
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
+          <Grid xl={4} lg={4} md={4} sm={4} xs={12} style={{paddingTop: '22px', fontSize: '0.75em'}}>
             <Button variant="contained" size="small" onClick={() => exportData(false, true, props.lang, props.rows, props.msgs, props.hits, false)} className="fpvcm-export-btn"> 
               <FileDownloadIcon />
               {txt('exportStats', props.lang)}

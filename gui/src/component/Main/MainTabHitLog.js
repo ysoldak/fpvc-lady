@@ -56,7 +56,7 @@ function MainTabHitLog(props) {
       </Box>
       <Box sx={{ p: 1 }}>
         <Grid container spacing={4} style={{marginLeft: '0px'}}>
-          <Grid xl={4} lg={4} md={4} sm={4} xs={4} style={{paddingTop: '22px', fontSize: '0.75em'}}>
+          <Grid xl={4} lg={4} md={4} sm={4} xs={12} style={{paddingTop: '22px', fontSize: '0.75em'}}>
             <Button variant="contained" size="small" onClick={() => exportData(true, false, props.lang, props.rows, props.msgs, props.hits, false)} className="fpvcm-export-btn"> 
               <FileDownloadIcon />
               {txt('exportAll', props.lang)}

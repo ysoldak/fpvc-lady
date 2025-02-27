@@ -29,11 +29,14 @@
 
 .fpvcm-top-settings {
   position: absolute;
-  cursor: pointer;
 
   &_element {
     display: inline;
     cursor: pointer;
+  }
+
+  &_readonly {
+    display: inline;
   }
 }
 
@@ -77,12 +80,26 @@
   }
 }
 
+.fpvcm-main-btn {
+  width: 45%;
+}
+
 @media (max-width:860px) {
   .hide-narrow {
     display: none !important
   }
   .loading_info {
     display: none
+  }
+  .fpvcm-main-btn {
+    width: 99%;
+    padding-left: 10%;
+  }
+}
+
+@media (max-width:490px) {
+  .hide-narrow-max {
+    display: none !important
   }
 }
 
