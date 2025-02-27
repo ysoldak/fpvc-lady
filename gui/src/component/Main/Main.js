@@ -34,6 +34,19 @@ function Main(props) {
     return 0
   }
 
+  function restartSession(confirmed=false) {
+    if (!confirmed) {
+      props.setConfirmModal({
+        show: true,
+        title: txt('sessRestart', props.config.lang),
+        contents: txt('sessRestartSure', props.config.lang),
+        callBack: () => restartSession(true)
+      })
+      return
+    }
+    props.sendNewSession(null)
+  }
+
   React.useEffect(() => {
     if (props.msgs.length > 0) {
       let rows = props.msgs[0].map((msg) => {
@@ -111,7 +124,7 @@ function Main(props) {
                 variant="contained"
                 size="large"
                 style={{width: '75%'}}
-                onClick={() => {props.sendNewSession(props.advanceSession());}}
+                onClick={() => {props.sendNewSession(props.advanceSession())}}
                 disabled={props.gameSession === 'regEnded'}
               >
                 <IconAdvance />&nbsp;&nbsp;
@@ -121,7 +134,7 @@ function Main(props) {
                 variant="contained"
                 size="large"
                 style={{width: '25%'}}
-                onClick={() => {props.sendNewSession(null);}}
+                onClick={() => {restartSession(false)}}
                 disabled={props.gameSession === 'regEnded'}
               >
                 <IconRestart />

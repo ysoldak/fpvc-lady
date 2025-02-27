@@ -69,6 +69,8 @@
   "exportAll": "Pobierz wszystko",
   "clearLog": "Wyczyść logi",
   "clearLogSure": "Czy na pewno wyczyścić logi?",
+  "sessRestart": "Restart sesji",
+  "sessRestartSure": "Czy na pewno zrestartować sesję? Obecne wyniki zostaną skasowane!",
   "sessCurrent": "Stan gry",
   "sess_regStarted": "Rejestracja",
   "sess_regEnded": "Odliczanie",

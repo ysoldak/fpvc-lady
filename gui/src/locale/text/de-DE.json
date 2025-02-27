@@ -69,6 +69,8 @@
   "exportAll": "Alles exportieren",
   "clearLog": "Clear logs",
   "clearLogSure": "Are you sure you want to clear logs?",
+  "sessRestart": "Restart session",
+  "sessRestartSure": "Are you sure you want to restart session? All current results will be lost!",
   "sessCurrent": "Game state",
   "sess_regStarted": "Registration",
   "sess_regEnded": "Countdown",

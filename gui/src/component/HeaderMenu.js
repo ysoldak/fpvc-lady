@@ -44,8 +44,8 @@ function HeaderMenu(props) {
       }
       {props.isAdmin && 
         <div className="fpvcm-top-settings_element" onClick={() => setMockMUte(!mockMute)}>
-          <IconMute stroke={props.config.ladySettingsSynced ? mockMute ? 'cyan' : 'gray' : '#333333'} fill={props.config.ladySettingsSynced ? mockMute ? '#6ecc67' : 'gray' : '#333333'} />
-          <span className="fpvcm-top-settings_label hide-narrow"style={{color: props.config.ladySettingsSynced ? mockMute ? '#6ecc67' : 'gray' : '#333333'}}>&nbsp;{txt('optionsShortLadySpeakMute', props.config.lang)}</span>
+          <IconMute stroke={props.config.ladySettingsSynced ? mockMute ? '#00b50f' : 'gray' : '#333333'} fill={props.config.ladySettingsSynced ? mockMute ? '#00b50f' : 'gray' : '#333333'} />
+          <span className="fpvcm-top-settings_label hide-narrow"style={{color: props.config.ladySettingsSynced ? mockMute ? '#00b50f' : 'gray' : '#333333'}}>&nbsp;{txt('optionsShortLadySpeakMute', props.config.lang)}</span>
         </div>
       }
       {props.isAdmin && 
