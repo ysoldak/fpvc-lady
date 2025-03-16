@@ -21,9 +21,6 @@ import Container from '@mui/material/Container'
 const appVersion = process.env.REACT_APP_VERSION
 const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA === 'true'
 const appRevision = process.env.REACT_APP_REVISION
-const wsUrlDev = process.env.REACT_APP_MOCK_WS_URL
-
-const wsUrl = "ws://" + window.location.host + "/ws"
 
 const theme = createTheme({
   palette: {
@@ -32,6 +29,13 @@ const theme = createTheme({
     }
   },
 })
+
+const wsUrl = () => {
+  const hostAddr = window.location.host.split(':')
+  const wsHost = hostAddr[0].toString()
+  const wsPort = process.env.REACT_APP_WS_PORT.toString()
+  return 'ws://' + wsHost + ':' + wsPort + '/ws'
+}
 
 const initSettings =  {
   lang: "en",
@@ -71,7 +75,7 @@ function App() {
   const [ladyUp, setLadyUp] = useState(false)
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    wsUrlDev?.length > 0 ? wsUrlDev : wsUrl,
+    wsUrl(),
     {
       share: false,
       shouldReconnect: () => true,
