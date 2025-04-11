@@ -4,9 +4,9 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 
 import IconCheers from '../component/svg/IconCheers.js'
-import IconDeath from '../component/svg/IconDeath.js'
-import IconMute from '../component/svg/IconMute.js'
-import IconDadJokes from '../component/svg/IconDadJokes.js'
+//import IconDeath from '../component/svg/IconDeath.js'
+//import IconMute from '../component/svg/IconMute.js'
+//import IconDadJokes from '../component/svg/IconDadJokes.js'
 
 import txt from '../locale/locale'
 
@@ -45,6 +45,7 @@ function HeaderMenu(props) {
           &nbsp;{txt('optionsShortLadySpeakLives', props.config.lang)}
         </span>
       </div>
+      {/*
       <div className={"fpvcm-top-settings" + (props.isAdmin ? "_element" : "_readonly")} onClick={() => actions('dadJokes')}>
         <IconDadJokes stroke={props.config.ladySettingsSynced ? mockDadJokes ? 'yellow' : 'gray' : '#333333'} />
         <span className="fpvcm-top-settings_label hide-narrow" style={{color: props.config.ladySettingsSynced ? mockDadJokes ? 'yellow' : 'gray' : '#333333'}}>
@@ -63,6 +64,7 @@ function HeaderMenu(props) {
           &nbsp;{txt('optionsShortLadySpeakMute', props.config.lang)}
         </span>
       </div>
+      */}
       {props.isAdmin &&
         <div className="fpvcm-top-settings_element" onClick={() => actions('settings')}>
           <SettingsIcon /><span className="fpvcm-top-settings_label hide-narrow">

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import useWebSocket from "react-use-websocket"
+import {v4 as uuidv4} from 'uuid'
 
 import { ladyLocales } from './utils/settingsVals'
 
@@ -65,6 +66,7 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [gameSession, setGameSession] = useState('regStarted')
+  const [gameTimestamps, setGameTimestamps] = useState({})
   const [confirmModal, setConfirmModal] = useState({show: false, title: '', contents: '', callBack: null})
   const [msgs, setMsgs] = useState([])
   const [log, setLog] = useState([])
@@ -73,6 +75,7 @@ function App() {
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
   const [ladyClicks, setLadyClicks] = useState(0)
   const [ladyUp, setLadyUp] = useState(false)
+  const [currentUuid, setCurrectUuid] = useState('')
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(
     wsUrl(),
@@ -121,6 +124,7 @@ function App() {
           setLog([...tmpInsLog, ...log])
         }
         if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
+          setGameTimestamps(JSONmsg.payload.timestamps)
           if (gameSession !== detectGameSession(JSONmsg?.payload?.timestamps)) {
             setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
           }
@@ -139,6 +143,7 @@ function App() {
   useEffect(() => {
     if (!lastMessage) {
       sendMessage(JSON.stringify({
+        uuid: currentUuid,
         type: "session",
         seq: "1",
         payload: null
@@ -174,6 +179,9 @@ function App() {
   }, [gameSession])
 
   useEffect(() => {
+    if (currentUuid === '') {
+      setCurrectUuid(uuidv4())
+    }
     setIsAdmin(window.location.host.indexOf('localhost') > -1 || window.location.host.indexOf('127.0.0.1') > -1)
     if (!config.ladySettingsSynced) {
       getCurrentConfig()
@@ -192,24 +200,34 @@ function App() {
 
   function sendNewSession(sess) {
     let now = new Date()
+    let newGameTimestamps = {}
+    if (!sess || sess === 'regStarted') {
+      newGameTimestamps = {
+        regStarted: "0001-01-01T00:00:00Z",
+        regEnded: "0001-01-01T00:00:00Z",
+        batStarted: "0001-01-01T00:00:00Z",
+        batEnded: "0001-01-01T00:00:00Z",
+      }
+    }
+    else {
+      newGameTimestamps = {...gameTimestamps}
+    }
+    newGameTimestamps[sess || 'regStarted'] = now.toISOString()
+    setGameTimestamps({...newGameTimestamps})
     let msg = {
+      uuid: currentUuid,
       type: "session",
       seq: "1",
       payload: {
-        timestamps: {
-          regStarted: "0001-01-01T00:00:00Z",
-          regEnded: "0001-01-01T00:00:00Z",
-          batStarted: "0001-01-01T00:00:00Z",
-          batEnded: "0001-01-01T00:00:00Z",
-        }
+        timestamps: {...newGameTimestamps}
       }
     }
-    msg.payload.timestamps[sess || 'regStarted'] = now.toISOString()
     sendMessage(JSON.stringify(msg))
   }
 
   function getCurrentConfig() {
     sendMessage(JSON.stringify({
+      uuid: currentUuid,
       type: "config",
       seq: "1",
       payload: null
@@ -218,6 +236,7 @@ function App() {
 
   function sendConfig(insertVals = {}, refreshLadyConfig = false) {
     sendMessage(JSON.stringify({
+      uuid: currentUuid,
       type: "config",
       seq: "1",
       payload: {
