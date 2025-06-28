@@ -22,6 +22,7 @@ var speaker *tts.Tts
 var locale *Locale
 
 var screen tcell.Screen
+var server *Server
 
 var lastHitTime = time.Time{} // time of the last (unclaimed) hit
 
@@ -82,7 +83,8 @@ func commentAction(cc *cli.Context) (err error) {
 	session = game.NewSession(scoreHit, scoreDamage)
 
 	// Http server
-	go doServe(int64(cc.Int(flagHttpPort)))
+	server = NewServer(int64(cc.Int(flagHttpPort)), wsInCh, wsOutCh)
+	go server.Run()
 
 	// Main loop
 	fmt.Println()

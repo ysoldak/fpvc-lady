@@ -6,72 +6,71 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"sync"
 
 	"github.com/gorilla/websocket"
 )
 
 var upgrader = websocket.Upgrader{} // use default options
 
-var wsInCh chan string = make(chan string, 10)
-var wsOutCh chan string = make(chan string, 10)
-var wsLogCh chan string = make(chan string, 10)
+type Server struct {
+	port int64
 
-func socket(w http.ResponseWriter, r *http.Request) {
-	upgrader.CheckOrigin = func(r *http.Request) bool {
-		return true
-	}
-	c, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		fmt.Println("upgrade:", err)
-		return
-	}
-	defer c.Close()
+	clients    map[*Client]bool
+	register   chan *Client
+	unregister chan *Client
 
-	// forward messages
-	go forwardOutbound(c)
-	go forwardInbound(c)
-	go logWebsocket()
+	broadcast chan string // Channel for broadcasting messages to clients
+	receive   chan string // Channel for receiving messages from clients
+	log       chan string // Channel for logging messages
 
-	select {} // idiomatic way to block forever consuming minimal resources
+	mutex sync.RWMutex
 }
 
-// forwardOutbound sends messages from the local wsOutCh to the client
-func forwardOutbound(c *websocket.Conn) {
-	// empty output buffer (messages may have accumulated here before client connected)
-	for len(wsOutCh) > 0 {
-		<-wsOutCh
-	}
-	for message := range wsOutCh {
-		wsLogCh <- string("< " + message)
-		err := c.WriteMessage(websocket.TextMessage, []byte(message))
-		if err != nil {
-			if err == websocket.ErrCloseSent {
-				return // client disconnected
-			}
-			fmt.Println("ws write:", err)
-		}
+func NewServer(port int64, inCh, outCh chan string) *Server {
+	return &Server{
+		port:       port,
+		clients:    make(map[*Client]bool),
+		register:   make(chan *Client),
+		unregister: make(chan *Client),
+		broadcast:  outCh,
+		receive:    inCh,
+		log:        make(chan string, 10),
 	}
 }
 
-// forwardInbound sends messages from the client to the local wsInCh
-func forwardInbound(c *websocket.Conn) {
-	for {
-		mtype, message, err := c.ReadMessage()
-		if err != nil {
-			if !websocket.IsCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
-				fmt.Println("read:", err)
-			}
-			break
-		}
-		if mtype != websocket.TextMessage {
-			continue
-		}
-		wsLogCh <- string("> " + string(message))
-		wsInCh <- string(message)
+func (s *Server) Run() {
+	// Start the websocket logger
+	go s.logger()
+
+	// Start the client manager
+	go s.clienter()
+
+	// Handle static files
+	handleStatic()
+
+	// Handle websocket connections
+	http.HandleFunc("/ws", s.socket)
+
+	// Start the server
+	err := http.ListenAndServe(":"+strconv.FormatInt(s.port, 10), nil)
+	if errors.Is(err, http.ErrServerClosed) {
+		fmt.Println("server closed")
+	} else if err != nil {
+		fmt.Printf("error starting server: %s\n", err)
+		os.Exit(1)
 	}
 }
 
-func logWebsocket() {
+// ClientCount returns the number of connected clients
+func (s *Server) ClientCount() int {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+	return len(s.clients)
+}
+
+// logger writes log messages to a file specified in the configuration
+func (s *Server) logger() {
 	var file *os.File = nil
 	var filePath string = ""
 	defer func() {
@@ -79,7 +78,7 @@ func logWebsocket() {
 			file.Close()
 		}
 	}()
-	for message := range wsLogCh {
+	for message := range s.log {
 		if config.LogSocket != filePath { // config changed or first run
 			if file != nil {
 				file.Close()
@@ -95,18 +94,55 @@ func logWebsocket() {
 	}
 }
 
-func doServe(port int64) {
+// clienter handles client registration, unregistration, and broadcasting
+func (s *Server) clienter() {
+	for {
+		select {
+		case client := <-s.register:
+			s.mutex.Lock()
+			s.clients[client] = true
+			s.mutex.Unlock()
 
-	handleStatic()
+		case client := <-s.unregister:
+			s.mutex.Lock()
+			if _, ok := s.clients[client]; ok {
+				delete(s.clients, client)
+				close(client.send)
+			}
+			s.mutex.Unlock()
 
-	http.HandleFunc("/ws", socket)
+		case message := <-s.broadcast:
+			s.log <- "< " + message
+			s.mutex.RLock()
+			for client := range s.clients {
+				select {
+				case client.send <- message:
+				default:
+					// Client's send channel is full, remove client
+					delete(s.clients, client)
+					close(client.send)
+				}
+			}
+			s.mutex.RUnlock()
+		}
+	}
+}
 
-	err := http.ListenAndServe(":"+strconv.FormatInt(port, 10), nil)
-	if errors.Is(err, http.ErrServerClosed) {
-		fmt.Println("server closed")
-	} else if err != nil {
-		fmt.Printf("error starting server: %s\n", err)
-		os.Exit(1)
+func (s *Server) socket(w http.ResponseWriter, r *http.Request) {
+	upgrader.CheckOrigin = func(r *http.Request) bool {
+		return true
+	}
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println("upgrade:", err)
+		return
 	}
 
+	client := NewClient(conn, s)
+
+	s.register <- client
+
+	// Start goroutines for this client
+	go client.writePump()
+	go client.readPump()
 }
