@@ -25,6 +25,10 @@ func printTable() {
 
 	title := locale.Label("title") //"FPVCombat Announcer"
 
+	if server != nil {
+		title += fmt.Sprintf(" (%d)", server.ClientCount())
+	}
+
 	state := ""
 	switch {
 	case session.IsRegistration():

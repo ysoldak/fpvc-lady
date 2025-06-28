@@ -10,6 +10,9 @@ const (
 	SocketMessageTypeSession = "session"
 )
 
+var wsInCh chan string = make(chan string, 10)
+var wsOutCh chan string = make(chan string, 10)
+
 type SocketMessage struct {
 	Type    string      `json:"type"`
 	Seq     string      `json:"seq"`
