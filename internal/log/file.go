@@ -48,10 +48,10 @@ func (f *File) listenToMessages() {
 	for message := range f.messages {
 		line := ""
 		switch message.Command {
-		case csp.CommandBeacon:
+		case csp.CmdBeacon:
 			event := csp.NewBeaconFromMessage(&message)
 			line = fmt.Sprintf("BEACN %02X %10s %20s", event.ID, event.Name, event.Description)
-		case csp.CommandHit:
+		case csp.CmdHit:
 			if message.IsRequest() {
 				event := csp.NewHitRequestFromMessage(&message)
 				line = fmt.Sprintf("DAMAG %02X %d", event.ID, event.Lives)

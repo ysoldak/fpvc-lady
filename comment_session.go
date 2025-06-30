@@ -19,7 +19,7 @@ func handleCombatMessage(message csp.Message) {
 	logger.LogMessage(message)
 
 	switch message.Command {
-	case csp.CommandBeacon:
+	case csp.CmdBeacon:
 		event := csp.NewBeaconFromMessage(&message)
 		player, new := session.Beacon(event)
 		if new {
@@ -27,7 +27,7 @@ func handleCombatMessage(message csp.Message) {
 			joinedPhrase = strings.ReplaceAll(joinedPhrase, "{player}", player.Name)
 			speaker.Say(joinedPhrase, 5)
 		}
-	case csp.CommandHit:
+	case csp.CmdHit:
 		if session.IsRegistration() {
 			if config.AutoStart {
 				session.Advance() // to countdown
