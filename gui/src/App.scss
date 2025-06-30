@@ -12,6 +12,7 @@
   background-color: #333;
   overflow: hidden;
   padding: 0px !important;
+  padding-bottom: 40px !important;
 
   &_box {
     background-color: 333;
@@ -26,11 +27,17 @@
   }
 }
 
-.fpvcm-settings-icon {
-  width: 20px;
-  height: 20px;
+.fpvcm-top-settings {
   position: absolute;
-  cursor: pointer;
+
+  &_element {
+    display: inline;
+    cursor: pointer;
+  }
+
+  &_readonly {
+    display: inline;
+  }
 }
 
 .fpvcm-header {
@@ -44,12 +51,55 @@
   color: white;
 }
 
-@media (max-width:800px) {
+.fpvcm-footer {
+  position: fixed;
+  background-color: #121212;
+  bottom: 0px;
+  z-index: 1;
+  width: 100%;
+  text-align: left;
+  margin-top: 20px;
+  padding: 8px;
+  font-size: 0.75em;
+  text-align: center;
+  color: #6ecc67;
+
+  &_version {
+    color: #2b8f33;
+    font-size: 0.95em;
+    font-weight: bold;
+  }
+
+  &_link {
+    color: #6ecc67;
+    text-decoration: none;
+  }
+
+  &_link:hover {
+    text-decoration: underline;
+  }
+}
+
+.fpvcm-main-btn {
+  width: 45%;
+}
+
+@media (max-width:860px) {
   .hide-narrow {
     display: none !important
   }
   .loading_info {
     display: none
+  }
+  .fpvcm-main-btn {
+    width: 99%;
+    padding-left: 10%;
+  }
+}
+
+@media (max-width:490px) {
+  .hide-narrow-max {
+    display: none !important
   }
 }
 
@@ -73,13 +123,6 @@
       bottom: -4px;
     }
 
-    &_version {
-      padding-lefT: 8px;
-      color: #00b50f;
-      font-size: 0.6em;
-      font-weight: bold;
-    }
-
     &_logo {
       max-height: 40px;
     }
@@ -92,14 +135,33 @@
     top: 6px;
   }
 
-  .fpvcm-settings-icon {
+  .fpvcm-top-settings {
     right: 12px;
     top: 12px;
+
+    &_label {
+      font-size: 0.6em;
+      position: relative;
+      margin-right: 10px;
+      bottom: 7px;
+    }
   }
 
   .MuiSlider-markLabel {
     font-family: Chakra !important;
     color: #6ecc67 !important;
+  }
+
+  .fpvcm-log-format-switch {
+    position: absolute;
+    top: -36px;
+    right: 8px;
+  }
+
+  .fpvcm-stats-matrix-switch {
+    position: absolute;
+    top: -36px;
+    right: 8px;
   }
 
 }
@@ -125,16 +187,13 @@
       bottom: -4px;
     }
 
-    &_version {
-      padding-lefT: 8px;
-      color: #00b50f;
-      font-size: 0.9em;
-      font-weight: bold;
-    }
-
     &_logo {
       max-height: 26px;
     }
+  }
+
+  .fpvcm-footer {
+    font-size: 0.6em;
   }
 
   .fpvcm-input-label {
@@ -144,7 +203,7 @@
     top: 6px;
   }
 
-  .fpvcm-settings-icon {
+  .fpvcm-top-settings {
     right: 12px;
     top: 6px;
   }
@@ -168,10 +227,25 @@
   .fpvcm-table-cell {
     font-size: 0.6em !important;
   }
+
+  .fpvcm-log-format-switch {
+    position: relative;
+    max-width: 125px;
+    font-size: 0.75em;
+    left: CALC(100% - 135px)
+  }
+
+  .fpvcm-stats-matrix-switch {
+    position: relative;
+    max-width: 125px;
+    font-size: 0.75em;
+    left: CALC(100% - 135px)
+  }
   
 }
 
 .fpvcm-option-label {
+  font-size: 0.9em;
   text-align: center;
 }
 
@@ -187,6 +261,16 @@
   overflow: scroll;
   height: 46vh;
   color: #009400 !important;
+}
+
+.fpvcm-card-disp-stats-wrapper {
+  margin-left: 10px;
+  padding-top: 32px;
+  padding-bottom: 36px;
+  width: 100% !important;
+  min-height: 45vh;
+  border: solid 0px #333;
+  overflow: hidden !important;
 }
 
 .fpvcm-config {
@@ -229,6 +313,13 @@
 
 .fpvcm-label-danger {
   color: #e63720;
+}
+
+.fpvcm-export-btn {
+  min-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  opacity: 0.65
 }
 
 .MuiSlider-root {
@@ -312,6 +403,19 @@
 
 ::-webkit-scrollbar-corner {
   background: #000;
+}
+
+.fpvcm-modal-contents {
+  color: white !important;
+}
+
+.fpvcm-modal-btn {
+  max-height: 38px;
+  width: 100%;
+}
+
+.fpvcm-modal-btn.cancel-btn {
+  background-color: gray !important;
 }
 
 .fpvcm-loading {

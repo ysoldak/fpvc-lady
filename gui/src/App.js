@@ -1,28 +1,27 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import useWebSocket from "react-use-websocket"
+import {v4 as uuidv4} from 'uuid'
 
 import { ladyLocales } from './utils/settingsVals'
 
 import logo from './img/FPV-Combat-Logo-light-grey.png'
-import ladyBW from './img/lady_bw.jpeg'
+import ladyBW from './img/lady_bw_base64.js'
+import ladyLoading from './img/lady_loading_base64.js'
 import './App.scss'
 
 import Main from './component/Main/Main'
 import Options from './component/Options'
+import ConfirmModal from './component/ConfirmModal'
+import HeaderMenu from './component/HeaderMenu'
 
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 import Container from '@mui/material/Container'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
-
-import SettingsIcon from '@mui/icons-material/Settings'
 
 const appVersion = process.env.REACT_APP_VERSION
-const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA
+const appVersionIsBeta = process.env.REACT_APP_VERSION_BETA === 'true'
 const appRevision = process.env.REACT_APP_REVISION
-const wsUrlDev = process.env.REACT_APP_MOCK_WS_URL
-
-const wsUrl = "ws://" + window.location.host + "/ws"
 
 const theme = createTheme({
   palette: {
@@ -31,6 +30,13 @@ const theme = createTheme({
     }
   },
 })
+
+const wsUrl = () => {
+  const hostAddr = window.location.host.split(':')
+  const wsHost = hostAddr[0].toString()
+  const wsPort = process.env.REACT_APP_WS_PORT.toString()
+  return 'ws://' + wsHost + ':' + wsPort + '/ws'
+}
 
 const initSettings =  {
   lang: "en",
@@ -60,6 +66,8 @@ function App() {
   const [config, setConfig] = useState(initSettings)
   const [showConfig, setShowConfig] = useState(false)
   const [gameSession, setGameSession] = useState('regStarted')
+  const [gameTimestamps, setGameTimestamps] = useState({})
+  const [confirmModal, setConfirmModal] = useState({show: false, title: '', contents: '', callBack: null})
   const [msgs, setMsgs] = useState([])
   const [log, setLog] = useState([])
   const [hits, setHits] = useState([])
@@ -67,9 +75,10 @@ function App() {
   const [ladyJustTriggered, setLadyJustTriggered] = useState(false)
   const [ladyClicks, setLadyClicks] = useState(0)
   const [ladyUp, setLadyUp] = useState(false)
+  const [currentUuid, setCurrectUuid] = useState('')
 
   const { sendMessage, lastMessage, readyState } = useWebSocket(
-    wsUrlDev?.length > 0 ? wsUrlDev : wsUrl,
+    wsUrl(),
     {
       share: false,
       shouldReconnect: () => true,
@@ -93,72 +102,12 @@ function App() {
   }
 
   const isCustomLadyLocale = (l) => {
-    Object.keys(ladyLocales).forEach(ladyLocale => {
-      if (ladyLocale.value === l.toString()) {
-        return true
-      }
-    })
-    return false
-  }
-
-  function sendNewSession(sess) {
-    let now = new Date()
-    let msg = {
-      type: "session",
-      seq: "1",
-      payload: {
-        timestamps: {
-          regStarted: "0001-01-01T00:00:00Z",
-          regEnded: "0001-01-01T00:00:00Z",
-          batStarted: "0001-01-01T00:00:00Z",
-          batEnded: "0001-01-01T00:00:00Z",
-        }
+    for (let ladyLocale in Object.keys(ladyLocales)) {
+      if (ladyLocales[ladyLocale].value === l.toString()) {
+        return false
       }
     }
-    msg.payload.timestamps[sess] = now.toISOString()
-    sendMessage(JSON.stringify(msg))
-  }
-
-  function getCurrentConfig() {
-    sendMessage(JSON.stringify({
-      type: "config",
-      seq: "1",
-      payload: null
-    }))
-  }
-
-  function sendConfig(cfg) {
-    sendMessage(JSON.stringify({
-      type: "config",
-      seq: "1",
-      payload: {
-        locale: config.useCustomLadyLocale ? config.customLadyLocale: config.ladyLocale,
-        logSocket: config.ladyLogSocket,
-        scoreHits: config.hitAddressesRange + ':' + config.hitPoints + ',' + config.hitTargetAddressesRange + ':' + config.hitTargetPoints,
-        scoreDamages: config.ladyScoreDamages,
-        speakCommand: config.ladySpeakCommand,
-        speakCheers: config.ladySpeakCheers,
-        speakLives: config.ladySpeakLives,
-        autoStart: config.ladyAutoStart,
-        durationBattle: config.ladyDurationBattle,
-        durationCountdown: config.ladyDurationCountdown
-      }
-    }))
-  }
-
-  function storeCurrentConfig(ladyConfig) {
-    const scoreHits = ladyConfig.ladyScoreHits.split(',')
-    setConfig({
-      ...initSettings,
-      ...ladyConfig,
-      hitPoints: scoreHits[0].split(':')[1],
-      hitTargetPoints: scoreHits[1].split(':')[1],
-      hitAddressesRange: scoreHits[0].split(':')[0],
-      hitTargetAddressesRange: scoreHits[1].split(':')[0],
-      useCustomLadyLocale: isCustomLadyLocale(ladyConfig.ladyLocale),
-      customLadyLocale: ladyConfig.ladyLocale.toString(),
-      ladySettingsSynced: true
-    })
+    return true
   }
 
   useEffect(() => {
@@ -171,13 +120,16 @@ function App() {
           setHits(JSONmsg?.payload?.hits)          
           let tmpInsLog = []
           JSONmsg?.payload?.players?.forEach((pl) => {tmpInsLog.push(JSON.stringify(pl))})
-          tmpInsLog.push('------------------')
+          tmpInsLog.push(''.padStart(130, '-'))
           setLog([...tmpInsLog, ...log])
         }
         if (JSONmsg?.payload?.timestamps && Object.keys(JSONmsg.payload.timestamps).length > 0) {
-          setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
+          setGameTimestamps(JSONmsg.payload.timestamps)
+          if (gameSession !== detectGameSession(JSONmsg?.payload?.timestamps)) {
+            setGameSession(detectGameSession(JSONmsg?.payload?.timestamps))
+          }
         }
-        if (JSONmsg?.type?.toString() === 'config' && Object.keys(JSONmsg.payload).length > 0) {
+        if (JSONmsg?.type?.toString() === 'config' && Object.keys(JSONmsg.payload).length > 0 && !config.ladySettingsSynced) {
           storeCurrentConfig({...ladyConfigDict(JSONmsg.payload)})
         }
       }
@@ -191,6 +143,7 @@ function App() {
   useEffect(() => {
     if (!lastMessage) {
       sendMessage(JSON.stringify({
+        uuid: currentUuid,
         type: "session",
         seq: "1",
         payload: null
@@ -212,6 +165,23 @@ function App() {
   }, [readyState])
 
   useEffect(() => {
+    if (!config.ladySettingsSynced) {
+      setTimeout(() => {
+        getCurrentConfig()
+      }, 1000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config])
+
+  useEffect(() => {
+    setLog(['SESSION CHANGE: ' + gameSession, ''.padStart(130, '-'), ...log])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gameSession])
+
+  useEffect(() => {
+    if (currentUuid === '') {
+      setCurrectUuid(uuidv4())
+    }
     setIsAdmin(window.location.host.indexOf('localhost') > -1 || window.location.host.indexOf('127.0.0.1') > -1)
     if (!config.ladySettingsSynced) {
       getCurrentConfig()
@@ -228,8 +198,89 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config])
 
+  function sendNewSession(sess) {
+    let now = new Date()
+    let newGameTimestamps = {}
+    if (!sess || sess === 'regStarted') {
+      newGameTimestamps = {
+        regStarted: "0001-01-01T00:00:00Z",
+        regEnded: "0001-01-01T00:00:00Z",
+        batStarted: "0001-01-01T00:00:00Z",
+        batEnded: "0001-01-01T00:00:00Z",
+      }
+    }
+    else {
+      newGameTimestamps = {...gameTimestamps}
+    }
+    newGameTimestamps[sess || 'regStarted'] = now.toISOString()
+    setGameTimestamps({...newGameTimestamps})
+    let msg = {
+      uuid: currentUuid,
+      type: "session",
+      seq: "1",
+      payload: {
+        timestamps: {...newGameTimestamps}
+      }
+    }
+    sendMessage(JSON.stringify(msg))
+  }
+
+  function getCurrentConfig() {
+    sendMessage(JSON.stringify({
+      uuid: currentUuid,
+      type: "config",
+      seq: "1",
+      payload: null
+    }))
+  }
+
+  function sendConfig(insertVals = {}, refreshLadyConfig = false) {
+    sendMessage(JSON.stringify({
+      uuid: currentUuid,
+      type: "config",
+      seq: "1",
+      payload: {
+        locale: config.useCustomLadyLocale ? config.customLadyLocale: config.ladyLocale,
+        logSocket: config.ladyLogSocket,
+        scoreHits: config.hitAddressesRange + ':' + config.hitPoints + ',' + config.hitTargetAddressesRange + ':' + config.hitTargetPoints,
+        scoreDamages: config.ladyScoreDamages,
+        speakCommand: config.ladySpeakCommand,
+        speakCheers: config.ladySpeakCheers,
+        speakLives: config.ladySpeakLives,
+        autoStart: config.ladyAutoStart,
+        durationBattle: config.ladyDurationBattle,
+        durationCountdown: config.ladyDurationCountdown,
+        ...insertVals
+      }
+    }))
+    if (refreshLadyConfig) {
+      setConfig({...config, ladySettingsSynced: false})
+      getCurrentConfig()
+    }
+  }
+
+  function storeCurrentConfig(ladyConfig) {
+    const scoreHits = ladyConfig.ladyScoreHits.split(',')
+    setConfig({
+      ...initSettings,
+      ...config,
+      ...ladyConfig,
+      hitPoints: scoreHits[0].split(':')[1],
+      hitTargetPoints: scoreHits[1].split(':')[1],
+      hitAddressesRange: scoreHits[0].split(':')[0],
+      hitTargetAddressesRange: scoreHits[1].split(':')[0],
+      useCustomLadyLocale: isCustomLadyLocale(ladyConfig.ladyLocale),
+      customLadyLocale: ladyConfig.ladyLocale.toString(),
+      ladySettingsSynced: true
+    })
+  }
+
   function toggleSettings() {
     setShowConfig(!showConfig)
+  }
+
+  function clearLog() {
+    setLog([])
   }
 
   function detectGameSession(sessTimeStamps) {
@@ -280,14 +331,14 @@ function App() {
         <header className="fpvcm-header">
           <div className="fpvcm-header_lady" onClick={() => toggleLady()}></div>
           <img src={logo} alt="FPVCombat" className="fpvcm-header_logo" style={{float: "left"}} />
-          <div className="fpvcm-header_text">
-            &nbsp;Manager
-            <span className="fpvcm-header_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
-          </div>
-          {isAdmin && <div className="fpvcm-settings-icon">
-            <SettingsIcon onClick={toggleSettings} />
-          </div>}
+          <div className="fpvcm-header_text">&nbsp;Manager</div>
+          <HeaderMenu isAdmin={isAdmin} config={config} toggleSettings={toggleSettings} sendConfig={sendConfig} />
         </header>
+        <ConfirmModal
+          confirmModal={confirmModal}
+          setConfirmModal={setConfirmModal}
+          lang={config.lang}
+        />
         <Container maxWidth="false" className="fpvcm-container">
           {showLady
             ? <img src={ladyBW} alt="FPV Combat Lady" style={{marginTop: "70px", maxWidth: "80vw"}} onClick={() => toggleLady()} />
@@ -301,10 +352,13 @@ function App() {
                 />)
               : (<Main
                   config={config}
+                  ladyLoading={ladyLoading}
                   loading={loading}
                   advanceSession={advanceSession}
                   sendNewSession={sendNewSession}
+                  setConfirmModal={setConfirmModal}
                   gameSession={gameSession}
+                  clearLog={clearLog}
                   isAdmin={isAdmin}
                   ladyUp={ladyUp}
                   log={log}
@@ -313,6 +367,12 @@ function App() {
                 />)
           }
         </Container>
+        <footer className="fpvcm-footer">
+          FPV Combat Manager
+          <span className="fpvcm-footer_version">&nbsp;v.{appVersion}&nbsp;{appVersionIsBeta ? (<>BETA&nbsp;</>) : ""}rev.{appRevision}</span>
+          &nbsp;&nbsp;|&nbsp;&nbsp;
+          <a href="https://www.fpv-combat.com" target="_blank" rel="noreferrer" className="fpvcm-footer_link">FPV-Combat.com</a>
+        </footer>
       </div>
     </ThemeProvider>
   );

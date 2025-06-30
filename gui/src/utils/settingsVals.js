@@ -1,14 +1,14 @@
 import txt from '../locale/locale'
 
-export const roundTimeMarks = [
-  { value: 0, label: '0' },
-  { value: 2, label: '2' },
-  { value: 3, label: '3' },
-  { value: 4, label: '4' },
-  { value: 5, label: '5' },
-  { value: 6, label: '6' },
-  { value: 7, label: '7' },
-  { value: 8, label: '8' },
+export const roundTimeMarks = (lang) => [
+  { value: 0, label: '0 ' + txt('min', lang) },
+  { value: 2, label: '2 ' + txt('min', lang) },
+  { value: 3, label: '3 ' + txt('min', lang) },
+  { value: 4, label: '4 ' + txt('min', lang) },
+  { value: 5, label: '5 ' + txt('min', lang) },
+  { value: 6, label: '6 ' + txt('min', lang) },
+  { value: 7, label: '7 ' + txt('min', lang) },
+  { value: 8, label: '8 ' + txt('min', lang) },
 ]
 
 export const countDownMarks = (lang) =>  [
